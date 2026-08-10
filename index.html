@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Smart Traffic AI MVP public technical demonstrator">
+  <title>Smart Traffic AI MVP</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="shell nav">
+    <div class="brand"><span data-ar>منصة المرور الذكية</span><span data-en>Smart Traffic AI</span></div>
+    <div class="nav-actions">
+      <button id="arButton" class="active">العربية</button>
+      <button id="enButton">English</button>
+      <button id="refreshButton" class="primary"><span data-ar>تحديث المحاكاة</span><span data-en>Refresh simulation</span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="shell">
+      <span class="eyebrow">MVP v1.0 | Public Technical Demonstrator</span>
+      <div data-ar>
+        <h1>مركز قيادة تجريبي لمنصة مرور ذكية قابلة للفحص</h1>
+        <p>نموذج تشغيلي عام ينفذ منطق الميزات العشر الأساسية ويعرض البيانات والقرارات ومسار الإثبات بصورة قابلة للمراجعة.</p>
+      </div>
+      <div data-en>
+        <h1>Reviewable command demonstrator for a smart-traffic intelligence platform</h1>
+        <p>A public executable MVP implementing the ten canonical capabilities with visible data, decisions, and technical evidence traces.</p>
+      </div>
+      <div class="disclosure" data-ar>جميع البيانات والنتائج في هذا الإصدار محاكاة. لا توجد حالياً وصلة حية مع كاميرات أو إشارات مرور أو أنظمة حكومية، ولا تمثل النتائج أداءً ميدانياً مثبتاً.</div>
+      <div class="disclosure" data-en>All data and outputs in this release are simulated. There is no current live connection to cameras, traffic signals, or government systems, and these outputs are not field-validated performance.</div>
+      <div class="kpis">
+        <div class="kpi"><strong id="congestedKpi">0</strong><span data-ar>طرق عالية الازدحام</span><span data-en>High-congestion roads</span></div>
+        <div class="kpi"><strong id="safetyKpi">0</strong><span data-ar>تنبيهات سلامة</span><span data-en>Safety alerts</span></div>
+        <div class="kpi"><strong id="incidentKpi">0</strong><span data-ar>حوادث محاكاة</span><span data-en>Simulated incidents</span></div>
+        <div class="kpi"><strong id="signalKpi">0</strong><span data-ar>إشارات تكيفية</span><span data-en>Adaptive signals</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell section">
+    <div class="section-head">
+      <div><h2><span data-ar>لقطة البيانات التشغيلية</span><span data-en>Operational data snapshot</span></h2><p><span data-ar>المصدر: بيانات اصطناعية داخلية قابلة لإعادة التشغيل.</span><span data-en>Source: reproducible internal synthetic data.</span></p></div>
+      <span class="simulation-badge">SIMULATED_INTERNAL</span>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th><span data-ar>الطريق</span><span data-en>Road</span></th><th><span data-ar>الكثافة</span><span data-en>Density</span></th><th><span data-ar>السرعة</span><span data-en>Speed</span></th><th><span data-ar>الطقس</span><span data-en>Weather</span></th><th><span data-ar>حادث</span><span data-en>Incident</span></th><th><span data-ar>التقييم</span><span data-en>Assessment</span></th></tr></thead><tbody id="roadTable"></tbody></table></div>
+  </section>
+
+  <section class="shell section">
+    <h2><span data-ar>محركات الميزات العشر</span><span data-en>Ten feature engines</span></h2>
+    <div id="featureGrid" class="feature-grid"></div>
+  </section>
+
+  <section class="shell section">
+    <h2><span data-ar>سجل الإثبات والتتبع</span><span data-en>Evidence and trace log</span></h2>
+    <p class="muted"><span data-ar>كل تشغيل يسجل الوقت ومصدر البيانات وملخص القرار.</span><span data-en>Each execution records timestamp, data source, and decision summary.</span></p>
+    <div id="auditLog" class="audit-log"></div>
+  </section>
+</main>
+
+<footer class="shell footer">
+  <span data-ar>إصدار عام تجريبي. تفاصيل الملكية الفكرية المحمية والتكاملات الخاصة ليست جزءاً من هذا المستودع.</span>
+  <span data-en>Public demonstrator release. Protected implementation detail and private integrations are outside this repository.</span>
+</footer>
+
+<script type="module" src="./src/app.js"></script>
+</body>
+</html>
