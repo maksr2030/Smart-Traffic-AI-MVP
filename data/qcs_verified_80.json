@@ -1,0 +1,18 @@
+[
+  {
+    "id":"QCS-80",
+    "track_local_id":80,
+    "group":"qcs_recovered",
+    "title_ar":"نظام استشعار كمومي لتحليل استقرار المركبة ومنع الانزلاق في الحالات الطارئة",
+    "title_en":"Quantum Sensing System for Vehicle Stability Analysis and Skid Prevention in Emergency Situations",
+    "title_ar_status":"normalized_from_forensic_correspondence_to_direct_english_source",
+    "category_ar":"استقرار المركبة ومنع الانزلاق",
+    "category_en":"Vehicle Stability & Skid Prevention",
+    "description_ar":"أُعيد فتح المخرج الأصلي الإنجليزي للميزة 80 من محادثة 5 مارس 2025. يصف تحليل استقرار المركبة لحظياً، واكتشاف تغيرات التوازن المفاجئة على الطرق الزلقة أو المنعطفات الحادة، ثم تفعيل استجابات السلامة تلقائياً مثل تصحيح عدم الاتزان والفرملة الذكية أو التوجيه الديناميكي مع دعم التواصل عن المخاطر. الصياغة العربية للعنوان مطابقة لسجل الاسترداد الجنائي وليست ادعاءً بأنها أُعيد فتحها مباشرة في هذه الجولة.",
+    "description_en":"The original English Feature 80 output was directly reopened from the 5 March 2025 conversation. It describes real-time vehicle-stability analysis, detection of sudden balance shifts on slippery roads or sharp turns, and automatic safety responses including imbalance correction, smart braking or dynamic steering, plus hazard communication support.",
+    "evidence_status":"verified_track_local_conversation_retrieval",
+    "source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05",
+    "source_message_en":"2025-03-05T10:30:38Z",
+    "main_legacy_effect":"none"
+  }
+]
