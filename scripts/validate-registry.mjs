@@ -86,6 +86,35 @@ if (!forensic || forensic.parsed_record_count !== 213 || forensic.sha256 !== 'b0
 const expectedConfidence = {A:73,B:79,B2:42,C:17,D:2};
 for (const [key,value] of Object.entries(expectedConfidence)) if (forensic.confidence_counts?.[key] !== value) throw new Error(`forensic confidence count drift: ${key}`);
 
+const candidateMaps = evidenceRegister.forensic_candidate_maps ?? [];
+const qcsCandidateMeta = candidateMaps.find(map => map.map_id === 'FORENSIC-MAP-QCS-V0.3');
+const mainCandidateMeta = candidateMaps.find(map => map.map_id === 'FORENSIC-MAP-MAIN-15-199-V0.3');
+if (!qcsCandidateMeta || !mainCandidateMeta) throw new Error('required forensic candidate maps are missing from evidence register');
+
+const qcsCandidateMap = JSON.parse(await readFile(qcsCandidateMeta.path,'utf8'));
+if (qcsCandidateMap.record_count !== 54 || qcsCandidateMap.records?.length !== 54) throw new Error('QCS forensic candidate map must preserve exactly 54 records');
+const qcsConfidence = qcsCandidateMap.records.reduce((acc,row) => ((acc[row.confidence] = (acc[row.confidence] || 0) + 1), acc), {});
+for (const [key,value] of Object.entries({B:49,B2:3,C:2})) if (qcsConfidence[key] !== value) throw new Error(`QCS forensic confidence drift: ${key}`);
+for (const id of ['QCS-102','QCS-103','QCS-104']) {
+  const n = Number(id.split('-')[1]);
+  const row = qcsCandidateMap.records.find(item => item.number === n);
+  if (!row || row.current_status !== 'promoted_direct') throw new Error(`QCS candidate map lost promoted status for ${id}`);
+}
+for (const row of qcsCandidateMap.records) {
+  if ([102,103,104].includes(row.number)) continue;
+  if (row.current_status !== 'candidate_not_promoted') throw new Error(`unreviewed QCS candidate was silently promoted: ${row.number}`);
+}
+
+const mainCandidateMap = JSON.parse(await readFile(mainCandidateMeta.path,'utf8'));
+if (mainCandidateMap.record_count !== 23 || mainCandidateMap.records?.length !== 23) throw new Error('Main Legacy forensic candidate map must preserve exactly 23 records');
+for (const row of mainCandidateMap.records) {
+  if (row.number < 15 || row.number > 199) throw new Error(`Main Legacy candidate outside reserved range: ${row.number}`);
+  if (ids.has(String(row.number))) throw new Error(`Main Legacy candidate ${row.number} was added to unified registry without promotion workflow`);
+}
+for (const expected of [46,47,77,114,115,116,117,118,148,149,152]) {
+  if (!mainCandidateMap.records.some(row => row.number === expected)) throw new Error(`Main Legacy candidate map lost recovery lead ${expected}`);
+}
+
 const reserved = evidenceRegister.historical_recovery?.reserved_ranges ?? [];
 if (!reserved.some(range => range.from === 15 && range.to === 199 && range.status === 'open_pending_original_evidence')) throw new Error('main historical recovery gap must remain 15-199');
 
@@ -109,5 +138,6 @@ console.log(`Located library sources valid: ${locatedSources.length} source(s), 
 console.log(`Historical conversation evidence valid: ${conversationSources.length} source(s), ${conversationLinks} linked registry record(s).`);
 console.log('Main legacy recovery valid: 11-14; QCS track-local recovery valid: 102-104; QCS-102 title conflict preserved.');
 console.log(`Forensic v0.3 intake valid: ${forensic.parsed_record_count} records, confidence A/B/B2/C/D = 73/79/42/17/2.`);
+console.log('Forensic candidate maps valid: QCS=54 records (3 promoted direct), Main Legacy 15-199=23 candidates (0 promoted).');
 console.log(`Coverage valid: ${coverageStats.implemented_demo} implemented demo, ${coverageStats.represented_demo} represented demo, ${coverageStats.catalogued_only} catalogued only, ${coverageStats.production_verified} production verified.`);
 console.log(`Reserved main historical gap preserved: ${manifest.historical_gap}`);
