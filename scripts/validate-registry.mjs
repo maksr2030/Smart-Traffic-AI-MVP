@@ -29,6 +29,46 @@ for (const [group,count] of Object.entries(manifest.groups)) {
   if (actual[group] !== count) throw new Error(`group count mismatch for ${group}: ${actual[group]} != ${count}`);
 }
 
+const evidenceRegisterPath = 'evidence/EVIDENCE_REGISTER.json';
+const evidenceRegister = JSON.parse(await readFile(evidenceRegisterPath,'utf8'));
+if (evidenceRegister.registry_total !== manifest.total) {
+  throw new Error(`evidence register count mismatch: ${evidenceRegister.registry_total} != ${manifest.total}`);
+}
+if (!Array.isArray(evidenceRegister.evidence_items) || !evidenceRegister.evidence_items.length) {
+  throw new Error('evidence register must contain at least one evidence item');
+}
+
+const evidenceIds = new Set();
+let evidenceCoveredRecords = 0;
+for (const item of evidenceRegister.evidence_items) {
+  if (!item.evidence_id || !item.path || !item.sha256 || !Array.isArray(item.covers)) {
+    throw new Error(`incomplete evidence item: ${JSON.stringify(item)}`);
+  }
+  if (evidenceIds.has(item.evidence_id)) throw new Error(`duplicate evidence id: ${item.evidence_id}`);
+  evidenceIds.add(item.evidence_id);
+
+  const artifact = await readFile(item.path);
+  const digest = createHash('sha256').update(artifact).digest('hex');
+  if (digest !== item.sha256) throw new Error(`source artifact hash mismatch for ${item.evidence_id}: ${digest}`);
+
+  if (item.mapping_document) await readFile(item.mapping_document,'utf8');
+  const covered = new Set();
+  for (const id of item.covers) {
+    if (covered.has(id)) throw new Error(`duplicate covered record ${id} in ${item.evidence_id}`);
+    covered.add(id);
+    if (!ids.has(id)) throw new Error(`evidence ${item.evidence_id} references missing registry record: ${id}`);
+  }
+  evidenceCoveredRecords += covered.size;
+  if (Number(item.count_effect ?? 0) !== 0 && item.status === 'verified_archived_source') {
+    throw new Error(`archived evidence ${item.evidence_id} cannot alter registry count without explicit registry review`);
+  }
+}
+
+const reserved = evidenceRegister.historical_recovery?.reserved_ranges ?? [];
+if (!reserved.some(range => range.from === 11 && range.to === 199 && range.status === 'open_pending_original_evidence')) {
+  throw new Error('historical recovery register must preserve open reserved range 11-199');
+}
+
 const qtos = groups.filter(feature => feature.group === 'qtos');
 if (qtos.length !== 25) throw new Error(`QTOS evidence mapping expects 25 records, got ${qtos.length}`);
 const expectedQtosIds = Array.from({length:25}, (_,i) => `QTOS-${String(i + 1).padStart(2,'0')}`);
@@ -38,15 +78,9 @@ for (const expectedId of expectedQtosIds) {
 if (qtos.some(feature => feature.source !== 'QTOS Additional Features Bilingual Standard')) {
   throw new Error('QTOS source provenance drift detected');
 }
-
-const qtosArtifactPath = 'evidence/source/Smart_Traffic_QTOS_Additional_Features_Bilingual_Standard.html';
-const qtosEvidenceRegisterPath = 'evidence/QTOS_SOURCE_EVIDENCE.md';
-const qtosArtifact = await readFile(qtosArtifactPath);
-await readFile(qtosEvidenceRegisterPath, 'utf8');
-const qtosArtifactSha256 = createHash('sha256').update(qtosArtifact).digest('hex');
-const expectedQtosArtifactSha256 = 'a0e7bf1e78e2fb271012dbca722b4d03a2a9e957c0a19778353a23e680472d9f';
-if (qtosArtifactSha256 !== expectedQtosArtifactSha256) {
-  throw new Error(`QTOS source artifact hash mismatch: ${qtosArtifactSha256}`);
+const qtosEvidence = evidenceRegister.evidence_items.find(item => item.evidence_id === 'SRC-QTOS-001');
+if (!qtosEvidence || expectedQtosIds.some(id => !qtosEvidence.covers.includes(id))) {
+  throw new Error('central evidence register must map SRC-QTOS-001 to all QTOS-01 through QTOS-25 records');
 }
 
 const coverage = buildCoverage(groups);
@@ -58,6 +92,7 @@ for (const row of coverage) {
 }
 
 console.log(`Registry valid: ${groups.length} records, ${ids.size} unique IDs.`);
-console.log(`QTOS source evidence valid: ${qtos.length} linked records, SHA-256 ${qtosArtifactSha256}.`);
+console.log(`Evidence register valid: ${evidenceRegister.evidence_items.length} archived source(s), ${evidenceCoveredRecords} linked registry record(s).`);
+console.log(`QTOS source evidence valid: ${qtos.length} linked records through SRC-QTOS-001.`);
 console.log(`Coverage valid: ${coverageStats.implemented_demo} implemented demo, ${coverageStats.represented_demo} represented demo, ${coverageStats.catalogued_only} catalogued only, ${coverageStats.production_verified} production verified.`);
 console.log(`Reserved historical gap preserved: ${manifest.historical_gap}`);
