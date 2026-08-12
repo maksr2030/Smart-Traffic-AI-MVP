@@ -1,0 +1,34 @@
+[
+  {
+    "id":"QCS-94",
+    "track_local_id":94,
+    "group":"qcs_recovered",
+    "title_ar":"نظام استشعار كمومي لاكتشاف المخاطر المخفية (Invisible Hazard Detection)",
+    "title_en":"Quantum Sensing System for Invisible Hazard Detection",
+    "category_ar":"اكتشاف المخاطر المخفية",
+    "category_en":"Invisible Hazard Detection",
+    "description_ar":"مسترد مباشرة من مخرجات 5 مارس 2025؛ يتناول اكتشاف المركبات خلف المنعطفات الحادة، والمشاة في المناطق غير المرئية، والأجسام عالية السرعة، ثم دعم تجنب الاصطدام استباقياً عبر الاستشعار الكمومي والذكاء الاصطناعي مع الفرملة الذكية أو التوجيه التلقائي وتحذيرات V2V.",
+    "description_en":"Directly recovered from the 5 March 2025 conversation; it covers detection of hidden vehicles behind sharp turns, pedestrians in blind spots, and high-speed objects, followed by proactive collision avoidance using quantum sensing and AI with smart braking or autonomous steering and V2V warnings.",
+    "evidence_status":"verified_track_local_conversation_retrieval",
+    "source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05",
+    "source_message_ar":"2025-03-05T12:22:19Z",
+    "source_message_en":"2025-03-05T12:25:48Z",
+    "main_legacy_effect":"none"
+  },
+  {
+    "id":"QCS-95",
+    "track_local_id":95,
+    "group":"qcs_recovered",
+    "title_ar":"نظام تحكم ذكي بالتعليق الديناميكي بناءً على استشعار كمومي للطريق",
+    "title_en":"Smart Adaptive Suspension Control System Based on Quantum Road Sensing",
+    "category_ar":"الاستشعار الكمومي للطريق والتحكم الديناميكي",
+    "category_en":"Quantum Road Sensing & Adaptive Suspension",
+    "description_ar":"مسترد مباشرة من مخرجات 5 مارس 2025؛ يصف تحليل جودة الطريق لحظياً وتعديل نظام التعليق والفرامل استباقياً لمنع الانزلاق أو فقدان التوازن، مع تكامل مع المكابح الذكية.",
+    "description_en":"Directly recovered from the 5 March 2025 conversation; it describes real-time road-quality analysis and proactive suspension and braking adjustment to prevent skidding or loss of balance, with smart-braking integration.",
+    "evidence_status":"verified_track_local_conversation_retrieval",
+    "source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05",
+    "source_message_ar":"2025-03-05T12:29:01Z",
+    "source_message_en":"2025-03-05T12:31:39Z",
+    "main_legacy_effect":"none"
+  }
+]
