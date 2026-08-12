@@ -1,0 +1,26 @@
+{
+  "nodes": [
+    {"id":"N1","name":"North Gate"},{"id":"N2","name":"King Road"},{"id":"N3","name":"University"},{"id":"N4","name":"Airport Link"},
+    {"id":"N5","name":"CBD East"},{"id":"N6","name":"CBD West"},{"id":"N7","name":"Port Access"},{"id":"N8","name":"Industrial"},
+    {"id":"N9","name":"Hospital"},{"id":"N10","name":"School Zone"},{"id":"N11","name":"Ring Road"},{"id":"N12","name":"Logistics"}
+  ],
+  "edges": [
+    {"id":"E01","from":"N1","to":"N2","distanceKm":3.2,"speedLimitKph":80,"load":48},
+    {"id":"E02","from":"N2","to":"N3","distanceKm":2.4,"speedLimitKph":60,"load":61},
+    {"id":"E03","from":"N3","to":"N5","distanceKm":3.1,"speedLimitKph":70,"load":72},
+    {"id":"E04","from":"N5","to":"N6","distanceKm":1.6,"speedLimitKph":50,"load":79},
+    {"id":"E05","from":"N6","to":"N7","distanceKm":4.2,"speedLimitKph":80,"load":58},
+    {"id":"E06","from":"N7","to":"N8","distanceKm":3.9,"speedLimitKph":70,"load":55},
+    {"id":"E07","from":"N2","to":"N4","distanceKm":4.7,"speedLimitKph":100,"load":45},
+    {"id":"E08","from":"N4","to":"N5","distanceKm":4.1,"speedLimitKph":90,"load":52},
+    {"id":"E09","from":"N4","to":"N11","distanceKm":5.4,"speedLimitKph":110,"load":42},
+    {"id":"E10","from":"N11","to":"N8","distanceKm":6.2,"speedLimitKph":110,"load":50},
+    {"id":"E11","from":"N3","to":"N9","distanceKm":2.0,"speedLimitKph":60,"load":66},
+    {"id":"E12","from":"N9","to":"N10","distanceKm":2.1,"speedLimitKph":50,"load":70},
+    {"id":"E13","from":"N10","to":"N6","distanceKm":2.7,"speedLimitKph":60,"load":64},
+    {"id":"E14","from":"N7","to":"N12","distanceKm":2.9,"speedLimitKph":70,"load":59},
+    {"id":"E15","from":"N12","to":"N8","distanceKm":2.6,"speedLimitKph":70,"load":62},
+    {"id":"E16","from":"N5","to":"N11","distanceKm":4.8,"speedLimitKph":100,"load":47},
+    {"id":"E17","from":"N9","to":"N5","distanceKm":2.2,"speedLimitKph":60,"load":74}
+  ]
+}
