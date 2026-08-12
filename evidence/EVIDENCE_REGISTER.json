@@ -1,7 +1,7 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "project": "Smart AI Traffic Platform",
-  "registry_total": 101,
+  "registry_total": 105,
   "evidence_items": [
     {
       "evidence_id": "SRC-QTOS-001",
@@ -48,14 +48,29 @@
       "count_effect": 0
     }
   ],
+  "conversation_sources": [
+    {
+      "source_id": "CONV-TRAFFIC-2024-10-17-001",
+      "type": "historical_conversation_retrieval",
+      "status": "direct_conversation_retrieval_verified",
+      "project": "Smart Traffic Platform / تطبيق إدارة حركة المرور الذكي",
+      "assistant_message_timestamp_utc": "2024-10-17T05:05:26Z",
+      "covers": ["11","12","13","14"],
+      "source_language": "ar",
+      "english_fields_status": "editorial_translation_from_arabic_source",
+      "sequence_evidence": "A single assistant output explicitly presented a numbered Smart Traffic feature sequence 1-14; items 11-14 were recovered from that same sequence.",
+      "count_effect": 4
+    }
+  ],
   "historical_recovery": {
     "reserved_ranges": [
-      {"from": 11, "to": 199, "status": "open_pending_original_evidence"}
+      {"from": 15, "to": 199, "status": "open_pending_original_evidence"}
     ],
     "rules": [
       "Do not assign a legacy feature number without direct source evidence.",
       "Archive original source artifacts before promoting candidate records to verified historical status when byte-level access is available.",
-      "If a source is readable but raw-byte materialization is unavailable, register it separately as a located source and do not claim byte-identical archival or SHA-256 provenance.",
+      "Historical conversation retrieval may support promotion when the retrieved message directly binds project identity, legacy number and feature identity in one coherent sequence.",
+      "If a source is readable but raw-byte materialization is unavailable, register it separately and do not claim byte-identical archival or SHA-256 provenance.",
       "Preserve conflicting or overlapping source records until canonical deduplication is independently reviewed.",
       "A source evidence artifact may strengthen provenance without increasing the registry count when its capabilities are already registered."
     ]
