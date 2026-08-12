@@ -1,0 +1,53 @@
+[
+  {
+    "id":"QCS-102",
+    "track_local_id":102,
+    "group":"qcs_recovered",
+    "title_ar":"مراقبة أداء الحساسات الكمومية ذاتيًا في الزمن الحقيقي (Self-Monitoring Quantum Sensors)",
+    "title_en":"Self-Monitoring Quantum Sensors Against Cyber Threats and Signal Interference",
+    "alternate_title_en":"Self-Monitoring Quantum Sensors for Real-Time Performance Optimization",
+    "category_ar":"الاستشعار الكمومي والموثوقية الذاتية",
+    "category_en":"Quantum Sensing & Self-Monitoring",
+    "description_ar":"ميزة مستردة مباشرة من محادثة 5 مارس 2025؛ يصف السياق المرافق استخدام الذكاء الكمومي للمراقبة الذاتية والضبط التلقائي للحساسات.",
+    "description_en":"Directly recovered from the 5 March 2025 conversation; adjacent context describes quantum-AI self-monitoring and automatic sensor adjustment.",
+    "evidence_status":"verified_track_local_conversation_retrieval",
+    "source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05",
+    "source_message_ar":"2025-03-05T13:22:29Z",
+    "source_message_en":"2025-03-05T18:10:11Z",
+    "version_conflict":true,
+    "version_note":"The original conversation contains two distinct English title variants for Feature 102. Both are preserved; neither is silently discarded.",
+    "main_legacy_effect":"none"
+  },
+  {
+    "id":"QCS-103",
+    "track_local_id":103,
+    "group":"qcs_recovered",
+    "title_ar":"تحسين قدرة المركبات ذاتية القيادة على التعامل مع الظروف الجوية القاسية باستخدام الاستشعار الكمومي",
+    "title_en":"Quantum Sensing System for Enhancing Autonomous Vehicle Performance in Extreme Weather",
+    "category_ar":"المركبات ذاتية القيادة والطقس القاسي",
+    "category_en":"Autonomous Vehicles & Extreme Weather",
+    "description_ar":"ميزة مستردة مباشرة من التسلسل الأصلي لنظام الاستشعار الكمومي الذكي لمنع التصادم، وتتناول دعم المركبات ذاتية القيادة في الظروف الجوية القاسية.",
+    "description_en":"Directly recovered from the original collision-prevention quantum-sensing sequence and focused on autonomous-vehicle performance in extreme weather.",
+    "evidence_status":"verified_track_local_conversation_retrieval",
+    "source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05",
+    "source_message_ar":"2025-03-05T13:28:07Z",
+    "source_message_en":"2025-03-05T13:30:37Z",
+    "main_legacy_effect":"none"
+  },
+  {
+    "id":"QCS-104",
+    "track_local_id":104,
+    "group":"qcs_recovered",
+    "title_ar":"جعل المركبات جزءًا من \"نظام مرور ذكي متكامل\" عبر الاستشعار الكمومي المتصل",
+    "title_en":"Integrating Vehicles into a Smart Traffic System Using Quantum-Connected Sensing",
+    "category_ar":"المرور المتصل والاستشعار الكمومي",
+    "category_en":"Connected Traffic & Quantum Sensing",
+    "description_ar":"ميزة مستردة مباشرة من المحادثة الأصلية، وتهدف إلى دمج المركبات ضمن منظومة مرور ذكية مترابطة عبر الاستشعار الكمومي المتصل.",
+    "description_en":"Directly recovered from the original conversation and aimed at integrating vehicles into a connected smart-traffic system using quantum-connected sensing.",
+    "evidence_status":"verified_track_local_conversation_retrieval",
+    "source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05",
+    "source_message_ar":"2025-03-05T13:34:47Z",
+    "source_message_en":"2025-03-05T13:38:28Z",
+    "main_legacy_effect":"none"
+  }
+]
