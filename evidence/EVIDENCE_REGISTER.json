@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "project": "Smart AI Traffic Platform",
   "registry_total": 101,
   "evidence_items": [
@@ -22,13 +22,40 @@
       "reason": "The 25 QTOS records already exist in the unified registry; this artifact strengthens provenance and must not be double-counted."
     }
   ],
+  "located_sources": [
+    {
+      "source_id": "LOC-TRAFFIC-AR-001",
+      "type": "original_library_source",
+      "status": "located_library_source_not_byte_archived",
+      "title": "المرور الذكي.html",
+      "library_file_id": "file_00000000806c81f791b8e42e8778c10b",
+      "language": "ar",
+      "covers": ["1","2","3","4","5","6","7","8","9","10"],
+      "search_result": "Direct numbered Arabic source confirms historical features 1-10. Full-file searches did not recover feature headings 11-199.",
+      "raw_materialization_status": "unavailable_from_library_connector_at_intake",
+      "count_effect": 0
+    },
+    {
+      "source_id": "LOC-TRAFFIC-EN-001",
+      "type": "original_library_source",
+      "status": "located_library_source_not_byte_archived",
+      "title": "Smart AI Traffic.html",
+      "library_file_id": "file_00000000dc20823083aedaee47bc1d04",
+      "language": "en",
+      "covers": ["1","2","3","4","5","6","7","8","9","10"],
+      "search_result": "Original English traffic source corroborates the initial historical feature block. Full-file searches did not recover Feature 11-199 headings.",
+      "raw_materialization_status": "unavailable_from_library_connector_at_intake",
+      "count_effect": 0
+    }
+  ],
   "historical_recovery": {
     "reserved_ranges": [
       {"from": 11, "to": 199, "status": "open_pending_original_evidence"}
     ],
     "rules": [
       "Do not assign a legacy feature number without direct source evidence.",
-      "Archive original source artifacts before promoting candidate records to verified historical status.",
+      "Archive original source artifacts before promoting candidate records to verified historical status when byte-level access is available.",
+      "If a source is readable but raw-byte materialization is unavailable, register it separately as a located source and do not claim byte-identical archival or SHA-256 provenance.",
       "Preserve conflicting or overlapping source records until canonical deduplication is independently reviewed.",
       "A source evidence artifact may strengthen provenance without increasing the registry count when its capabilities are already registered."
     ]
