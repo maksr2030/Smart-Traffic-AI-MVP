@@ -13,23 +13,29 @@ Confirmed Main Legacy recovery remains:
 - 13 — تكامل مع وسائل النقل العامة
 - 14 — تتبع موقع السيارة
 
-The next contiguous Main Legacy target remains feature 15. Exact searches for 15-30 and sampled anchors through 199 did not independently reopen a new primary Main Legacy record in the current pass.
+The next contiguous Main Legacy target remains feature 15. Exact searches for 15-30 and sampled anchors through 199 have not independently reopened a new primary Main Legacy record in the current recovery chain.
 
-### December 2024 forensic leads — not yet promoted
+Normalized candidate map:
 
-Secondary forensic artifact v0.3 preserves the following traffic-number leads:
+`evidence/MAIN_LEGACY_FORENSIC_CANDIDATES_15_199_v0_3.json`
 
-- 77 — heavy-truck monitoring/organization title, confidence B2.
-- 114 — immediate traffic solutions during sudden crises, confidence B.
-- 115 — road-fee management and financial flows, confidence B2.
-- 116 — parking management and financial utilization, confidence B2.
-- 117 — traffic carbon-emissions reduction, confidence B.
-- 118 — truck-flow and logistics-efficiency analysis, confidence B.
-- 148 — existence lead only; title unrecovered, confidence C.
-- 149 — comprehensive AI traffic-violation monitoring platform, confidence B2.
-- 152 — real-time traffic-violation recognition, confidence B.
+It preserves 23 candidates from the December 2024 recovery tracks. None is promoted yet.
 
-These are not Main Legacy verified records yet. Current direct-source reopening did not independently reproduce the primary December messages to the required standard. They remain high-priority recovery targets.
+### Highest-priority Main Legacy source-reopening targets
+
+1. 46 — نظام ذكي للتحكم التلقائي بحركة المرور ومنع الازدحام باستخدام الذكاء الاصطناعي — forensic B.
+2. 47 — نظام ذكي لإدارة إشارات المرور لمنع الازدحام — forensic B.
+3. 114 — نظام ذكي لتقديم حلول مرورية فورية أثناء الأزمات المفاجئة باستخدام الذكاء الاصطناعي — forensic B.
+4. 117 — نظام ذكي لتحليل وتقديم حلول ذكية لتقليل الانبعاثات الكربونية في حركة المرور باستخدام الذكاء الاصطناعي — forensic B.
+5. 118 — نظام ذكي لتحليل حركة الشاحنات وتحسين كفاءة النقل اللوجستي باستخدام الذكاء الاصطناعي — forensic B.
+6. 152 — نظام ذكي للتعرف على المخالفات المرورية في الوقت الفعلي — forensic B.
+7. 77 — نظام ذكي لمراقبة وتنظيم حركة الشاحنات الثقيلة — forensic B2.
+8. 115 — road-fee management and financial flows — forensic B2.
+9. 116 — parking management and financial utilization — forensic B2.
+10. 149 — comprehensive AI traffic-violation monitoring platform — forensic B2.
+11. 148 — existence lead only; title unrecovered — forensic C.
+
+Current exact Arabic and English searches have not independently reproduced the primary historical messages for these candidates. They therefore remain candidates even where the secondary forensic artifact labels a record as direct or prior conversation recovery.
 
 ## Priority 2 — QCS track-local recovery
 
@@ -41,25 +47,73 @@ Direct primary conversation recovery completed:
 - `QCS-103` — تحسين قدرة المركبات ذاتية القيادة على التعامل مع الظروف الجوية القاسية باستخدام الاستشعار الكمومي.
 - `QCS-104` — جعل المركبات جزءًا من نظام مرور ذكي متكامل عبر الاستشعار الكمومي المتصل.
 
-Evidence document: `evidence/QCS_RECOVERY_EVIDENCE.md`.
+Evidence document:
 
-`QCS-102` has two historical English title variants and both are preserved.
+`evidence/QCS_RECOVERY_EVIDENCE.md`
 
-Next QCS target: independently reopen `QCS-101`, then walk backward through the same March 2025 conversation sequence. Secondary forensic v0.3 provides navigation leads but does not replace direct evidence review.
+Full forensic candidate map:
 
-## Priority 3 — Forensic v0.3 structured recovery map
+`evidence/QCS_FORENSIC_CANDIDATE_MAP_v0_3.json`
+
+The map preserves 54 QCS rows. QCS-102 through QCS-104 are separately promoted from direct evidence; 51 QCS rows remain candidates.
+
+Next source-reopening sequence:
+
+`QCS-101 → QCS-100 → QCS-99 → QCS-98 → QCS-97 → QCS-96 → QCS-95 → QCS-94 → QCS-93`
+
+If a primary block is reopened, continue chronologically around that source rather than assuming missing intermediate numbers.
+
+## Priority 3 — QTC quantum traffic-computing track
+
+QTC is separate from QTOS, QCS and Main Legacy.
+
+Normalized map:
+
+`evidence/QTC_FORENSIC_CANDIDATE_MAP_v0_3.json`
+
+It preserves 14 QTC candidate rows and currently has zero promoted records.
+
+First direct-source targets:
+
+- QTC 46 — تحسين استهلاك الطاقة في البنية التحتية المرورية باستخدام الحوسبة الكمومية.
+- QTC 47 — تحسين إدارة إشارات المرور الديناميكية باستخدام الحوسبة الكمومية.
+- QTC 48 — تحسين التنبؤ بحركة المرور باستخدام الحوسبة الكمومية.
+- QTC 82 — نظام التشفير الفائق الأمان لبيانات المركبات باستخدام الحوسبة الكمومية.
+- QTC 83 — تحسين إدارة الطاقة في المركبات الذكية باستخدام الحوسبة الكمومية.
+
+Exact Arabic/English Library searches have not independently located the original QTC source yet. Do not merge QTC numbering with any other namespace.
+
+## Priority 4 — Forensic v0.3 structured recovery map
 
 Source: `Smart_Traffic_Forensic_Master_Recovery_v0_3.html`.
 
-Fingerprint: `b0ca5ef84694fbbeda22c2c03a04ef8adecc1c968f3dc65b63f0510a1dd484f5`.
+Fingerprint:
+
+`b0ca5ef84694fbbeda22c2c03a04ef8adecc1c968f3dc65b63f0510a1dd484f5`
 
 Parsed Arabic recovery records: 213.
 
 Confidence distribution: A=73, B=79, B2=42, C=17, D=2.
 
-This artifact is used to prioritize original-source reopening. It is not bulk-imported into the unified registry.
+The currently normalized high-value candidate layers preserve:
 
-## Priority 4 — Other unnumbered candidate capabilities
+- 54 QCS rows — 3 promoted direct / 51 still candidates.
+- 23 Main Legacy 15-199 candidates — zero promoted.
+- 14 QTC candidates — zero promoted.
+
+Total currently unpromoted rows in these three maps: 88.
+
+This does not change the unified registry total of 108.
+
+## Priority 5 — Other historical tracks still to normalize or reopen
+
+- `IDEAS100-2025-02`: only items 1-3 are currently preserved in the forensic artifact; 4-100 remain an open extraction target from the original 100-ideas conversation.
+- `OCT17-APP`: 14 unnumbered traffic-app capabilities are preserved in the forensic artifact and should be normalized against the existing `CR` registry before any additional count effect is considered.
+- `DEC17-TRAFFIC`: existence-only records around 23-26, 35-39 and 43-45 remain useful neighbor anchors but must not receive invented titles.
+- High-number leads 373 and 375 remain unverified and must not be imported without traffic-specific source proof.
+- Numbers 272 and 274 previously encountered in unrelated material remain excluded.
+
+## Priority 6 — Other unnumbered candidate capabilities
 
 Recovery leads only:
 
@@ -71,20 +125,16 @@ Recovery leads only:
 
 Existing verified or track-local records may overlap semantically; overlap is not proof of a missing historical number.
 
-## Priority 5 — High-number historical leads
-
-- Traffic identifiers 373 and 375 remain unverified leads; current exact search did not independently recover them.
-- Historical numbers 272 and 274 previously encountered in unrelated material must not be imported into the traffic registry without traffic-specific source proof.
-
 ## Intake method
 
 For every newly found source:
 
-1. Establish project identity and namespace: Main Legacy, QCS, QTOS, or another historical track.
+1. Establish project identity and namespace: Main Legacy, QCS, QTC, QTOS, or another historical track.
 2. Require a direct binding between the relevant number and feature identity before promotion.
 3. Archive raw bytes and compute SHA-256 when technically available.
 4. If byte-level repository archival is unavailable, register the source type explicitly without overstating archival status.
 5. Preserve competing historical versions rather than silently reconciling them.
 6. Compare against all current registry records for duplicates or semantic overlap.
 7. Update a reserved Main Legacy range only for Main Legacy numbers directly recovered.
-8. Run CI provenance validation after every registry or evidence change.
+8. Preserve candidate-map rows even when they overlap existing registry capabilities; use a separate reconciliation mapping rather than deleting history.
+9. Run CI provenance validation after every registry or evidence change.
