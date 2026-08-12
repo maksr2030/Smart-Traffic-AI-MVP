@@ -1,0 +1,25 @@
+{
+  "schema_version":"1.0",
+  "track":"QTC",
+  "track_name_ar":"مسار المرور والحوسبة الكمومية",
+  "source":"Smart_Traffic_Forensic_Master_Recovery_v0_3.html",
+  "source_sha256":"b0ca5ef84694fbbeda22c2c03a04ef8adecc1c968f3dc65b63f0510a1dd484f5",
+  "record_count":14,
+  "policy":"Secondary forensic candidate map only. QTC is a separate track and does not fill Main Legacy numbering.",
+  "records":[
+    {"number":4,"confidence":"B2","title_ar":"التوجيه الكمومي الذكي للمركبات","title_en":"Quantum Smart Vehicle Routing","forensic_status":"Prior conversation recovery; reconfirmation pending"},
+    {"number":46,"confidence":"B","title_ar":"تحسين استهلاك الطاقة في البنية التحتية المرورية باستخدام الحوسبة الكمومية","title_en":"Quantum-Based Energy Optimization for Traffic Infrastructure","forensic_status":"Direct conversation recovery"},
+    {"number":47,"confidence":"B","title_ar":"تحسين إدارة إشارات المرور الديناميكية باستخدام الحوسبة الكمومية","title_en":"Quantum-Based Dynamic Traffic Signal Management","forensic_status":"Direct conversation recovery"},
+    {"number":48,"confidence":"B","title_ar":"تحسين التنبؤ بحركة المرور باستخدام الحوسبة الكمومية","title_en":"Quantum-Based Traffic Flow Prediction","forensic_status":"Direct conversation recovery"},
+    {"number":56,"confidence":"B2","title_ar":"تحسين إدارة المركبات ذاتية القيادة في الظروف الجوية القاسية باستخدام الحوسبة الكمومية","title_en":"Quantum-Based Autonomous Vehicle Control in Extreme Weather Conditions","forensic_status":"Prior conversation recovery; reconfirmation pending"},
+    {"number":57,"confidence":"B2","title_ar":"تحسين الاتصال بين المركبات والبنية التحتية المرورية باستخدام الحوسبة الكمومية","title_en":"Quantum-Based Vehicle-to-Infrastructure (V2I) Communication Enhancement","forensic_status":"Prior conversation recovery; reconfirmation pending"},
+    {"number":58,"confidence":"B2","title_ar":"تحسين توزيع المركبات في مواقف السيارات باستخدام الحوسبة الكمومية","title_en":"Quantum-Based Smart Parking Allocation","forensic_status":"Prior conversation recovery; reconfirmation pending"},
+    {"number":59,"confidence":"B2","title_ar":"العنوان الأصلي غير مسترد","title_en":"Quantum-Based Urban Vehicle Distribution Optimization","forensic_status":"Prior conversation recovery; reconfirmation pending"},
+    {"number":60,"confidence":"B2","title_ar":"العنوان الأصلي غير مسترد","title_en":"Quantum-Based Smart City Traffic Management","forensic_status":"Prior conversation recovery; reconfirmation pending"},
+    {"number":61,"confidence":"B2","title_ar":"تحسين أنظمة القيادة التكيفية باستخدام الحوسبة الكمومية","title_en":"Quantum-Based Adaptive Driving System Optimization","forensic_status":"Prior conversation recovery; reconfirmation pending"},
+    {"number":62,"confidence":"B2","title_ar":"تحسين إدارة المركبات المشتركة باستخدام الحوسبة الكمومية","title_en":"Quantum-Based Shared Mobility Management Optimization","forensic_status":"Prior conversation recovery; reconfirmation pending"},
+    {"number":78,"confidence":"B","title_ar":"العنوان الأصلي غير مسترد","title_en":"Quantum-Based Zero-Latency AI for Instantaneous Vehicle Decision-Making","forensic_status":"Direct conversation recovery"},
+    {"number":82,"confidence":"B","title_ar":"نظام التشفير الفائق الأمان لبيانات المركبات باستخدام الحوسبة الكمومية","title_en":"Quantum-Based Ultra-Secure Vehicle Data Encryption System","forensic_status":"Direct conversation recovery"},
+    {"number":83,"confidence":"B","title_ar":"تحسين إدارة الطاقة في المركبات الذكية باستخدام الحوسبة الكمومية","title_en":"Quantum-Based Smart Vehicle Energy Management System","forensic_status":"Direct conversation recovery"}
+  ]
+}
