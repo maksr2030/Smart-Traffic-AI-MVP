@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "project": "Smart AI Traffic Platform",
+  "registry_total": 101,
+  "evidence_items": [
+    {
+      "evidence_id": "SRC-QTOS-001",
+      "type": "original_source_artifact",
+      "status": "verified_archived_source",
+      "title": "QTOS Additional Features - Bilingual Standard File",
+      "path": "evidence/source/Smart_Traffic_QTOS_Additional_Features_Bilingual_Standard.html",
+      "sha256": "a0e7bf1e78e2fb271012dbca722b4d03a2a9e957c0a19778353a23e680472d9f",
+      "mapping_document": "evidence/QTOS_SOURCE_EVIDENCE.md",
+      "covers": [
+        "QTOS-01","QTOS-02","QTOS-03","QTOS-04","QTOS-05",
+        "QTOS-06","QTOS-07","QTOS-08","QTOS-09","QTOS-10",
+        "QTOS-11","QTOS-12","QTOS-13","QTOS-14","QTOS-15",
+        "QTOS-16","QTOS-17","QTOS-18","QTOS-19","QTOS-20",
+        "QTOS-21","QTOS-22","QTOS-23","QTOS-24","QTOS-25"
+      ],
+      "count_effect": 0,
+      "reason": "The 25 QTOS records already exist in the unified registry; this artifact strengthens provenance and must not be double-counted."
+    }
+  ],
+  "historical_recovery": {
+    "reserved_ranges": [
+      {"from": 11, "to": 199, "status": "open_pending_original_evidence"}
+    ],
+    "rules": [
+      "Do not assign a legacy feature number without direct source evidence.",
+      "Archive original source artifacts before promoting candidate records to verified historical status.",
+      "Preserve conflicting or overlapping source records until canonical deduplication is independently reviewed.",
+      "A source evidence artifact may strengthen provenance without increasing the registry count when its capabilities are already registered."
+    ]
+  }
+}
