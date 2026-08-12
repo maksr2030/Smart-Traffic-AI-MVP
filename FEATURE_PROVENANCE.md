@@ -5,7 +5,7 @@ The MVP registry preserves source provenance and does not fill historical number
 Source groups:
 
 - `verified_historical`: 48 records with verified historical identifiers in ranges 1-10 and 200-237.
-- `conversation_recovered`: 22 capabilities recovered from prior project conversations but without verified historical identifiers.
+- `conversation_recovered`: 23 capabilities recovered from prior project conversations but without verified historical identifiers.
 - `additional_history`: 5 capabilities recovered from project history and related records.
 - `qtos`: 25 independent capabilities from the documented Quantum Traffic Orchestration System package.
 

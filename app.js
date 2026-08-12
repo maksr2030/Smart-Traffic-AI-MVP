@@ -85,7 +85,7 @@ function translate(){
 async function load(){
   const paths=["data/verified_1_10.json","data/verified_200_237.json","data/conversation_recovered.json","data/additional_history.json","data/qtos.json"];const datasets=await Promise.all(paths.map(async p=>{const r=await fetch(p);if(!r.ok)throw new Error(`Failed to load ${p}`);return r.json()}));state.features=datasets.flat();
   initSegments();renderNetwork();rebuildCategories();renderFeatures();
-  logEvent(state.lang==="ar"?"تم تحميل سجل المصدر الموحد: 100 سجل":"Unified source registry loaded: 100 records");
+  logEvent(state.lang==="ar"?"تم تحميل سجل المصدر الموحد: 101 سجل":"Unified source registry loaded: 101 records");
   setInterval(updateSim,1600);
 }
 document.getElementById("langBtn").onclick=()=>{state.lang=state.lang==="ar"?"en":"ar";translate()};

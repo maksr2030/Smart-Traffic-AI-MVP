@@ -4,9 +4,9 @@ Public proof-of-concept for a city-scale and sovereign traffic intelligence plat
 
 Current implementation status:
 
-- 100 source records are exposed in a searchable bilingual registry.
+- 101 source records are exposed in a searchable bilingual registry.
 - 48 are verified historical features from the recovered legacy ranges 1-10 and 200-237.
-- 22 are conversation-recovered capabilities without verified legacy numbers.
+- 23 are conversation-recovered capabilities without verified legacy numbers.
 - 5 are additional capabilities recovered from project history.
 - 25 are independent QTOS capabilities from the Quantum Traffic Orchestration System package.
 - Historical identifiers 11-199 remain reserved and are not fabricated.
