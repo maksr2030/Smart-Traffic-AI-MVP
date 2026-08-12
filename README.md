@@ -1,31 +1,59 @@
 # Smart AI Traffic Platform MVP
 
-Public proof-of-concept for a city-scale and sovereign traffic intelligence platform.
+Engineering proof-of-concept for a city-scale and sovereign traffic intelligence platform.
 
-Current implementation status:
+## Current status
 
-- 101 source records are exposed in a searchable bilingual registry.
-- 48 are verified historical features from the recovered legacy ranges 1-10 and 200-237.
-- 23 are conversation-recovered capabilities without verified legacy numbers.
-- 5 are additional capabilities recovered from project history.
-- 25 are independent QTOS capabilities from the Quantum Traffic Orchestration System package.
+- MVP version: 1.2.
+- 101 source records in a searchable bilingual registry.
+- 48 verified historical features from legacy ranges 1-10 and 200-237.
+- 23 conversation-recovered capabilities without verified legacy numbers.
+- 5 additional capabilities recovered from project history.
+- 25 independent QTOS capabilities from the Quantum Traffic Orchestration System package.
 - Historical identifiers 11-199 remain reserved and are not fabricated.
-- The interactive dashboard uses simulation data only. It does not claim live government, road, camera, vehicle, or enforcement integration.
+- Operational indicators use simulated data only. No live government, camera, signal, connected-vehicle, enforcement or road-data integration is claimed.
 
-## MVP modules
+## Testable engineering core
 
-1. Simulated city network twin with 12 virtual road segments.
-2. Congestion and delay indicators.
-3. Adaptive signal intervention demonstration.
-4. Network-aware rerouting demonstration.
-5. Emergency-priority corridor demonstration.
-6. QTOS hybrid optimization demonstration.
-7. Decision log.
-8. Searchable bilingual feature and capability registry with provenance classes.
+The repository now contains a deterministic graph-based traffic engine rather than a dashboard-only simulation.
+
+Implemented functions include:
+
+1. Road-network model validation.
+2. Congestion and incident-adjusted edge travel cost.
+3. Congestion-weighted shortest-path routing.
+4. Rerouting around closed or penalized road segments.
+5. Authorized priority-edge weighting for emergency corridor demonstrations.
+6. Demand scaling and incident injection.
+7. Adaptive signal green-time allocation under minimum-green constraints.
+8. Network load, critical-edge and stress metrics.
+9. Scenario simulation and lower-stress candidate selection.
+
+## Interactive MVP modules
+
+1. Simulated city network with 12 nodes and 17 connected road edges.
+2. Network load, average edge travel time, critical-edge count and stress index.
+3. Routing and incident test bench with selectable origin, destination and road segment.
+4. Adaptive traffic-signal planning demonstration.
+5. Network-aware rerouting demonstration.
+6. Emergency-priority route demonstration.
+7. QTOS scenario comparison demonstration.
+8. Normal, rush-hour, major-event and severe-weather scenarios.
+9. Decision log.
+10. Searchable bilingual feature registry with provenance classes.
+
+## Automated evidence
+
+GitHub Actions runs two independent checks on every relevant push and pull request:
+
+- feature-registry integrity and provenance validation;
+- Node.js traffic-engine unit tests.
+
+The unit-test suite checks network validity, congestion cost behavior, route computation, incident rerouting, signal allocation, network stress and incident detection.
 
 ## Run locally
 
-Use a local HTTP server because the registry is loaded with `fetch()`:
+A local HTTP server is required because browser modules and registry files are loaded through HTTP:
 
 ```bash
 python -m http.server 8000
@@ -33,15 +61,22 @@ python -m http.server 8000
 
 Then open `http://localhost:8000`.
 
+For engineering validation:
+
+```bash
+npm run validate
+npm test
+```
+
 ## Evidence boundary
 
-This repository separates three concepts:
+This repository deliberately separates:
 
-- documented platform capability,
-- MVP demonstration,
-- production-verified integration.
+- documented platform capability;
+- MVP-demonstrated engineering behavior;
+- production-verified external integration.
 
-A documented capability is not automatically represented as a production integration. All live-looking metrics in this MVP are explicitly simulated until a separate technical evidence package establishes otherwise.
+A documented capability is not automatically a production integration. Production claims require separate authenticated integration evidence, security verification, operational logs and controlled field or high-fidelity validation.
 
 ## Intellectual property
 
