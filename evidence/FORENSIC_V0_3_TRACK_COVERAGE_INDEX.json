@@ -1,5 +1,5 @@
 {
-  "schema_version":"1.1",
+  "schema_version":"1.2",
   "source":"Smart_Traffic_Forensic_Master_Recovery_v0_3.html",
   "source_sha256":"b0ca5ef84694fbbeda22c2c03a04ef8adecc1c968f3dc65b63f0510a1dd484f5",
   "forensic_arabic_record_count":213,
@@ -12,7 +12,7 @@
     {"track":"DEC20-TRAFFIC","source_rows":1,"destination":"evidence/MAIN_LEGACY_FORENSIC_CANDIDATES_15_199_v0_3.json","coverage_status":"main_legacy_candidate_preserved","count_effect_context":"0; Feature 77 candidate"},
     {"track":"DEC25-TRAFFIC","source_rows":8,"destination":"evidence/MAIN_LEGACY_FORENSIC_CANDIDATES_15_199_v0_3.json","coverage_status":"main_legacy_candidates_preserved","count_effect_context":"0; Features 114,115,116,117,118,148,149,152 candidates"},
     {"track":"IDEAS100-2025-02","source_rows":3,"destination":"evidence/IDEAS100_FORENSIC_CANDIDATE_MAP_v0_3.json","coverage_status":"recovered_rows_preserved_track_incomplete","count_effect_context":"0; rows 1-3 recovered, original track 4-100 remains open"},
-    {"track":"QCS","source_rows":54,"destination":"evidence/QCS_FORENSIC_CANDIDATE_MAP_v0_3.json + data/qcs_verified_97_101.json + data/qcs_verified_102_104.json","coverage_status":"forensic_map_complete_eight_direct_promotions","count_effect_context":"8 unified QCS records (97-104); 46 rows remain candidates"},
+    {"track":"QCS","source_rows":54,"destination":"evidence/QCS_FORENSIC_CANDIDATE_MAP_v0_3.json + data/qcs_verified_94_95.json + data/qcs_verified_97_101.json + data/qcs_verified_102_104.json","coverage_status":"forensic_map_complete_ten_direct_promotions","count_effect_context":"10 unified QCS records (94-95 and 97-104); 44 rows remain candidates, including open QCS-96"},
     {"track":"QTC","source_rows":14,"destination":"evidence/QTC_FORENSIC_CANDIDATE_MAP_v0_3.json","coverage_status":"forensic_map_complete_zero_promotions","count_effect_context":"0"},
     {"track":"VERIFIED-200","source_rows":38,"destination":"data/verified_200_237.json","coverage_status":"unified_registry_verified","count_effect_context":"38 unified records"},
     {"track":"CR","source_rows":22,"destination":"data/conversation_recovered.json","coverage_status":"unified_registry_source_family_preserved","count_effect_context":"v0.3 covers CR-01 through CR-22; current unified file additionally contains independently recovered CR-23"},
@@ -21,6 +21,6 @@
     {"track":"RELATED-ENV","source_rows":2,"destination":"evidence/CROSS_PROJECT_TRAFFIC_INTEGRATION_CANDIDATES_v0_3.json","coverage_status":"cross_project_exclusion_boundary_preserved","count_effect_context":"0; Smart AI Environment provenance only"}
   ],
   "track_row_sum":213,
-  "unified_registry_total":113,
+  "unified_registry_total":115,
   "note":"The unified registry total and the forensic track-row sum answer different questions and must never be added together. The forensic source contains historical recovery rows with overlap, reused numbering, candidates and cross-project material."
 }
