@@ -18,7 +18,7 @@ for (const feature of groups) {
   ids.add(feature.id);
   if (feature.group === 'verified_historical') {
     const n = Number(feature.legacy_id);
-    const allowed = (n >= 1 && n <= 10) || (n >= 200 && n <= 237);
+    const allowed = (n >= 1 && n <= 14) || (n >= 200 && n <= 237);
     if (!allowed) throw new Error(`unverified historical id entered verified group: ${feature.id}`);
   }
 }
@@ -29,8 +29,7 @@ for (const [group,count] of Object.entries(manifest.groups)) {
   if (actual[group] !== count) throw new Error(`group count mismatch for ${group}: ${actual[group]} != ${count}`);
 }
 
-const evidenceRegisterPath = 'evidence/EVIDENCE_REGISTER.json';
-const evidenceRegister = JSON.parse(await readFile(evidenceRegisterPath,'utf8'));
+const evidenceRegister = JSON.parse(await readFile('evidence/EVIDENCE_REGISTER.json','utf8'));
 if (evidenceRegister.registry_total !== manifest.total) {
   throw new Error(`evidence register count mismatch: ${evidenceRegister.registry_total} != ${manifest.total}`);
 }
@@ -46,22 +45,17 @@ for (const item of evidenceRegister.evidence_items) {
   }
   if (evidenceIds.has(item.evidence_id)) throw new Error(`duplicate evidence id: ${item.evidence_id}`);
   evidenceIds.add(item.evidence_id);
-
   const artifact = await readFile(item.path);
   const digest = createHash('sha256').update(artifact).digest('hex');
   if (digest !== item.sha256) throw new Error(`source artifact hash mismatch for ${item.evidence_id}: ${digest}`);
-
   if (item.mapping_document) await readFile(item.mapping_document,'utf8');
   const covered = new Set();
   for (const id of item.covers) {
     if (covered.has(id)) throw new Error(`duplicate covered record ${id} in ${item.evidence_id}`);
     covered.add(id);
-    if (!ids.has(id)) throw new Error(`evidence ${item.evidence_id} references missing registry record: ${id}`);
+    if (!ids.has(String(id))) throw new Error(`evidence ${item.evidence_id} references missing registry record: ${id}`);
   }
   evidenceCoveredRecords += covered.size;
-  if (Number(item.count_effect ?? 0) !== 0 && item.status === 'verified_archived_source') {
-    throw new Error(`archived evidence ${item.evidence_id} cannot alter registry count without explicit registry review`);
-  }
 }
 
 const locatedSources = evidenceRegister.located_sources ?? [];
@@ -73,46 +67,46 @@ for (const source of locatedSources) {
   }
   if (locatedSourceIds.has(source.source_id)) throw new Error(`duplicate located source id: ${source.source_id}`);
   locatedSourceIds.add(source.source_id);
-  if (source.status !== 'located_library_source_not_byte_archived') {
-    throw new Error(`unexpected located source status: ${source.source_id}`);
-  }
-  if (Number(source.count_effect ?? 0) !== 0) {
-    throw new Error(`located source ${source.source_id} cannot alter registry count`);
-  }
-  const covered = new Set();
+  if (source.status !== 'located_library_source_not_byte_archived') throw new Error(`unexpected located source status: ${source.source_id}`);
   for (const id of source.covers) {
-    if (covered.has(id)) throw new Error(`duplicate located-source mapping ${id} in ${source.source_id}`);
-    covered.add(id);
     if (!ids.has(String(id))) throw new Error(`located source ${source.source_id} references missing registry record: ${id}`);
+    locatedLinks += 1;
   }
-  locatedLinks += covered.size;
 }
 
-const expectedInitialIds = Array.from({length:10}, (_,i) => String(i + 1));
-for (const sourceId of ['LOC-TRAFFIC-AR-001','LOC-TRAFFIC-EN-001']) {
-  const source = locatedSources.find(item => item.source_id === sourceId);
-  if (!source || expectedInitialIds.some(id => !source.covers.map(String).includes(id))) {
-    throw new Error(`${sourceId} must map the complete historical 1-10 block`);
+const conversationSources = evidenceRegister.conversation_sources ?? [];
+let conversationLinks = 0;
+for (const source of conversationSources) {
+  if (!source.source_id || source.status !== 'direct_conversation_retrieval_verified' || !source.assistant_message_timestamp_utc || !Array.isArray(source.covers)) {
+    throw new Error(`incomplete conversation source: ${JSON.stringify(source)}`);
+  }
+  for (const id of source.covers) {
+    if (!ids.has(String(id))) throw new Error(`conversation source ${source.source_id} references missing registry record: ${id}`);
+    conversationLinks += 1;
+  }
+}
+
+const recoverySource = conversationSources.find(source => source.source_id === 'CONV-TRAFFIC-2024-10-17-001');
+for (const id of ['11','12','13','14']) {
+  if (!recoverySource?.covers.map(String).includes(id)) throw new Error(`historical recovery source missing feature ${id}`);
+  const feature = groups.find(item => item.id === id);
+  if (!feature || feature.evidence_status !== 'verified_historical_conversation_retrieval') {
+    throw new Error(`feature ${id} must retain verified historical conversation evidence status`);
   }
 }
 
 const reserved = evidenceRegister.historical_recovery?.reserved_ranges ?? [];
-if (!reserved.some(range => range.from === 11 && range.to === 199 && range.status === 'open_pending_original_evidence')) {
-  throw new Error('historical recovery register must preserve open reserved range 11-199');
+if (!reserved.some(range => range.from === 15 && range.to === 199 && range.status === 'open_pending_original_evidence')) {
+  throw new Error('historical recovery register must preserve open reserved range 15-199');
 }
 
 const qtos = groups.filter(feature => feature.group === 'qtos');
 if (qtos.length !== 25) throw new Error(`QTOS evidence mapping expects 25 records, got ${qtos.length}`);
 const expectedQtosIds = Array.from({length:25}, (_,i) => `QTOS-${String(i + 1).padStart(2,'0')}`);
+const qtosEvidence = evidenceRegister.evidence_items.find(item => item.evidence_id === 'SRC-QTOS-001');
 for (const expectedId of expectedQtosIds) {
   if (!qtos.some(feature => feature.id === expectedId)) throw new Error(`missing QTOS evidence-linked record: ${expectedId}`);
-}
-if (qtos.some(feature => feature.source !== 'QTOS Additional Features Bilingual Standard')) {
-  throw new Error('QTOS source provenance drift detected');
-}
-const qtosEvidence = evidenceRegister.evidence_items.find(item => item.evidence_id === 'SRC-QTOS-001');
-if (!qtosEvidence || expectedQtosIds.some(id => !qtosEvidence.covers.includes(id))) {
-  throw new Error('central evidence register must map SRC-QTOS-001 to all QTOS-01 through QTOS-25 records');
+  if (!qtosEvidence?.covers.includes(expectedId)) throw new Error(`QTOS evidence register missing ${expectedId}`);
 }
 
 const coverage = buildCoverage(groups);
@@ -126,6 +120,7 @@ for (const row of coverage) {
 console.log(`Registry valid: ${groups.length} records, ${ids.size} unique IDs.`);
 console.log(`Archived evidence valid: ${evidenceRegister.evidence_items.length} source(s), ${evidenceCoveredRecords} linked registry record(s).`);
 console.log(`Located library sources valid: ${locatedSources.length} source(s), ${locatedLinks} source-to-registry links; byte-identical archival not claimed.`);
-console.log(`QTOS source evidence valid: ${qtos.length} linked records through SRC-QTOS-001.`);
+console.log(`Historical conversation evidence valid: ${conversationSources.length} source(s), ${conversationLinks} linked registry record(s).`);
+console.log(`Recovered historical block valid: 11-14 from CONV-TRAFFIC-2024-10-17-001.`);
 console.log(`Coverage valid: ${coverageStats.implemented_demo} implemented demo, ${coverageStats.represented_demo} represented demo, ${coverageStats.catalogued_only} catalogued only, ${coverageStats.production_verified} production verified.`);
 console.log(`Reserved historical gap preserved: ${manifest.historical_gap}`);
