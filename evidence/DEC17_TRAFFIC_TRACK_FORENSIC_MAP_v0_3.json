@@ -1,0 +1,27 @@
+{
+  "schema_version":"1.0",
+  "track":"DEC17-TRAFFIC",
+  "source":"Smart_Traffic_Forensic_Master_Recovery_v0_3.html",
+  "source_sha256":"b0ca5ef84694fbbeda22c2c03a04ef8adecc1c968f3dc65b63f0510a1dd484f5",
+  "record_count":16,
+  "confidence_counts":{"B":2,"C":14},
+  "policy":"Full track preservation. Feature-number reuse and existence-only rows are retained as historical evidence. This map does not promote records into the unified registry.",
+  "records":[
+    {"number":11,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered","relationship_note":"Number also exists in the currently verified October 17 Main Legacy block with different available source context."},
+    {"number":12,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered","relationship_note":"Number also exists in the currently verified October 17 Main Legacy block with different available source context."},
+    {"number":23,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered"},
+    {"number":24,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered"},
+    {"number":25,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered"},
+    {"number":26,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered"},
+    {"number":35,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered"},
+    {"number":36,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered"},
+    {"number":37,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered"},
+    {"number":38,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered"},
+    {"number":39,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered"},
+    {"number":43,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered"},
+    {"number":44,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered"},
+    {"number":45,"confidence":"C","title_ar":"العنوان الأصلي غير مسترد","title_en":"Original title not recovered","forensic_status":"Existence evidence only; exact title not recovered"},
+    {"number":46,"confidence":"B","title_ar":"نظام ذكي للتحكم التلقائي بحركة المرور ومنع الازدحام باستخدام الذكاء الاصطناعي","title_en":"Feature 46: AI-Based Automated Traffic Control System to Prevent Congestion","forensic_status":"Direct exact conversation recovery","current_promotion_status":"not_promoted_primary_reopening_pending"},
+    {"number":47,"confidence":"B","title_ar":"نظام ذكي لإدارة إشارات المرور لمنع الازدحام","title_en":"Feature 47: Intelligent Traffic Signal Management to Prevent Congestion","forensic_status":"Direct exact conversation recovery","current_promotion_status":"not_promoted_primary_reopening_pending"}
+  ]
+}
