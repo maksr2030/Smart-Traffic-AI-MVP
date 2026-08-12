@@ -1,0 +1,16 @@
+{
+  "schema_version":"1.0",
+  "track":"IDEAS100-2025-02",
+  "source":"Smart_Traffic_Forensic_Master_Recovery_v0_3.html",
+  "source_sha256":"b0ca5ef84694fbbeda22c2c03a04ef8adecc1c968f3dc65b63f0510a1dd484f5",
+  "recovered_record_count":3,
+  "declared_track_size":100,
+  "open_numbers":"4-100",
+  "confidence_counts":{"B":3},
+  "policy":"Separate 100-ideas numbering track. Recovered rows are preserved as forensic candidates and do not overwrite Main Legacy 1-10 or increase the unified registry until source and distinctness review is complete.",
+  "records":[
+    {"number":1,"title_ar":"تطبيق لتحليل حركة المرور في الوقت الفعلي","title_en":"Real-Time Traffic Analysis App","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["1","CR-14"],"current_status":"candidate_reconciliation_pending"},
+    {"number":2,"title_ar":"نظام التنبؤ بالازدحام المروري","title_en":"Traffic Congestion Prediction System","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["1"],"current_status":"candidate_reconciliation_pending"},
+    {"number":3,"title_ar":"إدارة مواقف السيارات الذكية","title_en":"Smart Parking Management","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["204","225"],"current_status":"candidate_reconciliation_pending"}
+  ]
+}
