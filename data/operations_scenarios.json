@@ -1,0 +1,7 @@
+[
+  {"id":"normal","name_ar":"تشغيل طبيعي","name_en":"Normal Operations","demandMultiplier":1.0,"incidents":[]},
+  {"id":"rush","name_ar":"ساعة الذروة","name_en":"Rush Hour","demandMultiplier":1.35,"incidents":[]},
+  {"id":"event","name_ar":"فعالية كبرى","name_en":"Major Event","demandMultiplier":1.25,"incidents":[{"edgeId":"E04","severity":0.6,"loadIncrease":12}]},
+  {"id":"storm","name_ar":"طقس شديد","name_en":"Severe Weather","demandMultiplier":1.12,"incidents":[{"edgeId":"E09","severity":0.85,"loadIncrease":18}]},
+  {"id":"multi","name_ar":"حوادث متعددة متزامنة","name_en":"Concurrent Multi-Incident","demandMultiplier":1.18,"incidents":[{"edgeId":"E04","severity":0.9,"loadIncrease":18},{"edgeId":"E12","severity":0.75,"loadIncrease":14},{"edgeId":"E09","severity":1.0,"close":true,"loadIncrease":20}]}
+]
