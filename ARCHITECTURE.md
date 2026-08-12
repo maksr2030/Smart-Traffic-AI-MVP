@@ -1,55 +1,56 @@
-# Architecture and Evidence Boundary
+# Architecture and Evidence Boundary — Engineering MVP v1.3
 
 ## Objective
 
-The Smart AI Traffic Platform MVP demonstrates a city-scale and sovereign traffic intelligence layer rather than a standalone navigation application.
+The MVP demonstrates a city-scale traffic intelligence and operations layer rather than a standalone navigation application. Version 1.3 adds explicit operational orchestration, forecast baselines, emergency dispatch simulation, before/after evidence and a capability-coverage layer.
 
-## Logical architecture
+## Logical layers
 
-- Data ingestion layer: road sensors, traffic signals, cameras, connected vehicles, weather, positioning, public transport, parking, logistics and infrastructure feeds when lawfully authorized.
-- State layer: normalized nodes, road edges, loads, incident state, closures, capacity constraints and a dynamic graph representation.
-- Intelligence layer: congestion-adjusted travel-cost computation, routing, scenario simulation, network metrics and candidate comparison.
-- Orchestration layer: rerouting recommendations, adaptive signal plans, authorized emergency priority and future lane or multimodal control strategies.
-- User layer: driver guidance, authorized sharing, vehicle-aware routing and cross-device delivery.
-- Government layer: operational dashboards, diagnostic reporting, intervention evaluation and infrastructure prioritization.
-- Governance layer: authorization, cybersecurity, privacy, auditability, local law and provider-interface constraints.
+### 1. Source and ingestion layer
+Potential authorized production sources include road sensors, traffic signals, cameras, connected vehicles, weather, positioning, public transport, parking, logistics and infrastructure feeds. The current MVP substitutes deterministic fixtures and simulation data.
 
-## MVP v1.2 engineering implementation
+### 2. Network-state layer
+`data/network.json` defines the demo graph. `engine/trafficEngine.js` validates the graph, calculates edge travel costs, routes traffic, applies single incidents, adjusts demand, calculates signal plans and computes network metrics.
 
-The testable engineering core is implemented in `engine/trafficEngine.js` using a deterministic graph model held in `data/network.json`.
+### 3. Operations layer
+`engine/operationsEngine.js` adds:
 
-The demo network contains 12 nodes and 17 connected road edges. Each edge can carry distance, speed limit, traffic load, incident severity and closure state.
+- concurrent incidents,
+- operational scenarios,
+- deterministic short-horizon forecasting,
+- operational KPIs,
+- simulated mitigation baselines,
+- before/after comparison,
+- emergency fleet dispatch planning,
+- exportable operational snapshots.
 
-The engine implements:
+### 4. Scenario and digital-twin layer
+`data/operations_scenarios.json` contains normal, rush-hour, major-event, severe-weather and concurrent multi-incident fixtures. These are simulation scenarios, not field events.
 
-- graph and edge validation;
-- congestion and incident-sensitive travel time;
-- shortest-path selection using current weighted edge costs;
-- route avoidance and priority-edge weighting;
-- simulated incident injection and closure;
-- demand scaling;
-- constrained adaptive signal green-time allocation;
-- network load, critical-edge and stress metrics;
-- scenario simulation;
-- lower-stress scenario selection for the QTOS demonstration.
+### 5. Emergency-response simulation layer
+`data/emergency_fleet.json` contains a virtual fleet used only for route evaluation and dispatch logic. It is not connected to a real emergency service.
 
-## Verification architecture
+### 6. Capability evidence layer
+`coverage/coverageModel.js` generates exactly one coverage row for each recovered source record. MVP implementation state is intentionally independent from source provenance and production verification.
 
-The project includes two verification layers:
+### 7. User and operations interface
+`index.html` and `app.js` expose network state, routing, incident injection, scenarios, forecast baselines, emergency dispatch, before/after comparison, evidence export, feature coverage and the full bilingual source registry.
 
-1. Traffic-engine unit tests under `tests/trafficEngine.test.js`.
-2. Feature-registry provenance validation under `scripts/validate-registry.mjs`.
-
-The GitHub Actions workflow `.github/workflows/ci.yml` executes both checks on relevant pushes and pull requests. This provides repeatable evidence that software changes do not silently break the engineering core or contaminate the historical feature registry.
-
-## Simulation boundary
-
-The current MVP intentionally uses controlled simulated road state rather than external production feeds. The simulation demonstrates software behavior and algorithmic interactions but does not constitute field validation, production performance proof or evidence of a live government integration.
+### 8. Governance and assurance layer
+The repository preserves historical identifiers, prevents invented legacy features from entering the verified group, and refuses to mark capabilities as production verified without separate evidence.
 
 ## QTOS boundary
 
-QTOS includes graph-based city representation, digital-twin concepts, advanced optimization and optional quantum or hybrid optimization. The current MVP implements a classical deterministic baseline and scenario-selection layer. Quantum or hybrid computing remains a candidate optimization extension and should only be claimed where a measurable advantage is demonstrated against appropriate classical baselines.
+QTOS remains a documented sub-innovation namespace. The current scenario selector uses measurable classical deterministic candidates as an engineering baseline. No quantum computational advantage is claimed or implemented unless a separate benchmark demonstrates it against appropriate classical baselines.
 
-## Production evidence still required
+## Validation
 
-Production readiness should be demonstrated separately through authenticated interfaces, integration and contract tests, high-fidelity scenario benchmarks, security testing, authorization controls, immutable audit logs, data-governance controls, observability, resilience tests and controlled field validation.
+GitHub Actions executes three classes of controls:
+
+1. Registry and evidence integrity.
+2. Traffic-engine, operations-engine and coverage-model tests.
+3. Static application wiring and syntax checks.
+
+## Production-readiness boundary
+
+Production readiness is outside the present proof-of-concept and should be established through authenticated data interfaces, integration contracts, realistic traffic datasets, scenario benchmarks, security and privacy controls, audit logs, authorization policies, resilience testing, operational observability and controlled deployment validation.
