@@ -1,0 +1,25 @@
+name: Smart Traffic MVP CI
+
+on:
+  push:
+    branches: [main, feature/unified-traffic-mvp-v1]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate feature registry provenance
+        run: npm run validate
+      - name: Run traffic-engine tests
+        run: npm test
