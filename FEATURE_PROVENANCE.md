@@ -4,134 +4,134 @@ The MVP registry preserves source provenance and does not fill historical number
 
 ## Unified registry groups
 
-- `verified_historical`: 52 Main Legacy records with verified historical identifiers in ranges 1-14 and 200-237.
-- `conversation_recovered`: 23 capabilities recovered from prior project conversations but without verified Main Legacy identifiers.
-- `additional_history`: 5 capabilities recovered from project history and related records.
-- `qtos`: 25 independent capabilities from the documented Quantum Traffic Orchestration System package.
-- `qcs_recovered`: 3 directly reopened track-local capabilities from the Quantum AI-Enhanced Collision Prevention Sensor sequence: QCS-102 through QCS-104.
+- `verified_historical`: 52 Main Legacy records in verified ranges 1-14 and 200-237.
+- `conversation_recovered`: 23 capabilities without verified Main Legacy identifiers.
+- `additional_history`: 5 capabilities recovered from project history.
+- `qtos`: 25 independent QTOS capabilities.
+- `qcs_recovered`: 3 directly reopened QCS capabilities: QCS-102 through QCS-104.
 
 Unified registry total: 108 records.
 
-The Main Legacy historical range 15-199 remains reserved pending recovery of reliable direct evidence.
+Main Legacy 15-199 remains reserved pending reliable direct evidence.
 
-## Namespace separation rule
+## Core rule: source history is not canonical count
 
-Main Legacy, QTOS, QCS and QTC are separate historical namespaces.
+The repository separates:
 
-- Main Legacy uses numeric IDs such as `11` and `200`.
-- QTOS uses IDs such as `QTOS-01`.
-- QCS uses IDs such as `QCS-102`.
-- QTC is the separate quantum traffic-computing historical track and may reuse numeric values that also appear elsewhere.
+1. Unified registry records.
+2. Direct/original evidence.
+3. Historical precursor evidence.
+4. Secondary forensic recovery rows.
+5. Candidate and reconciliation maps.
+6. Cross-project integration candidates.
+7. MVP implementation and production-verification evidence.
 
-A track-local number is never used to fill a missing Main Legacy identifier solely because the number falls inside the same numerical range.
+None of these layers is silently converted into another.
 
-## Evidence-layer separation
+## Namespace separation
 
-The repository distinguishes four concepts:
+Main Legacy, QTOS, QCS, QTC, IDEAS100 and other historical tracks are separate namespaces.
 
-1. Unified feature registry — counted capabilities that passed a promotion rule.
-2. Primary/direct evidence — original source files or historical messages directly reopened in the current evidence chain.
-3. Secondary forensic candidate maps — recovery leads that preserve historical findings without increasing the unified count.
-4. MVP implementation evidence — demonstration and production-verification status, independent of historical-source provenance.
+A reused number does not establish identity. A track-local number never fills a missing Main Legacy number merely because the numeric value is the same.
 
-A confidence label stored in a secondary forensic file is not itself equivalent to current direct verification.
+## Main Legacy direct-promotion rule
 
-## Main Legacy historical conversation recovery rule
-
-Direct historical conversation retrieval may support promotion to `verified_historical` when a recovered message directly binds all three of the following in one coherent source context:
+Promotion to `verified_historical` requires a reliable source that binds:
 
 1. Smart Traffic project identity.
 2. Explicit Main Legacy feature number.
 3. Explicit feature identity/title or description.
 
-The recovered Smart Traffic assistant output dated `2024-10-17T05:05:26Z` satisfies this rule for features 11-14 and is registered as `CONV-TRAFFIC-2024-10-17-001`.
+The directly reopened 17 October 2024 Smart Traffic conversation satisfies this for Main Legacy 11-14. Original file evidence supports 1-10, and the verified REDS2 historical block supports 200-237.
 
-Recovered Arabic source wording is preserved. English fields created for registry parity are marked as editorial translations where no original English wording was retrieved.
-
-Semantic overlap does not erase the historical record. Feature 11 overlaps `CR-13`, feature 14 overlaps `CR-08`, and later records may overlap features 12-13. These relationships are recorded rather than used to delete either source record.
-
-## Main Legacy forensic candidate boundary
-
-The normalized candidate map is:
+Main Legacy candidate map:
 
 `evidence/MAIN_LEGACY_FORENSIC_CANDIDATES_15_199_v0_3.json`
 
-It preserves 23 candidates inside the open Main Legacy range 15-199. None is currently promoted.
+It preserves 23 candidates and currently promotes none.
 
-High-priority candidates include:
+High-priority candidates include 46, 47, 77, 114-118, 148-149 and 152. Secondary forensic confidence does not replace direct-source reopening.
 
-- 46 — automated traffic control and congestion prevention — forensic confidence B.
-- 47 — intelligent traffic-signal management and congestion prevention — B.
-- 77 — heavy-truck monitoring and regulation — B2.
-- 114 — instant traffic solutions during sudden crises — B.
-- 115 — road-fee and financial-flow management — B2.
-- 116 — parking management and financial utilization — B2.
-- 117 — traffic carbon-emissions reduction — B.
-- 118 — truck-flow and logistics-efficiency analysis — B.
-- 148 — existence lead only — C.
-- 149 — AI traffic-violation monitoring platform — B2.
-- 152 — real-time traffic-violation recognition — B.
+## Directly reopened October 7 precursor
 
-The v0.3 artifact describes some of these as direct or prior conversation recoveries. They remain candidates in the current repository until the primary historical source is independently reopened to the Main Legacy promotion rule.
+A historical conversation dated 7 October 2024 was directly reopened. It began as AI-enabled smart-city project ideation for Saudi Arabia with a direct-revenue emphasis. A subsequent message explicitly referred to Idea 9, followed by a BRD titled:
 
-## QCS direct recovery rule
+`AI-Powered Smart Toll Management System for Optimizing Traffic Flow and Revenue Generation`
 
-The QCS sub-innovation is documented under:
+Evidence document:
 
-- `نظام الاستشعار الكمومي الذكي لمنع التصادم`
-- `Quantum AI-Enhanced Collision Prevention Sensor`
+`evidence/OCT07_TRAFFIC_PRECURSOR_EVIDENCE.md`
 
-Direct historical conversation retrieval from 5 March 2025 re-established QCS-102, QCS-103 and QCS-104. These records are stored in `data/qcs_verified_102_104.json` with `main_legacy_effect: none`.
+This source confirms a traffic-related precursor and the historical reuse of number 9, but it does not establish that the record belongs to the later Main Legacy Smart Traffic numbering. Registry effect remains zero.
 
-QCS-102 contains a genuine historical English-title conflict. Both recovered variants are preserved in the record and in `evidence/QCS_RECOVERY_EVIDENCE.md`; neither is silently selected as the single original version.
+## QCS direct and forensic boundaries
 
-The full secondary QCS map is:
+Direct historical conversation retrieval from 5 March 2025 re-established:
+
+- QCS-102
+- QCS-103
+- QCS-104
+
+`QCS-102` retains two historical English title variants as an explicit version conflict.
+
+Direct evidence:
+
+`evidence/QCS_RECOVERY_EVIDENCE.md`
+
+Full forensic map:
 
 `evidence/QCS_FORENSIC_CANDIDATE_MAP_v0_3.json`
 
-It preserves 54 QCS forensic rows: B=49, B2=3, C=2. QCS-102 through QCS-104 are marked as separately promoted by direct evidence; the other 51 remain forensic candidates. QCS-101 therefore remains outside the unified registry until its primary source can be independently reopened and reviewed.
+The map preserves 54 QCS rows: B=49, B2=3, C=2. Only 102-104 are separately promoted by direct evidence; 51 remain candidates.
 
-## QTC forensic boundary
+## QTC boundary
 
-The QTC normalized candidate map is:
+QTC is a separate quantum traffic-computing track.
 
 `evidence/QTC_FORENSIC_CANDIDATE_MAP_v0_3.json`
 
-It preserves 14 rows from the quantum traffic-computing historical track. None is currently promoted into the unified registry.
+It preserves 14 candidate rows with zero current promotion effect. Important anchors include 46-48, 78 and 82-83.
 
-Important anchors include QTC 46-48, 78 and 82-83. QTC remains separate from both QTOS and Main Legacy; its historical numeric values must not be interpreted as missing Main Legacy identifiers.
+## October 17 app-track reconciliation
 
-## Central evidence framework
+`evidence/OCT17_APP_FORENSIC_CANDIDATE_MAP_v0_3.json`
 
-All evidence is registered in:
+The map preserves 14 unnumbered October 2024 traffic-app rows. Every row contains an explicit possible-overlap crosswalk to existing registry records where applicable. These historical rows are not counted again until source and distinctness review demonstrates a separate capability.
 
-`evidence/EVIDENCE_REGISTER.json`
+## February 2025 100-ideas track
 
-The register distinguishes:
+`evidence/IDEAS100_FORENSIC_CANDIDATE_MAP_v0_3.json`
 
-- archived source artifacts with SHA-256 fingerprints;
-- located Library sources where raw-byte repository archival is unavailable;
-- direct historical conversation retrieval with source timestamp and covered IDs;
-- secondary forensic recovery artifacts;
-- normalized forensic candidate maps with explicit count effects and promotion boundaries.
+Only rows 1-3 are currently recovered from the secondary forensic source. The declared historical track is 100 ideas; 4-100 remain explicitly open. No missing title is invented.
 
-Every newly recovered file should be processed using:
+## Full December 17 track
 
-`evidence/SOURCE_INTAKE_TEMPLATE.md`
+`evidence/DEC17_TRAFFIC_TRACK_FORENSIC_MAP_v0_3.json`
 
-Open recovery targets and unverified leads are tracked separately in:
+This preserves all 16 forensic rows from the December 17 track:
 
-`evidence/RECOVERY_QUEUE.md`
+- B: 2 — Features 46 and 47 with recovered titles in the forensic artifact.
+- C: 14 — existence-only rows with unrecovered titles, including 11, 12, 23-26, 35-39 and 43-45.
 
-## Secondary forensic source — v0.3
+Features 46 and 47 remain unpromoted because their primary historical messages have not been independently reopened in the current evidence chain.
 
-`Smart_Traffic_Forensic_Master_Recovery_v0_3.html` was materialized and fingerprinted during recovery.
+## Cross-project boundary
+
+`evidence/CROSS_PROJECT_TRAFFIC_INTEGRATION_CANDIDATES_v0_3.json`
+
+Records 306 and 568 originate from Smart AI Environment historical material. They remain cross-project integration candidates and have zero Smart Traffic legacy effect unless independent Smart Traffic provenance is recovered.
+
+## Complete forensic v0.3 accounting
+
+Primary secondary-forensic artifact:
+
+`Smart_Traffic_Forensic_Master_Recovery_v0_3.html`
 
 SHA-256:
 
 `b0ca5ef84694fbbeda22c2c03a04ef8adecc1c968f3dc65b63f0510a1dd484f5`
 
-Parsed Arabic recovery-ledger records: 213.
+Arabic recovery-ledger rows: 213.
 
 Confidence distribution:
 
@@ -141,50 +141,85 @@ Confidence distribution:
 - C: 17
 - D: 2
 
-This is a recovery-ledger count, not a claim of 213 unique canonical features after deduplication.
+Complete track accounting:
 
-The three normalized forensic candidate maps currently preserve:
+`evidence/FORENSIC_V0_3_TRACK_COVERAGE_INDEX.json`
 
-- QCS — 54 rows, of which 3 are separately promoted direct and 51 remain candidates.
-- Main Legacy 15-199 — 23 candidates, zero promoted.
-- QTC — 14 candidates, zero promoted.
+The index requires every one of the 14 v0.3 tracks to have an explicit preservation destination or exclusion boundary. The track-row sum is exactly 213/213.
 
-Therefore 88 candidate rows across these maps are preserved but not currently promoted into the 108-record unified registry.
+The 14 tracks are:
+
+- BASE-LEGACY — 10
+- OCT07-TRAFFIC — 1
+- OCT17-APP — 14
+- DEC17-TRAFFIC — 16
+- DEC20-TRAFFIC — 1
+- DEC25-TRAFFIC — 8
+- IDEAS100-2025-02 — 3
+- QCS — 54
+- QTC — 14
+- VERIFIED-200 — 38
+- CR — 22
+- AR — 5
+- QTOS — 25
+- RELATED-ENV — 2
+
+These sum to 213. This is recovery-ledger accounting, not a statement that 213 unique canonical features exist.
+
+## Central evidence framework
+
+Central register:
+
+`evidence/EVIDENCE_REGISTER.json`
+
+Source intake:
+
+`evidence/SOURCE_INTAKE_TEMPLATE.md`
+
+Recovery queue:
+
+`evidence/RECOVERY_QUEUE.md`
+
+The central register distinguishes archived source artifacts, located Library sources, directly reopened registry evidence, precursor evidence, forensic sources, candidate maps and complete forensic track accounting.
 
 ## QTOS original source evidence
 
-The original bilingual QTOS source artifact is archived at:
+Archived source:
 
 `evidence/source/Smart_Traffic_QTOS_Additional_Features_Bilingual_Standard.html`
 
-Its SHA-256 evidence fingerprint is:
+SHA-256:
 
 `a0e7bf1e78e2fb271012dbca722b4d03a2a9e957c0a19778353a23e680472d9f`
 
-The complete capability-to-source mapping for `QTOS-01` through `QTOS-25` is maintained at:
+Mapping:
 
 `evidence/QTOS_SOURCE_EVIDENCE.md`
 
-The central evidence item for this source is `SRC-QTOS-001`.
+This evidence strengthens provenance without duplicating the 25 QTOS registry records.
 
 ## Automated provenance safeguards
 
-The CI provenance validator checks that:
+CI checks that:
 
-- the registry total and source-group totals remain internally consistent;
-- Main Legacy verified IDs stay inside explicitly supported historical ranges;
-- QCS and QTC records cannot silently affect the Main Legacy gap;
-- every archived evidence item points to an existing artifact with the registered SHA-256;
-- located Library sources cannot masquerade as byte-identical repository archives;
-- direct conversation evidence for Main Legacy 11-14 remains explicitly mapped;
-- direct QCS evidence remains mapped to QCS-102 through QCS-104;
-- the QCS-102 historical title conflict remains explicitly preserved;
-- forensic v0.3 fingerprint, record count and confidence distribution do not drift silently;
-- the QCS candidate map remains exactly 54 rows and only QCS-102 through QCS-104 are marked promoted;
-- the Main Legacy candidate map remains exactly 23 rows in the reserved range with no silent registry promotion;
-- the QTC candidate map remains exactly 14 track-local rows;
-- the Main Legacy historical range 15-199 remains open pending evidence;
-- the QTOS source maps to all 25 QTOS identifiers;
-- production verification remains separate from source documentation and MVP demonstration.
+- unified registry totals and group totals remain consistent;
+- Main Legacy verified IDs stay inside supported ranges;
+- QCS/QTC/IDEAS100 numbering cannot silently fill Main Legacy gaps;
+- archived-source hashes remain unchanged;
+- direct Main Legacy 11-14 and QCS 102-104 evidence remains mapped;
+- the QCS-102 title conflict remains explicit;
+- the October 7 precursor remains zero-count and cannot replace Main Feature 9;
+- forensic v0.3 remains 213 rows with the recorded confidence distribution;
+- QCS remains 54 rows with only 102-104 promoted direct;
+- Main 15-199 candidate map remains 23 rows with zero silent promotion;
+- QTC remains 14 rows;
+- OCT17 app remains 14 reconciliation rows;
+- IDEAS100 remains recovered 1-3 with 4-100 open;
+- DEC17 remains 16 rows with B=2/C=14;
+- cross-project environment rows remain D-class zero-count candidates;
+- all 14 forensic tracks are accounted for and sum to 213/213;
+- Main Legacy 15-199 remains reserved;
+- QTOS maps to all 25 source records;
+- production verification remains separate from historical documentation and MVP demonstration.
 
-Where semantic overlap or historical version conflict exists, the source record is preserved rather than deleted. Canonical reconciliation can be introduced as a separate mapping layer after historical recovery is sufficiently complete.
+Historical overlap and conflicting versions are preserved. Canonical reconciliation is a separate controlled layer and must never erase provenance.
