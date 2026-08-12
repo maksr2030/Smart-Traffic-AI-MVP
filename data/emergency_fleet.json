@@ -1,0 +1,6 @@
+[
+  {"id":"EMS-01","type":"ambulance","currentNode":"N9","status":"available"},
+  {"id":"FIRE-01","type":"fire_response","currentNode":"N11","status":"available"},
+  {"id":"POL-01","type":"traffic_police","currentNode":"N4","status":"available"},
+  {"id":"EMS-02","type":"ambulance","currentNode":"N1","status":"available"}
+]
