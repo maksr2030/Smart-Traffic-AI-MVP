@@ -69,10 +69,10 @@ for (const id of ['11','12','13','14']) {
   if (records.find(item => item.id === id)?.evidence_status !== 'verified_historical_conversation_retrieval') fail(`feature ${id} lost historical conversation status`);
 }
 
-const qcsDirectIds = Array.from({length:8}, (_,i) => `QCS-${97 + i}`);
-const qcsConversationIds = ['CONV-QCS-2025-03-05-097-101','CONV-QCS-2025-03-05-102-104'];
+const qcsDirectIds = ['QCS-94','QCS-95','QCS-97','QCS-98','QCS-99','QCS-100','QCS-101','QCS-102','QCS-103','QCS-104'];
+const qcsConversationIds = ['CONV-QCS-2025-03-05-094-095','CONV-QCS-2025-03-05-097-101','CONV-QCS-2025-03-05-102-104'];
 const qcsDirectSources = conversationSources.filter(source => qcsConversationIds.includes(source.source_id));
-if (qcsDirectSources.length !== 2) fail('both direct QCS conversation source blocks 97-101 and 102-104 must remain registered');
+if (qcsDirectSources.length !== 3) fail('all three direct QCS conversation source blocks must remain registered');
 const qcsDirectCovered = new Set(qcsDirectSources.flatMap(source => source.covers));
 for (const id of qcsDirectIds) {
   const feature = records.find(item => item.id === id);
@@ -80,6 +80,7 @@ for (const id of qcsDirectIds) {
   if (!qcsDirectCovered.has(id)) fail(`QCS direct conversation evidence missing ${id}`);
   if (feature.main_legacy_effect !== 'none') fail(`QCS direct record must retain zero Main Legacy effect: ${id}`);
 }
+if (records.some(item => item.id === 'QCS-96')) fail('QCS-96 must remain outside the unified registry until direct source recovery');
 const qcs102 = records.find(item => item.id === 'QCS-102');
 if (!qcs102.version_conflict || !qcs102.alternate_title_en) fail('QCS-102 historical English-title conflict must remain explicit');
 const qcs97 = records.find(item => item.id === 'QCS-97');
@@ -109,12 +110,13 @@ const {meta:qcsMapMeta,map:qcsMap} = await getMap('FORENSIC-MAP-QCS-V0.3');
 if (qcsMap.record_count !== 54 || qcsMap.records?.length !== 54) fail('QCS map must preserve 54 rows');
 const qcsConf = qcsMap.records.reduce((a,r)=>((a[r.confidence]=(a[r.confidence]||0)+1),a),{});
 for (const [key,value] of Object.entries({B:49,B2:3,C:2})) if (qcsConf[key] !== value) fail(`QCS confidence drift: ${key}`);
-if (qcsMap.promoted_direct?.length !== 8 || qcsMapMeta.promoted_direct?.length !== 8) fail('QCS direct-promotion lists must contain exactly eight records');
+if (qcsMap.promoted_direct?.length !== 10 || qcsMapMeta.promoted_direct?.length !== 10) fail('QCS promotion lists must contain exactly ten direct records');
 for (const id of qcsDirectIds) {
   if (!qcsMap.promoted_direct.includes(id) || !qcsMapMeta.promoted_direct.includes(id)) fail(`QCS promotion map missing ${id}`);
 }
 for (const row of qcsMap.records) {
-  const promoted = row.number >= 97 && row.number <= 104;
+  const id = `QCS-${row.number}`;
+  const promoted = qcsDirectIds.includes(id);
   if (promoted && row.current_status !== 'promoted_direct') fail(`QCS promoted status lost: ${row.number}`);
   if (!promoted && row.current_status !== 'candidate_not_promoted') fail(`QCS candidate silently promoted: ${row.number}`);
 }
@@ -155,7 +157,7 @@ const coverageIndex = await loadJson(coverageIndexMeta.path);
 if (coverageIndex.forensic_arabic_record_count !== 213 || coverageIndex.track_row_sum !== 213 || coverageIndex.tracks?.length !== 14) fail('forensic track coverage index must account for exactly 213 rows across 14 tracks');
 if (coverageIndex.unified_registry_total !== manifest.total) fail(`forensic coverage index registry total mismatch: ${coverageIndex.unified_registry_total} != ${manifest.total}`);
 const qcsTrackCoverage = coverageIndex.tracks.find(row => row.track === 'QCS');
-if (!qcsTrackCoverage?.count_effect_context?.includes('8 unified QCS records') || !qcsTrackCoverage.count_effect_context.includes('46 rows remain candidates')) fail('QCS forensic accounting must reflect eight direct promotions and 46 remaining candidates');
+if (!qcsTrackCoverage?.count_effect_context?.includes('10 unified QCS records') || !qcsTrackCoverage.count_effect_context.includes('44 rows remain candidates')) fail('QCS forensic accounting must reflect ten direct promotions and 44 remaining candidates');
 const trackNames = new Set();
 let trackSum = 0;
 for (const track of coverageIndex.tracks) {
@@ -189,10 +191,10 @@ console.log(`Registry valid: ${records.length} records, ${ids.size} unique IDs.`
 console.log(`Archived evidence valid: ${evidence.evidence_items.length} source(s), ${archivedLinks} linked registry record(s).`);
 console.log(`Located library sources valid: ${(evidence.located_sources ?? []).length} source(s), ${locatedLinks} links.`);
 console.log(`Direct registry conversation evidence valid: ${conversationSources.length} source(s), ${conversationLinks} links.`);
-console.log('Direct promotions valid: Main Legacy 11-14; contiguous QCS 97-104. QCS language provenance and QCS-102 title conflict preserved.');
-console.log('October 7 Idea 9 retained as verified precursor with zero registry effect.');
+console.log('Direct promotions valid: Main Legacy 11-14; QCS 94-95 and 97-104. QCS-96 remains open.');
+console.log('QCS language provenance and QCS-102 title conflict preserved; October 7 Idea 9 remains zero-count precursor evidence.');
 console.log(`Forensic v0.3 valid: ${forensic.parsed_record_count} recovery-ledger rows, confidence A/B/B2/C/D = 73/79/42/17/2.`);
-console.log('Normalized forensic maps valid: QCS=54 (8 promoted/46 candidates), Main15-199=23, QTC=14, OCT17=14, IDEAS100=3/open4-100, DEC17=16, RelatedEnv=2.');
+console.log('Normalized forensic maps valid: QCS=54 (10 promoted/44 candidates), Main15-199=23, QTC=14, OCT17=14, IDEAS100=3/open4-100, DEC17=16, RelatedEnv=2.');
 console.log(`Forensic track coverage complete: ${coverageIndex.tracks.length} tracks account for ${trackSum} / ${forensic.parsed_record_count} v0.3 rows.`);
 console.log(`Coverage valid: ${coverageStats.implemented_demo} implemented demo, ${coverageStats.represented_demo} represented demo, ${coverageStats.catalogued_only} catalogued only, ${coverageStats.production_verified} production verified.`);
 console.log(`Reserved Main Legacy gap preserved: ${manifest.historical_gap}`);
