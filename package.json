@@ -1,0 +1,11 @@
+{
+  "name": "smart-traffic-ai-mvp",
+  "version": "1.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "validate": "node scripts/validate-registry.mjs"
+  },
+  "engines": {"node": ">=20"}
+}
