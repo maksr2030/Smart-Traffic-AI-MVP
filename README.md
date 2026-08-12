@@ -14,6 +14,18 @@ The repository currently exposes 101 source records in a bilingual registry:
 
 The capability registry, MVP implementation status, and production-verification status are deliberately separate. A documented capability is not automatically a production integration.
 
+## Evidence and forensic recovery framework
+
+Source artifacts are handled through a dedicated evidence layer:
+
+- `evidence/EVIDENCE_REGISTER.json` — machine-readable central evidence register.
+- `evidence/source/` — archived original source artifacts.
+- `evidence/SOURCE_INTAKE_TEMPLATE.md` — standard intake workflow for newly recovered files.
+- `evidence/RECOVERY_QUEUE.md` — open historical recovery targets and unverified leads.
+- `FEATURE_PROVENANCE.md` — provenance policy and promotion rules.
+
+The central evidence validator confirms source fingerprints, mapped capability IDs, registry-count neutrality for already-registered capabilities, and preservation of the reserved historical gap.
+
 ## Archived QTOS source evidence
 
 The original bilingual QTOS source artifact supplied by the project owner is preserved at:
@@ -24,7 +36,7 @@ The mapping from the source document's 25 features to `QTOS-01` through `QTOS-25
 
 `evidence/QTOS_SOURCE_EVIDENCE.md`
 
-The source artifact is protected by SHA-256 provenance validation in CI. Adding this evidence does not add duplicate registry records; the unified registry remains 101 source records.
+The evidence register identifies this source as `SRC-QTOS-001`. Its archived artifact is protected by SHA-256 provenance validation in CI. Adding this evidence does not add duplicate registry records; the unified registry remains 101 source records.
 
 ## Engineering MVP v1.3
 
@@ -72,7 +84,7 @@ npm test
 npm run check
 ```
 
-The validation pipeline checks registry provenance, historical-ID boundaries, one-to-one coverage rows, the prohibition on unsubstantiated production verification, the presence and SHA-256 fingerprint of the archived QTOS source evidence, all 25 QTOS identifiers and source attribution, traffic and operations logic, JavaScript syntax, required files, DOM wiring, scenario fixtures and emergency-fleet fixtures.
+The validation pipeline checks registry provenance, historical-ID boundaries, one-to-one coverage rows, the prohibition on unsubstantiated production verification, the central evidence register, archived-source SHA-256 fingerprints, evidence-to-registry mappings, preservation of the open historical range 11-199, traffic and operations logic, JavaScript syntax, required files, DOM wiring, scenario fixtures and emergency-fleet fixtures.
 
 ## Evidence boundary
 
