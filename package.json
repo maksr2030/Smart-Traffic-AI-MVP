@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "validate": "node scripts/validate-registry.mjs"
+    "validate": "node scripts/validate-registry.mjs",
+    "check": "node --check app.js && node --check engine/trafficEngine.js && node scripts/smoke-check.mjs"
   },
   "engines": {"node": ">=20"}
 }
