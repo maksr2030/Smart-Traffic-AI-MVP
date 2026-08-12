@@ -10,6 +10,19 @@ Objective: recover original numbered feature records from source files or histor
 
 Promotion rule: a candidate may enter `verified_historical` only when a reliable source directly supports the legacy number and feature identity.
 
+Latest controlled search round: `evidence/RECOVERY_SEARCH_LOG_2026-08-12.md`.
+
+Current result: no directly numbered Smart Traffic feature in range `11-199` has yet been recovered.
+
+## Located source anchors
+
+Two original Smart Traffic Library sources are now registered as located-but-not-byte-archived anchors:
+
+- `LOC-TRAFFIC-AR-001` — `المرور الذكي.html` — confirms Arabic historical block `1-10`.
+- `LOC-TRAFFIC-EN-001` — `Smart AI Traffic.html` — corroborates the original English source family and initial feature block.
+
+Both were searched for headings in `11-199`; none were recovered. Raw-byte materialization was unavailable through the Library connector during intake, so no SHA-256 or byte-identical archival claim is made for these two sources.
+
 ## Priority 2 — Unnumbered candidate capabilities requiring source confirmation
 
 The following are recovery leads only. They are not independently verified historical records:
@@ -31,10 +44,11 @@ Existing verified records may overlap semantically with some of these concepts; 
 
 For every newly found file:
 
-1. Archive the original file under `evidence/source/` without rewriting its substantive content.
-2. Compute and record SHA-256.
-3. Identify exact numbered features and surrounding context.
-4. Compare against all current registry records for duplicates or semantic overlap.
-5. Add only genuinely supported new records.
-6. Preserve unresolved conflicts as evidence notes rather than forcing a canonical number.
-7. Run CI provenance validation after every registry or evidence change.
+1. Identify whether raw-byte archival is technically available.
+2. If available, archive the original file under `evidence/source/` without rewriting substantive content and compute SHA-256.
+3. If raw-byte archival is unavailable but the source is readable, register it as `located_library_source_not_byte_archived` with its Library file ID; do not claim byte-identical archival.
+4. Identify exact numbered features and surrounding context.
+5. Compare against all current registry records for duplicates or semantic overlap.
+6. Add only genuinely supported new records.
+7. Preserve unresolved conflicts as evidence notes rather than forcing a canonical number.
+8. Run CI provenance validation after every registry or evidence change.
