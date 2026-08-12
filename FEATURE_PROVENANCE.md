@@ -4,24 +4,42 @@ The MVP registry preserves source provenance and does not fill historical number
 
 Source groups:
 
-- `verified_historical`: 48 records with verified historical identifiers in ranges 1-10 and 200-237.
+- `verified_historical`: 52 records with verified historical identifiers in ranges 1-14 and 200-237.
 - `conversation_recovered`: 23 capabilities recovered from prior project conversations but without verified historical identifiers.
 - `additional_history`: 5 capabilities recovered from project history and related records.
 - `qtos`: 25 independent capabilities from the documented Quantum Traffic Orchestration System package.
 
-The historical range 11-199 remains reserved pending recovery of reliable original evidence.
+The historical range 15-199 remains reserved pending recovery of reliable evidence.
+
+## Historical conversation recovery rule
+
+Direct historical conversation retrieval may support promotion to `verified_historical` when a recovered message directly binds all three of the following in one coherent source context:
+
+1. Smart Traffic project identity.
+2. Explicit legacy feature number.
+3. Explicit feature identity/title or description.
+
+The recovered Smart Traffic assistant output dated `2024-10-17T05:05:26Z` satisfies this rule for features 11-14 and is registered as `CONV-TRAFFIC-2024-10-17-001`.
+
+Recovered Arabic source wording is preserved. English fields created for registry parity are marked as editorial translations where no original English wording was retrieved.
+
+Semantic overlap does not erase the historical record. For example, feature 11 overlaps `CR-13`, feature 14 overlaps `CR-08`, and later records may overlap features 12-13. These relationships are recorded rather than used to delete either source record.
 
 QTOS identifiers such as `QTOS-01` are capability identifiers in a separate sub-innovation namespace. They are not legacy feature numbers and must not be used to overwrite missing historical identifiers.
 
 ## Central evidence framework
 
-All archived source evidence is registered in:
+All evidence is registered in:
 
 `evidence/EVIDENCE_REGISTER.json`
 
-This machine-readable register records the evidence ID, archived path, SHA-256 fingerprint, capability IDs covered by the source, optional mapping document and whether the source changes the unified registry count.
+The register distinguishes:
 
-Every newly recovered source should be processed using:
+- archived source artifacts with SHA-256 fingerprints;
+- located Library sources where raw-byte archival is unavailable;
+- direct historical conversation retrieval with timestamp and covered IDs.
+
+Every newly recovered file should be processed using:
 
 `evidence/SOURCE_INTAKE_TEMPLATE.md`
 
@@ -29,7 +47,7 @@ Open recovery targets and unverified leads are tracked separately in:
 
 `evidence/RECOVERY_QUEUE.md`
 
-A recovery lead is not a feature record and must not be promoted to `verified_historical` until direct source evidence establishes the legacy identifier and feature identity.
+A recovery lead is not a feature record and must not be promoted to `verified_historical` until direct evidence establishes the legacy identifier and feature identity.
 
 ## QTOS original source evidence
 
@@ -47,20 +65,17 @@ The complete capability-to-source mapping for `QTOS-01` through `QTOS-25` is mai
 
 The central evidence item for this source is `SRC-QTOS-001`.
 
-Archiving this source strengthens documentary provenance but does not change the registry count: the 25 QTOS capabilities were already included in the unified total of 101 source records.
-
 ## Automated provenance safeguards
 
 The CI provenance validator checks that:
 
 - the registry total and source-group totals remain internally consistent;
 - verified historical IDs stay inside explicitly supported historical ranges;
-- every evidence item points to an existing archived artifact;
-- archived source SHA-256 fingerprints remain unchanged;
-- every capability referenced by an evidence item exists in the registry;
-- the reserved historical range 11-199 remains open pending original evidence;
+- every archived evidence item points to an existing artifact with the registered SHA-256;
+- located Library sources cannot masquerade as byte-identical archives;
+- direct conversation evidence for features 11-14 remains explicitly mapped to those IDs;
+- the reserved historical range 15-199 remains open pending evidence;
 - the QTOS source maps to all 25 QTOS identifiers;
-- archived evidence cannot silently increase the registry count;
 - production verification remains separate from source documentation and MVP demonstration.
 
 Where semantic overlap exists, the source record is preserved rather than deleted. Canonical deduplication can be introduced as a separate mapping layer after historical recovery is sufficiently complete.
