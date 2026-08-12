@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Smart AI Traffic Platform MVP - testable traffic graph engine, simulation and feature registry">
-  <title>Smart AI Traffic Platform | MVP</title>
+  <meta name="description" content="Smart AI Traffic Platform MVP - city operations, testable graph engine, scenario simulation and feature coverage evidence">
+  <title>Smart AI Traffic Platform | Engineering MVP v1.3</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header class="topbar">
-  <div class="brand"><span>منصة المرور الذكي</span><small>Smart AI Traffic Platform | Engineering MVP v1.2</small></div>
+  <div class="brand"><span>منصة المرور الذكي</span><small>Smart AI Traffic Platform | Engineering MVP v1.3</small></div>
   <div class="actions">
     <button class="btn" id="langBtn">English</button>
     <button class="btn" id="pauseBtn">إيقاف المحاكاة</button>
@@ -19,41 +19,75 @@
 <main class="shell">
   <section class="hero">
     <article class="card">
-      <div><span class="badge">MVP v1.2</span><span class="badge">101 Source Records</span><span class="badge">Graph Engine</span><span class="badge">CI Tested</span><span class="badge">Simulation</span></div>
-      <h1 data-ar="ذكاء مروري على مستوى المدينة، مع محرك شبكة قابل للاختبار" data-en="City-scale traffic intelligence with a testable network engine">ذكاء مروري على مستوى المدينة، مع محرك شبكة قابل للاختبار</h1>
-      <p data-ar="النموذج يجمع التنبؤ بالازدحام، المسارات الموزونة بالحالة المرورية، إعادة التوجيه عند الحوادث، الإشارات التكيفية، أولوية الطوارئ، مقارنة السيناريوهات، وسجل الميزات المستردة." data-en="The MVP combines congestion-aware routing, incident rerouting, adaptive signals, emergency priority, scenario comparison and the recovered feature registry.">النموذج يجمع التنبؤ بالازدحام، المسارات الموزونة بالحالة المرورية، إعادة التوجيه عند الحوادث، الإشارات التكيفية، أولوية الطوارئ، مقارنة السيناريوهات، وسجل الميزات المستردة.</p>
-      <div class="notice" data-ar="جميع حالات الشبكة والنتائج التشغيلية هنا محاكاة لإثبات الهندسة والخوارزميات. لا تمثل بيانات حكومية حية ولا تكاملات إنتاجية فعلية." data-en="All network states and operational outputs shown here are simulations used to demonstrate engineering logic. They are not live government data or production integrations.">جميع حالات الشبكة والنتائج التشغيلية هنا محاكاة لإثبات الهندسة والخوارزميات. لا تمثل بيانات حكومية حية ولا تكاملات إنتاجية فعلية.</div>
+      <div><span class="badge">MVP v1.3</span><span class="badge">101 Source Records</span><span class="badge">City Operations</span><span class="badge">Graph Engine</span><span class="badge">CI Tested</span><span class="badge">Simulation</span></div>
+      <h1 data-ar="طبقة تشغيل مدينة مرورية قابلة للاختبار والقياس" data-en="A testable, measurable city traffic operations layer">طبقة تشغيل مدينة مرورية قابلة للاختبار والقياس</h1>
+      <p data-ar="تجمع النسخة الحالية شبكة الطرق المترابطة، الحوادث المتعددة، إعادة التوجيه، الإشارات التكيفية، تخطيط استجابة الطوارئ، التنبؤ القصير المدى، مقارنة قبل وبعد التدخل، ومصفوفة تغطية لجميع القدرات المستردة." data-en="This version combines a connected road graph, concurrent incidents, rerouting, adaptive signals, emergency dispatch planning, short-horizon forecasting, before/after intervention comparison, and a coverage matrix for all recovered capabilities.">تجمع النسخة الحالية شبكة الطرق المترابطة، الحوادث المتعددة، إعادة التوجيه، الإشارات التكيفية، تخطيط استجابة الطوارئ، التنبؤ القصير المدى، مقارنة قبل وبعد التدخل، ومصفوفة تغطية لجميع القدرات المستردة.</p>
+      <div class="notice" data-ar="جميع بيانات الشبكة والأسطول والسيناريوهات والتنبؤات في هذه الصفحة بيانات محاكاة لإثبات الهندسة. لا تمثل بيانات حكومية حية أو تكاملات إنتاجية أو نتائج ميدانية." data-en="All network, fleet, scenario and forecast data on this page are simulations used to demonstrate engineering logic. They are not live government feeds, production integrations or field results.">جميع بيانات الشبكة والأسطول والسيناريوهات والتنبؤات في هذه الصفحة بيانات محاكاة لإثبات الهندسة. لا تمثل بيانات حكومية حية أو تكاملات إنتاجية أو نتائج ميدانية.</div>
     </article>
     <aside class="card">
       <h2 data-ar="حدود الإثبات" data-en="Evidence boundary">حدود الإثبات</h2>
-      <p data-ar="السجل يفصل بين القدرات التاريخية المثبتة، والقدرات المستردة من المحادثات، وميزات QTOS. النطاق 11 إلى 199 ما زال محجوزاً للاسترداد." data-en="The registry separates verified historical records, conversation-recovered capabilities and QTOS. Historical range 11-199 remains reserved for recovery.">السجل يفصل بين القدرات التاريخية المثبتة، والقدرات المستردة من المحادثات، وميزات QTOS. النطاق 11 إلى 199 ما زال محجوزاً للاسترداد.</p>
-      <div class="notice">GitHub CI: registry integrity + traffic-engine unit tests</div>
+      <p data-ar="مصفوفة التغطية تميز بين القدرة المنفذة داخل العرض، والقدرة الممثلة جزئياً، والقدرة المسجلة فقط. لا توجد أي قدرة مصنفة إنتاجية ما لم يوجد دليل تكامل مستقل." data-en="The coverage matrix distinguishes between demo-implemented, demo-represented and catalogued-only capabilities. Nothing is marked production-verified without separate integration evidence.">مصفوفة التغطية تميز بين القدرة المنفذة داخل العرض، والقدرة الممثلة جزئياً، والقدرة المسجلة فقط. لا توجد أي قدرة مصنفة إنتاجية ما لم يوجد دليل تكامل مستقل.</p>
+      <div class="notice">GitHub CI: registry integrity + engine tests + operations tests + static wiring checks</div>
     </aside>
   </section>
 
   <section class="kpis">
     <div class="card kpi"><strong id="networkLoad">0%</strong><span data-ar="متوسط حمل الشبكة" data-en="Average network load">متوسط حمل الشبكة</span></div>
     <div class="card kpi"><strong id="predictedDelay">0</strong><span data-ar="متوسط زمن المقطع بالدقائق" data-en="Average edge travel minutes">متوسط زمن المقطع بالدقائق</span></div>
-    <div class="card kpi"><strong id="activeIncidents">0</strong><span data-ar="المقاطع الحرجة" data-en="Critical edges">المقاطع الحرجة</span></div>
+    <div class="card kpi"><strong id="activeIncidents">0</strong><span data-ar="الحوادث النشطة المحاكاة" data-en="Simulated active incidents">الحوادث النشطة المحاكاة</span></div>
     <div class="card kpi"><strong id="featureCount">101</strong><span data-ar="سجل مصدر مدمج" data-en="Merged source records">سجل مصدر مدمج</span></div>
   </section>
 
   <section class="grid2">
     <article class="card">
-      <div class="section-title"><div><h2 data-ar="التوأم التشغيلي المبسط للشبكة" data-en="Simplified operational network twin">التوأم التشغيلي المبسط للشبكة</h2><p data-ar="المقاطع تتغير أثناء المحاكاة ويعاد حساب المؤشرات" data-en="Edges evolve during simulation and metrics are recalculated">المقاطع تتغير أثناء المحاكاة ويعاد حساب المؤشرات</p></div><span><i class="status-dot"></i> LIVE SIM</span></div>
+      <div class="section-title"><div><h2 data-ar="التوأم التشغيلي المبسط للشبكة" data-en="Simplified operational network twin">التوأم التشغيلي المبسط للشبكة</h2><p data-ar="12 عقدة و17 وصلة طريق مع إعادة حساب مستمرة" data-en="12 nodes and 17 road links with continuous recalculation">12 عقدة و17 وصلة طريق مع إعادة حساب مستمرة</p></div><span><i class="status-dot"></i> LIVE SIM</span></div>
       <div class="network" id="network"></div>
     </article>
     <aside class="card">
-      <div class="section-title"><div><h2 data-ar="محركات التدخل" data-en="Intervention engines">محركات التدخل</h2><p data-ar="تعمل على محرك الشبكة الفعلي للـMVP" data-en="Backed by the MVP network engine">تعمل على محرك الشبكة الفعلي للـMVP</p></div></div>
+      <div class="section-title"><div><h2 data-ar="محركات التدخل" data-en="Intervention engines">محركات التدخل</h2><p data-ar="منطق تشغيلي قابل للاختبار داخل الـMVP" data-en="Testable operational logic inside the MVP">منطق تشغيلي قابل للاختبار داخل الـMVP</p></div></div>
       <div class="controls">
         <div class="control"><div><b data-ar="الإشارات ذاتية التكيف" data-en="Adaptive traffic signals">الإشارات ذاتية التكيف</b><small data-ar="توزيع زمن أخضر حسب الطلب" data-en="Allocate green time by demand">توزيع زمن أخضر حسب الطلب</small></div><button class="btn" data-action="signals">تشغيل</button></div>
-        <div class="control"><div><b data-ar="إعادة التوجيه الشبكي" data-en="Network-aware rerouting">إعادة التوجيه الشبكي</b><small data-ar="أقصر مسار موزون بالازدحام" data-en="Congestion-weighted shortest path">أقصر مسار موزون بالازدحام</small></div><button class="btn" data-action="reroute">تشغيل</button></div>
-        <div class="control"><div><b data-ar="أولوية الطوارئ" data-en="Emergency priority">أولوية الطوارئ</b><small data-ar="تكلفة مفضلة للممرات المصرح بها" data-en="Preferred cost for authorized corridors">تكلفة مفضلة للممرات المصرح بها</small></div><button class="btn" data-action="emergency">تشغيل</button></div>
-        <div class="control"><div><b data-ar="محرك QTOS للمقارنة" data-en="QTOS scenario selector">محرك QTOS للمقارنة</b><small data-ar="اختيار السيناريو الأقل إجهاداً للشبكة" data-en="Select the lowest-stress candidate">اختيار السيناريو الأقل إجهاداً للشبكة</small></div><button class="btn" data-action="qtos">تشغيل</button></div>
+        <div class="control"><div><b data-ar="إعادة التوجيه الشبكي" data-en="Network-aware rerouting">إعادة التوجيه الشبكي</b><small data-ar="أقصر مسار موزون بالحالة" data-en="State-weighted shortest path">أقصر مسار موزون بالحالة</small></div><button class="btn" data-action="reroute">تشغيل</button></div>
+        <div class="control"><div><b data-ar="استجابة الطوارئ" data-en="Emergency response">استجابة الطوارئ</b><small data-ar="اختيار أسرع وحدة متاحة" data-en="Select fastest available unit">اختيار أسرع وحدة متاحة</small></div><button class="btn" data-action="emergency">تشغيل</button></div>
+        <div class="control"><div><b data-ar="مقارنة سيناريوهات QTOS" data-en="QTOS scenario comparison">مقارنة سيناريوهات QTOS</b><small data-ar="مقارنة بدائل تدخل كلاسيكية قابلة للقياس" data-en="Compare measurable classical intervention candidates">مقارنة بدائل تدخل كلاسيكية قابلة للقياس</small></div><button class="btn" data-action="qtos">تشغيل</button></div>
       </div>
       <div id="engineeringOutput" class="output">Engine ready.</div>
       <h3 data-ar="سجل القرارات" data-en="Decision log">سجل القرارات</h3><div class="timeline" id="timeline"></div>
     </aside>
+  </section>
+
+  <section class="operations-grid">
+    <article class="card">
+      <div class="section-title"><div><h2 data-ar="مركز عمليات السيناريو" data-en="Scenario operations center">مركز عمليات السيناريو</h2><p data-ar="يشمل سيناريو حوادث متعددة متزامنة" data-en="Includes a concurrent multi-incident scenario">يشمل سيناريو حوادث متعددة متزامنة</p></div></div>
+      <label><span data-ar="السيناريو" data-en="Scenario">السيناريو</span><select id="scenarioSelect"></select></label>
+      <div class="actions"><button class="btn primary" id="scenarioBtn" data-ar="تشغيل السيناريو" data-en="Run scenario">تشغيل السيناريو</button><button class="btn" id="applyInterventionBtn" data-ar="تطبيق التدخل المحاكى" data-en="Apply simulated intervention">تطبيق التدخل المحاكى</button></div>
+      <div class="metric-box"><strong id="stressIndex">0</strong><span data-ar="مؤشر إجهاد الشبكة" data-en="Network stress index">مؤشر إجهاد الشبكة</span></div>
+      <div id="scenarioResult" class="output">Scenario ready.</div>
+    </article>
+
+    <article class="card">
+      <div class="section-title"><div><h2 data-ar="التنبؤ القصير المدى" data-en="Short-horizon forecast">التنبؤ القصير المدى</h2><p data-ar="خط أساس حتمي شفاف وليس نموذج ذكاء اصطناعي مدرباً" data-en="Transparent deterministic baseline, not a trained AI model">خط أساس حتمي شفاف وليس نموذج ذكاء اصطناعي مدرباً</p></div></div>
+      <label><span data-ar="أفق التنبؤ" data-en="Forecast horizon">أفق التنبؤ</span><select id="forecastHorizon"><option value="15">15 min</option><option value="30">30 min</option><option value="60">60 min</option></select></label>
+      <button class="btn primary" id="forecastBtn">تشغيل التنبؤ</button>
+      <div id="forecastResult" class="output">Forecast ready.</div>
+    </article>
+
+    <article class="card">
+      <div class="section-title"><div><h2 data-ar="تخطيط استجابة الطوارئ" data-en="Emergency response planning">تخطيط استجابة الطوارئ</h2><p data-ar="أسطول افتراضي لا يمثل جهة تشغيل حقيقية" data-en="Virtual fleet; no live agency dispatch">أسطول افتراضي لا يمثل جهة تشغيل حقيقية</p></div></div>
+      <label><span data-ar="موقع الهدف" data-en="Target location">موقع الهدف</span><select id="emergencyTarget"></select></label>
+      <button class="btn primary" id="dispatchBtn">إرسال وحدة الطوارئ</button>
+      <div id="dispatchResult" class="output">Dispatch ready.</div>
+    </article>
+  </section>
+
+  <section class="card">
+    <div class="section-title"><div><h2 data-ar="مقارنة قبل وبعد التدخل" data-en="Before/after intervention comparison">مقارنة قبل وبعد التدخل</h2><p id="comparisonNote" data-ar="قيم محاكاة محسوبة من نفس شبكة الطرق" data-en="Simulated values calculated from the same road network">قيم محاكاة محسوبة من نفس شبكة الطرق</p></div></div>
+    <div class="comparison-grid">
+      <div class="comparison-card"><span data-ar="إجهاد الشبكة" data-en="Network stress">إجهاد الشبكة</span><div><b id="beforeStress">—</b><i>→</i><b id="afterStress">—</b></div><em id="stressDelta" class="delta">—</em></div>
+      <div class="comparison-card"><span data-ar="متوسط الحمل" data-en="Average load">متوسط الحمل</span><div><b id="beforeLoad">—</b><i>→</i><b id="afterLoad">—</b></div><em id="loadDelta" class="delta">—</em></div>
+      <div class="comparison-card"><span data-ar="متوسط زمن المقطع" data-en="Average edge time">متوسط زمن المقطع</span><div><b id="beforeTime">—</b><i>→</i><b id="afterTime">—</b></div><em id="timeDelta" class="delta">—</em></div>
+      <div class="comparison-card"><span data-ar="المقاطع الحرجة" data-en="Critical edges">المقاطع الحرجة</span><div><b id="beforeCritical">—</b><i>→</i><b id="afterCritical">—</b></div><em id="criticalDelta" class="delta">—</em></div>
+    </div>
   </section>
 
   <section class="engineering-grid">
@@ -66,11 +100,19 @@
       <div class="actions"><button class="btn" id="incidentBtn" data-ar="حقن حادث محاكى" data-en="Inject simulated incident">حقن حادث محاكى</button><button class="btn" id="resetNetworkBtn" data-ar="إعادة ضبط الشبكة" data-en="Reset network">إعادة ضبط الشبكة</button></div>
     </article>
     <article class="card">
-      <div class="section-title"><div><h2 data-ar="محرك السيناريوهات" data-en="Scenario engine">محرك السيناريوهات</h2><p data-ar="تغير الطلب والمخاطر ثم يعاد قياس الشبكة" data-en="Change demand and risk, then recalculate the network">تغير الطلب والمخاطر ثم يعاد قياس الشبكة</p></div></div>
-      <label><span data-ar="السيناريو" data-en="Scenario">السيناريو</span><select id="scenarioSelect"><option value="normal">Normal</option><option value="rush">Rush Hour</option><option value="event">Major Event</option><option value="storm">Severe Weather</option></select></label>
-      <button class="btn primary" id="scenarioBtn" data-ar="تشغيل السيناريو" data-en="Run scenario">تشغيل السيناريو</button>
-      <div class="metric-box"><strong id="stressIndex">0</strong><span data-ar="مؤشر إجهاد الشبكة" data-en="Network stress index">مؤشر إجهاد الشبكة</span></div><div id="scenarioResult" class="output">Scenario ready.</div>
+      <div class="section-title"><div><h2 data-ar="حزمة الأدلة القابلة للتصدير" data-en="Exportable evidence package">حزمة الأدلة القابلة للتصدير</h2><p data-ar="ملفات ناتجة من الحالة الحالية للـMVP" data-en="Files generated from the current MVP state">ملفات ناتجة من الحالة الحالية للـMVP</p></div></div>
+      <div class="notice" data-ar="ملف Operational Snapshot يتضمن المؤشرات والسيناريو والتنبؤ والمقارنة وحالة التغطية، ويحتوي دائماً على simulation=true." data-en="The Operational Snapshot includes metrics, scenario, forecast, comparison and coverage status, and always contains simulation=true.">ملف Operational Snapshot يتضمن المؤشرات والسيناريو والتنبؤ والمقارنة وحالة التغطية، ويحتوي دائماً على simulation=true.</div>
+      <div class="actions export-actions"><button class="btn primary" id="exportSnapshotBtn">Export Operational JSON</button><button class="btn" id="exportCoverageBtn">Export Coverage CSV</button></div>
     </article>
+  </section>
+
+  <section class="card coverage-card">
+    <div class="section-title"><div><h2 data-ar="مصفوفة تغطية الميزات الـ101" data-en="101-capability coverage matrix">مصفوفة تغطية الميزات الـ101</h2><p data-ar="حالة تنفيذ العرض لا تساوي إثبات تكامل إنتاجي" data-en="Demo implementation status is not production integration evidence">حالة تنفيذ العرض لا تساوي إثبات تكامل إنتاجي</p></div></div>
+    <div class="coverage-stats">
+      <div><strong id="coverageTotal">0</strong><span>Total</span></div><div><strong id="coverageImplemented">0</strong><span>Implemented Demo</span></div><div><strong id="coverageRepresented">0</strong><span>Represented Demo</span></div><div><strong id="coverageCatalogued">0</strong><span>Catalogued Only</span></div><div><strong id="coverageProduction">0</strong><span>Production Verified</span></div>
+    </div>
+    <div class="filters coverage-filters"><input id="coverageSearch" placeholder="ابحث في مصفوفة التغطية / Search coverage"><select id="coverageStatus"><option value="">All statuses</option><option value="implemented_demo">Implemented Demo</option><option value="represented_demo">Represented Demo</option><option value="catalogued_only">Catalogued Only</option></select></div>
+    <div class="table-wrap coverage-table"><table><thead><tr><th>ID</th><th data-ar="الميزة" data-en="Capability">الميزة</th><th data-ar="حالة الـMVP" data-en="MVP status">حالة الـMVP</th><th data-ar="الوحدة" data-en="Module">الوحدة</th><th data-ar="إثبات إنتاجي" data-en="Production verified">إثبات إنتاجي</th></tr></thead><tbody id="coverageRows"></tbody></table></div>
   </section>
 
   <section class="card registry-card">
