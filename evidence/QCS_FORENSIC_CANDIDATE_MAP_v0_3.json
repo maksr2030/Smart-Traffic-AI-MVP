@@ -1,20 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "track": "QCS",
   "source": "Smart_Traffic_Forensic_Master_Recovery_v0_3.html",
   "source_sha256": "b0ca5ef84694fbbeda22c2c03a04ef8adecc1c968f3dc65b63f0510a1dd484f5",
   "record_count": 54,
-  "confidence_counts": {
-    "B": 49,
-    "C": 2,
-    "B2": 3
-  },
-  "promoted_direct": [
-    "QCS-102",
-    "QCS-103",
-    "QCS-104"
-  ],
-  "policy": "Secondary forensic candidate map only. Non-promoted records must not be described as directly re-opened in the current recovery.",
+  "confidence_counts": {"B":49,"C":2,"B2":3},
+  "promoted_direct": ["QCS-97","QCS-98","QCS-99","QCS-100","QCS-101","QCS-102","QCS-103","QCS-104"],
+  "policy": "Secondary forensic candidate map. A promoted_direct status means the corresponding track-local feature has subsequently been independently reopened from primary historical conversation evidence; other rows remain secondary candidates.",
   "records": [
     {"number":1,"confidence":"B","title_ar":"الكشف عن المشاة وتجنب الاصطدام بهم","title_en":"Original title not recovered","forensic_status":"Direct conversation recovery","current_status":"candidate_not_promoted"},
     {"number":2,"confidence":"B","title_ar":"التكيف الذكي مع الأحوال الجوية","title_en":"Original title not recovered","forensic_status":"Direct conversation recovery","current_status":"candidate_not_promoted"},
@@ -62,11 +54,11 @@
     {"number":94,"confidence":"B","title_ar":"العنوان الأصلي غير مسترد","title_en":"Quantum Sensing System for Invisible Hazard Detection","forensic_status":"Direct conversation recovery","current_status":"candidate_not_promoted"},
     {"number":95,"confidence":"B","title_ar":"نظام تحكم ذكي بالتعليق الديناميكي بناءً على استشعار كمومي للطريق","title_en":"Smart Adaptive Suspension Control System Based on Quantum Road Sensing","forensic_status":"Direct conversation recovery","current_status":"candidate_not_promoted"},
     {"number":96,"confidence":"B","title_ar":"تحسين سلامة المشاة وراكبي الدراجات عبر تحليل السلوك في الزمن الحقيقي","title_en":"Enhancing Pedestrian and Cyclist Safety through Real-Time Behavior Analysis","forensic_status":"Direct conversation recovery","current_status":"candidate_not_promoted"},
-    {"number":97,"confidence":"B","title_ar":"نظام مراقبة المركبات التجارية لتقييم أداء السائقين وتقليل الحوادث في أساطيل النقل","title_en":"Quantum Sensing System for Commercial Vehicle Fleet Monitoring and Driver Safety Assessment","forensic_status":"Direct conversation recovery","current_status":"candidate_not_promoted"},
-    {"number":98,"confidence":"B","title_ar":"تحسين دقة الاستشعار إلى المستوى النانوي باستخدام الاستشعار الكمومي","title_en":"Nano-Precision Sensing Enhancement Using Quantum Technology","forensic_status":"Direct conversation recovery","current_status":"candidate_not_promoted"},
-    {"number":99,"confidence":"B","title_ar":"استشعار الأجسام خلف الحواجز وتحليل البيئة غير المرئية (Non-Line-of-Sight Sensing)","title_en":"Non-Line-of-Sight Sensing for Detecting Hidden Objects and Analyzing Invisible Environments","forensic_status":"Direct conversation recovery","current_status":"candidate_not_promoted"},
-    {"number":100,"confidence":"B","title_ar":"القضاء على مشكلة التشويش الراداري باستخدام الاتصال الكمومي","title_en":"Quantum Communication System for Radar Interference Prevention","forensic_status":"Direct conversation recovery","current_status":"candidate_not_promoted"},
-    {"number":101,"confidence":"B","title_ar":"دمج الذكاء الكمومي لتحليل المخاطر والتنبؤ بالحوادث قبل وقوعها","title_en":"Quantum AI System for Risk Analysis and Preemptive Accident Prevention","forensic_status":"Direct conversation recovery","current_status":"candidate_not_promoted"},
+    {"number":97,"confidence":"B","title_ar":"نظام مراقبة المركبات التجارية لتقييم أداء السائقين وتقليل الحوادث في أساطيل النقل","title_en":"Quantum Sensing System for Commercial Vehicle Fleet Monitoring and Driver Safety Assessment","forensic_status":"Direct conversation recovery","current_status":"promoted_direct"},
+    {"number":98,"confidence":"B","title_ar":"تحسين دقة الاستشعار إلى المستوى النانوي باستخدام الاستشعار الكمومي","title_en":"Nano-Precision Sensing Enhancement Using Quantum Technology","forensic_status":"Direct conversation recovery","current_status":"promoted_direct"},
+    {"number":99,"confidence":"B","title_ar":"استشعار الأجسام خلف الحواجز وتحليل البيئة غير المرئية (Non-Line-of-Sight Sensing)","title_en":"Non-Line-of-Sight Sensing for Detecting Hidden Objects and Analyzing Invisible Environments","forensic_status":"Direct conversation recovery","current_status":"promoted_direct"},
+    {"number":100,"confidence":"B","title_ar":"القضاء على مشكلة التشويش الراداري باستخدام الاتصال الكمومي","title_en":"Quantum Communication System for Radar Interference Prevention","forensic_status":"Direct conversation recovery","current_status":"promoted_direct"},
+    {"number":101,"confidence":"B","title_ar":"دمج الذكاء الكمومي لتحليل المخاطر والتنبؤ بالحوادث قبل وقوعها","title_en":"Quantum AI System for Risk Analysis and Preemptive Accident Prevention","forensic_status":"Direct conversation recovery","current_status":"promoted_direct"},
     {"number":102,"confidence":"B","title_ar":"مراقبة أداء الحساسات الكمومية ذاتيًا في الزمن الحقيقي (Self-Monitoring Quantum Sensors)","title_en":"Self-Monitoring Quantum Sensors for Real-Time Performance Optimization","forensic_status":"Direct conversation recovery","current_status":"promoted_direct"},
     {"number":103,"confidence":"B","title_ar":"تحسين قدرة المركبات ذاتية القيادة على التعامل مع الظروف الجوية القاسية باستخدام الاستشعار الكمومي","title_en":"Quantum Sensing System for Enhancing Autonomous Vehicle Performance in Extreme Weather","forensic_status":"Direct conversation recovery","current_status":"promoted_direct"},
     {"number":104,"confidence":"B","title_ar":"جعل المركبات جزءًا من \"نظام مرور ذكي متكامل\" عبر الاستشعار الكمومي المتصل","title_en":"Integrating Vehicles into a Smart Traffic System Using Quantum-Connected Sensing","forensic_status":"Direct conversation recovery","current_status":"promoted_direct"}
