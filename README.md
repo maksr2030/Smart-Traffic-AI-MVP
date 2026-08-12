@@ -1,59 +1,50 @@
-# Smart AI Traffic Platform MVP
+# Smart AI Traffic Platform — Engineering MVP v1.3
 
-Engineering proof-of-concept for a city-scale and sovereign traffic intelligence platform.
+Public engineering proof-of-concept for a city-scale and sovereign traffic intelligence platform.
 
-## Current status
+## Evidence status
 
-- MVP version: 1.2.
-- 101 source records in a searchable bilingual registry.
-- 48 verified historical features from legacy ranges 1-10 and 200-237.
+The repository currently exposes 101 source records in a bilingual registry:
+
+- 48 verified historical features from recovered legacy ranges 1-10 and 200-237.
 - 23 conversation-recovered capabilities without verified legacy numbers.
 - 5 additional capabilities recovered from project history.
 - 25 independent QTOS capabilities from the Quantum Traffic Orchestration System package.
 - Historical identifiers 11-199 remain reserved and are not fabricated.
-- Operational indicators use simulated data only. No live government, camera, signal, connected-vehicle, enforcement or road-data integration is claimed.
 
-## Testable engineering core
+The capability registry, MVP implementation status, and production-verification status are deliberately separate. A documented capability is not automatically a production integration.
 
-The repository now contains a deterministic graph-based traffic engine rather than a dashboard-only simulation.
+## Engineering MVP v1.3
 
-Implemented functions include:
+The current branch includes:
 
-1. Road-network model validation.
-2. Congestion and incident-adjusted edge travel cost.
-3. Congestion-weighted shortest-path routing.
-4. Rerouting around closed or penalized road segments.
-5. Authorized priority-edge weighting for emergency corridor demonstrations.
-6. Demand scaling and incident injection.
-7. Adaptive signal green-time allocation under minimum-green constraints.
-8. Network load, critical-edge and stress metrics.
-9. Scenario simulation and lower-stress candidate selection.
+1. A testable graph traffic engine with 12 simulated nodes and 17 road links.
+2. Congestion-weighted routing and incident-aware rerouting.
+3. Deterministic adaptive signal allocation.
+4. Concurrent multi-incident scenarios.
+5. A city operations engine for demand, incidents and deterministic mitigation baselines.
+6. A transparent short-horizon forecast baseline for 15, 30 and 60 minutes. This is not represented as a trained AI model.
+7. Simulated emergency-fleet dispatch that evaluates reachable available units and selects the fastest route.
+8. Before/after comparison for network stress, average load, average edge travel time and critical edges.
+9. Operational JSON export carrying `simulation: true`.
+10. Feature coverage CSV export.
+11. A dynamic 101-capability coverage matrix with three MVP states: `implemented_demo`, `represented_demo`, and `catalogued_only`.
+12. `production_verified` remains false for every capability until independent integration evidence exists.
+13. Automated registry, unit, syntax and static-wiring checks through GitHub Actions.
 
-## Interactive MVP modules
+## Coverage semantics
 
-1. Simulated city network with 12 nodes and 17 connected road edges.
-2. Network load, average edge travel time, critical-edge count and stress index.
-3. Routing and incident test bench with selectable origin, destination and road segment.
-4. Adaptive traffic-signal planning demonstration.
-5. Network-aware rerouting demonstration.
-6. Emergency-priority route demonstration.
-7. QTOS scenario comparison demonstration.
-8. Normal, rush-hour, major-event and severe-weather scenarios.
-9. Decision log.
-10. Searchable bilingual feature registry with provenance classes.
+`implemented_demo` means executable MVP logic exists for a meaningful portion of the documented capability.
 
-## Automated evidence
+`represented_demo` means the capability is represented by a related simulation, workflow, design boundary or partial mechanism, but the full capability is not implemented.
 
-GitHub Actions runs two independent checks on every relevant push and pull request:
+`catalogued_only` means the source capability is preserved in the registry but not implemented in the current MVP.
 
-- feature-registry integrity and provenance validation;
-- Node.js traffic-engine unit tests.
-
-The unit-test suite checks network validity, congestion cost behavior, route computation, incident rerouting, signal allocation, network stress and incident detection.
+`production_verified` is a separate evidence dimension and is currently false for all records.
 
 ## Run locally
 
-A local HTTP server is required because browser modules and registry files are loaded through HTTP:
+Use a local HTTP server because the application loads JSON datasets with `fetch()`:
 
 ```bash
 python -m http.server 8000
@@ -61,22 +52,19 @@ python -m http.server 8000
 
 Then open `http://localhost:8000`.
 
-For engineering validation:
+## Validation
 
 ```bash
 npm run validate
 npm test
+npm run check
 ```
+
+The validation pipeline checks registry provenance, historical-ID boundaries, one-to-one coverage rows, the prohibition on unsubstantiated production verification, traffic and operations logic, JavaScript syntax, required files, DOM wiring, scenario fixtures and emergency-fleet fixtures.
 
 ## Evidence boundary
 
-This repository deliberately separates:
-
-- documented platform capability;
-- MVP-demonstrated engineering behavior;
-- production-verified external integration.
-
-A documented capability is not automatically a production integration. Production claims require separate authenticated integration evidence, security verification, operational logs and controlled field or high-fidelity validation.
+All network, fleet, incident, scenario, forecast and intervention outputs in this repository are proof-of-concept simulation data. They do not claim live government, road, camera, vehicle, enforcement or emergency-service integration. Production readiness requires authenticated interfaces, integration tests, security testing, auditability, governance controls and controlled field or high-fidelity simulation validation.
 
 ## Intellectual property
 
