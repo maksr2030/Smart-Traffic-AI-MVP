@@ -2,13 +2,13 @@
 
 The MVP registry preserves source provenance and does not fill historical numbering gaps by invention.
 
-Source groups:
+## Unified registry groups
 
 - `verified_historical`: 52 Main Legacy records with verified historical identifiers in ranges 1-14 and 200-237.
 - `conversation_recovered`: 23 capabilities recovered from prior project conversations but without verified Main Legacy identifiers.
 - `additional_history`: 5 capabilities recovered from project history and related records.
 - `qtos`: 25 independent capabilities from the documented Quantum Traffic Orchestration System package.
-- `qcs_recovered`: 3 directly recovered track-local capabilities from the Quantum AI-Enhanced Collision Prevention Sensor sequence: QCS-102 through QCS-104.
+- `qcs_recovered`: 3 directly reopened track-local capabilities from the Quantum AI-Enhanced Collision Prevention Sensor sequence: QCS-102 through QCS-104.
 
 Unified registry total: 108 records.
 
@@ -16,13 +16,25 @@ The Main Legacy historical range 15-199 remains reserved pending recovery of rel
 
 ## Namespace separation rule
 
-Main Legacy identifiers, QTOS identifiers and QCS identifiers are separate historical namespaces.
+Main Legacy, QTOS, QCS and QTC are separate historical namespaces.
 
-- Main Legacy uses numeric IDs such as `11`, `200`.
+- Main Legacy uses numeric IDs such as `11` and `200`.
 - QTOS uses IDs such as `QTOS-01`.
 - QCS uses IDs such as `QCS-102`.
+- QTC is the separate quantum traffic-computing historical track and may reuse numeric values that also appear elsewhere.
 
 A track-local number is never used to fill a missing Main Legacy identifier solely because the number falls inside the same numerical range.
+
+## Evidence-layer separation
+
+The repository distinguishes four concepts:
+
+1. Unified feature registry — counted capabilities that passed a promotion rule.
+2. Primary/direct evidence — original source files or historical messages directly reopened in the current evidence chain.
+3. Secondary forensic candidate maps — recovery leads that preserve historical findings without increasing the unified count.
+4. MVP implementation evidence — demonstration and production-verification status, independent of historical-source provenance.
+
+A confidence label stored in a secondary forensic file is not itself equivalent to current direct verification.
 
 ## Main Legacy historical conversation recovery rule
 
@@ -38,6 +50,30 @@ Recovered Arabic source wording is preserved. English fields created for registr
 
 Semantic overlap does not erase the historical record. Feature 11 overlaps `CR-13`, feature 14 overlaps `CR-08`, and later records may overlap features 12-13. These relationships are recorded rather than used to delete either source record.
 
+## Main Legacy forensic candidate boundary
+
+The normalized candidate map is:
+
+`evidence/MAIN_LEGACY_FORENSIC_CANDIDATES_15_199_v0_3.json`
+
+It preserves 23 candidates inside the open Main Legacy range 15-199. None is currently promoted.
+
+High-priority candidates include:
+
+- 46 — automated traffic control and congestion prevention — forensic confidence B.
+- 47 — intelligent traffic-signal management and congestion prevention — B.
+- 77 — heavy-truck monitoring and regulation — B2.
+- 114 — instant traffic solutions during sudden crises — B.
+- 115 — road-fee and financial-flow management — B2.
+- 116 — parking management and financial utilization — B2.
+- 117 — traffic carbon-emissions reduction — B.
+- 118 — truck-flow and logistics-efficiency analysis — B.
+- 148 — existence lead only — C.
+- 149 — AI traffic-violation monitoring platform — B2.
+- 152 — real-time traffic-violation recognition — B.
+
+The v0.3 artifact describes some of these as direct or prior conversation recoveries. They remain candidates in the current repository until the primary historical source is independently reopened to the Main Legacy promotion rule.
+
 ## QCS direct recovery rule
 
 The QCS sub-innovation is documented under:
@@ -49,7 +85,21 @@ Direct historical conversation retrieval from 5 March 2025 re-established QCS-10
 
 QCS-102 contains a genuine historical English-title conflict. Both recovered variants are preserved in the record and in `evidence/QCS_RECOVERY_EVIDENCE.md`; neither is silently selected as the single original version.
 
-QCS-101 remains outside the unified registry until a primary source can be independently reopened and reviewed.
+The full secondary QCS map is:
+
+`evidence/QCS_FORENSIC_CANDIDATE_MAP_v0_3.json`
+
+It preserves 54 QCS forensic rows: B=49, B2=3, C=2. QCS-102 through QCS-104 are marked as separately promoted by direct evidence; the other 51 remain forensic candidates. QCS-101 therefore remains outside the unified registry until its primary source can be independently reopened and reviewed.
+
+## QTC forensic boundary
+
+The QTC normalized candidate map is:
+
+`evidence/QTC_FORENSIC_CANDIDATE_MAP_v0_3.json`
+
+It preserves 14 rows from the quantum traffic-computing historical track. None is currently promoted into the unified registry.
+
+Important anchors include QTC 46-48, 78 and 82-83. QTC remains separate from both QTOS and Main Legacy; its historical numeric values must not be interpreted as missing Main Legacy identifiers.
 
 ## Central evidence framework
 
@@ -62,7 +112,8 @@ The register distinguishes:
 - archived source artifacts with SHA-256 fingerprints;
 - located Library sources where raw-byte repository archival is unavailable;
 - direct historical conversation retrieval with source timestamp and covered IDs;
-- secondary forensic recovery artifacts used to guide, but not automatically authorize, feature promotion.
+- secondary forensic recovery artifacts;
+- normalized forensic candidate maps with explicit count effects and promotion boundaries.
 
 Every newly recovered file should be processed using:
 
@@ -71,8 +122,6 @@ Every newly recovered file should be processed using:
 Open recovery targets and unverified leads are tracked separately in:
 
 `evidence/RECOVERY_QUEUE.md`
-
-A recovery lead is not a verified feature record merely because it appears in a later forensic artifact.
 
 ## Secondary forensic source — v0.3
 
@@ -92,9 +141,15 @@ Confidence distribution:
 - C: 17
 - D: 2
 
-This is a secondary forensic recovery artifact. Its confidence labels are preserved as historical recovery metadata but do not automatically convert its records into unified-registry entries. Direct source reopening is preferred before promotion, particularly for Main Legacy numbers inside 15-199.
+This is a recovery-ledger count, not a claim of 213 unique canonical features after deduplication.
 
-Examples that remain candidates rather than promoted Main Legacy records include the December 2024 leads around 77, 114-118, 148-149 and 152 unless their primary evidence is independently reopened to the required standard.
+The three normalized forensic candidate maps currently preserve:
+
+- QCS — 54 rows, of which 3 are separately promoted direct and 51 remain candidates.
+- Main Legacy 15-199 — 23 candidates, zero promoted.
+- QTC — 14 candidates, zero promoted.
+
+Therefore 88 candidate rows across these maps are preserved but not currently promoted into the 108-record unified registry.
 
 ## QTOS original source evidence
 
@@ -118,13 +173,16 @@ The CI provenance validator checks that:
 
 - the registry total and source-group totals remain internally consistent;
 - Main Legacy verified IDs stay inside explicitly supported historical ranges;
-- QCS records cannot affect the Main Legacy gap;
+- QCS and QTC records cannot silently affect the Main Legacy gap;
 - every archived evidence item points to an existing artifact with the registered SHA-256;
 - located Library sources cannot masquerade as byte-identical repository archives;
 - direct conversation evidence for Main Legacy 11-14 remains explicitly mapped;
 - direct QCS evidence remains mapped to QCS-102 through QCS-104;
 - the QCS-102 historical title conflict remains explicitly preserved;
 - forensic v0.3 fingerprint, record count and confidence distribution do not drift silently;
+- the QCS candidate map remains exactly 54 rows and only QCS-102 through QCS-104 are marked promoted;
+- the Main Legacy candidate map remains exactly 23 rows in the reserved range with no silent registry promotion;
+- the QTC candidate map remains exactly 14 track-local rows;
 - the Main Legacy historical range 15-199 remains open pending evidence;
 - the QTOS source maps to all 25 QTOS identifiers;
 - production verification remains separate from source documentation and MVP demonstration.
