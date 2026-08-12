@@ -4,27 +4,30 @@ Public engineering proof-of-concept for a city-scale and sovereign traffic intel
 
 ## Evidence status
 
-The repository currently exposes 101 source records in a bilingual registry:
+The repository currently exposes 105 source records in a bilingual registry:
 
-- 48 verified historical features from recovered legacy ranges 1-10 and 200-237.
+- 52 verified historical features from recovered legacy ranges 1-14 and 200-237.
 - 23 conversation-recovered capabilities without verified legacy numbers.
 - 5 additional capabilities recovered from project history.
 - 25 independent QTOS capabilities from the Quantum Traffic Orchestration System package.
-- Historical identifiers 11-199 remain reserved and are not fabricated.
+- Historical identifiers 15-199 remain reserved and are not fabricated.
+
+The latest verified historical recovery is the block 11-14 from a Smart Traffic conversation dated 17 October 2024. The source message explicitly presented a numbered Smart Traffic sequence through feature 14. English titles/descriptions for this recovered block are editorial translations of the Arabic source, not claims of original English wording.
 
 The capability registry, MVP implementation status, and production-verification status are deliberately separate. A documented capability is not automatically a production integration.
 
 ## Evidence and forensic recovery framework
 
-Source artifacts are handled through a dedicated evidence layer:
+Source artifacts and historical conversation evidence are handled through a dedicated evidence layer:
 
 - `evidence/EVIDENCE_REGISTER.json` — machine-readable central evidence register.
-- `evidence/source/` — archived original source artifacts.
+- `evidence/source/` — archived original source artifacts where byte-level access is available.
 - `evidence/SOURCE_INTAKE_TEMPLATE.md` — standard intake workflow for newly recovered files.
 - `evidence/RECOVERY_QUEUE.md` — open historical recovery targets and unverified leads.
+- `evidence/RECOVERY_SEARCH_LOG_2026-08-12.md` — controlled search log.
 - `FEATURE_PROVENANCE.md` — provenance policy and promotion rules.
 
-The central evidence validator confirms source fingerprints, mapped capability IDs, registry-count neutrality for already-registered capabilities, and preservation of the reserved historical gap.
+The central evidence validator distinguishes archived byte-identical evidence, located Library sources, and direct historical conversation retrieval.
 
 ## Archived QTOS source evidence
 
@@ -36,7 +39,7 @@ The mapping from the source document's 25 features to `QTOS-01` through `QTOS-25
 
 `evidence/QTOS_SOURCE_EVIDENCE.md`
 
-The evidence register identifies this source as `SRC-QTOS-001`. Its archived artifact is protected by SHA-256 provenance validation in CI. Adding this evidence does not add duplicate registry records; the unified registry remains 101 source records.
+The evidence register identifies this source as `SRC-QTOS-001`. Its archived artifact is protected by SHA-256 provenance validation in CI. Adding this evidence does not duplicate QTOS registry records.
 
 ## Engineering MVP v1.3
 
@@ -52,7 +55,7 @@ The current branch includes:
 8. Before/after comparison for network stress, average load, average edge travel time and critical edges.
 9. Operational JSON export carrying `simulation: true`.
 10. Feature coverage CSV export.
-11. A dynamic 101-capability coverage matrix with three MVP states: `implemented_demo`, `represented_demo`, and `catalogued_only`.
+11. A dynamic 105-capability coverage matrix with three MVP states: `implemented_demo`, `represented_demo`, and `catalogued_only`.
 12. `production_verified` remains false for every capability until independent integration evidence exists.
 13. Automated registry, unit, syntax and static-wiring checks through GitHub Actions.
 
@@ -84,7 +87,7 @@ npm test
 npm run check
 ```
 
-The validation pipeline checks registry provenance, historical-ID boundaries, one-to-one coverage rows, the prohibition on unsubstantiated production verification, the central evidence register, archived-source SHA-256 fingerprints, evidence-to-registry mappings, preservation of the open historical range 11-199, traffic and operations logic, JavaScript syntax, required files, DOM wiring, scenario fixtures and emergency-fleet fixtures.
+The validation pipeline checks registry provenance, supported historical-ID boundaries, one-to-one coverage rows, the prohibition on unsubstantiated production verification, archived-source SHA-256 fingerprints, located Library source mappings, historical conversation evidence for 11-14, preservation of the open historical range 15-199, traffic and operations logic, JavaScript syntax, required files, DOM wiring, scenario fixtures and emergency-fleet fixtures.
 
 ## Evidence boundary
 
