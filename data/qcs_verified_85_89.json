@@ -1,0 +1,47 @@
+[
+  {
+    "id":"QCS-85","track_local_id":85,"group":"qcs_recovered",
+    "title_ar":"نظام استشعار كمومي لتحليل الطرق الوعرة وتعديل استجابة المركبة لتجنب الاصطدام",
+    "title_en":"Quantum Sensing System for Rough Terrain Analysis and Vehicle Response Adjustment",
+    "category_ar":"الطرق الوعرة واستجابة المركبة","category_en":"Rough Terrain & Vehicle Response",
+    "description_ar":"مسترد مباشرة من مخرجات 5 مارس 2025؛ يركز على تحليل الطرق الوعرة بالاستشعار الكمومي وتعديل استجابة المركبة استباقياً لتقليل مخاطر الاصطدام.",
+    "description_en":"Directly recovered from the 5 March 2025 conversation; it focuses on quantum sensing for rough-terrain analysis and proactive vehicle-response adjustment to reduce collision risk.",
+    "evidence_status":"verified_track_local_conversation_retrieval","source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05","source_message_ar":"2025-03-05T11:15:40Z","source_message_en":"2025-03-05T11:19:07Z","main_legacy_effect":"none"
+  },
+  {
+    "id":"QCS-86","track_local_id":86,"group":"qcs_recovered",
+    "title_ar":"نظام استشعار كمومي لتحليل الزوايا العمياء وتجنب الاصطدام غير المرئي",
+    "title_en":"Quantum Sensing System for Blind Spot Detection and Invisible Collision Avoidance",
+    "category_ar":"الزوايا العمياء والاصطدام غير المرئي","category_en":"Blind Spots & Invisible Collision Avoidance",
+    "description_ar":"مسترد مباشرة من مخرجات 5 مارس 2025؛ يتناول تحليل الزوايا العمياء باستخدام الاستشعار الكمومي ودعم تجنب الاصطدامات التي لا تكون مرئية مباشرة للسائق أو المستشعرات التقليدية.",
+    "description_en":"Directly recovered from the 5 March 2025 conversation; it addresses quantum-sensing analysis of blind spots and avoidance of collisions that are not directly visible to the driver or conventional sensing systems.",
+    "evidence_status":"verified_track_local_conversation_retrieval","source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05","source_message_ar":"2025-03-05T11:21:56Z","source_message_en":"2025-03-05T11:23:37Z","main_legacy_effect":"none"
+  },
+  {
+    "id":"QCS-87","track_local_id":87,"group":"qcs_recovered",
+    "title_ar":"نظام استشعار كمومي لتحليل الأحوال الجوية والتكيف مع التغيرات البيئية لمنع التصادم",
+    "title_en":"Quantum Sensing System for Weather Analysis and Adaptive Collision Prevention",
+    "category_ar":"الطقس والتكيف البيئي","category_en":"Weather & Environmental Adaptation",
+    "description_ar":"مسترد مباشرة من مخرجات 5 مارس 2025؛ يتناول تحليل المطر والضباب والثلوج والعوامل البيئية في الزمن الحقيقي، ثم تكييف الفرملة والتوجيه والتحكم بالجر مع دعم ADAS لمنع الاصطدام.",
+    "description_en":"Directly recovered from the 5 March 2025 conversation; it covers real-time rain, fog, snow and environmental analysis followed by adaptive braking, steering and traction control with ADAS support for collision prevention.",
+    "evidence_status":"verified_track_local_conversation_retrieval","source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05","source_message_ar":"2025-03-05T11:26:18Z","source_message_en":"2025-03-05T11:30:07Z","main_legacy_effect":"none"
+  },
+  {
+    "id":"QCS-88","track_local_id":88,"group":"qcs_recovered",
+    "title_ar":"نظام استشعار كمومي لتحليل تدفق المركبات في المنعطفات الحادة وتجنب الاصطدام",
+    "title_en":"Quantum Sensing System for Traffic Flow Analysis in Sharp Turns",
+    "category_ar":"المنعطفات الحادة والتنبؤ بالمسارات","category_en":"Sharp Turns & Trajectory Prediction",
+    "description_ar":"مسترد مباشرة من مخرجات 5 مارس 2025؛ يحلل سرعة المركبات وزوايا الميل والمسارات المتوقعة في المنعطفات الحادة، ويدعم منع الاصطدام التنبؤي والفرملة الذكية أو التوجيه التلقائي وتحذيرات V2V.",
+    "description_en":"Directly recovered from the 5 March 2025 conversation; it analyzes vehicle speed, tilt angles and projected trajectories in sharp turns and supports predictive collision prevention, smart braking or autonomous steering, and V2V warnings.",
+    "evidence_status":"verified_track_local_conversation_retrieval","source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05","source_message_ar":"2025-03-05T11:32:53Z","source_message_en":"2025-03-05T11:36:20Z","main_legacy_effect":"none"
+  },
+  {
+    "id":"QCS-89","track_local_id":89,"group":"qcs_recovered",
+    "title_ar":"نظام استشعار كمومي لتحليل سلوك السائق والتدخل التلقائي لمنع التصادم",
+    "title_en":"Quantum Sensing System for Driver Behavior Analysis and Autonomous Collision Prevention",
+    "category_ar":"سلوك السائق والتدخل التلقائي","category_en":"Driver Behavior & Autonomous Intervention",
+    "description_ar":"أُعيد فتح العنوان العربي والإنجليزي مباشرة من مخرجات 5 مارس 2025. لم يُسترد الجسم التفصيلي الكامل للميزة في هذه الجولة، لذلك لا يُضاف وصف تقني يتجاوز ما يثبته العنوان.",
+    "description_en":"The Arabic and English titles were directly reopened from the 5 March 2025 outputs. The full detailed body was not recovered in this pass, so no technical description beyond the title-supported scope is asserted.",
+    "evidence_status":"verified_track_local_conversation_retrieval","source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05","source_message_ar":"2025-03-05T11:38:41Z","source_message_en":"2025-03-05T11:40:22Z","main_legacy_effect":"none"
+  }
+]
