@@ -1,0 +1,25 @@
+{
+  "schema_version":"1.0",
+  "track":"OCT17-APP",
+  "source":"Smart_Traffic_Forensic_Master_Recovery_v0_3.html",
+  "source_sha256":"b0ca5ef84694fbbeda22c2c03a04ef8adecc1c968f3dc65b63f0510a1dd484f5",
+  "record_count":14,
+  "confidence_counts":{"B":14},
+  "policy":"Secondary forensic normalization. These unnumbered October 2024 records are preserved as historical source rows and are not added to the unified registry unless independent review establishes a distinct non-duplicate capability and sufficient source provenance.",
+  "records":[
+    {"forensic_id":"ST-OCT17-I01","title_ar":"تحليل حركة المرور في الوقت الفعلي","title_en":"Real-Time Traffic Analysis","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["1","CR-14"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-I02","title_ar":"تحسين مسارات النقل العام","title_en":"Public Transport Route Optimization","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["205","224"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-I03","title_ar":"تنبؤ بالازدحامات","title_en":"Traffic Congestion Prediction","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["1"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-A01","title_ar":"تحليل السلوك القيادي للسائقين","title_en":"Original English title not independently recovered","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["3"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-A02","title_ar":"تنبؤات مرورية مبنية على الذكاء الاصطناعي","title_en":"Original English title not independently recovered","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["1"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-A03","title_ar":"ميزة مشاركة الرحلة","title_en":"Original English title not independently recovered","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["CR-07"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-A04","title_ar":"دعم القيادة الكهربائية","title_en":"Original English title not independently recovered","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["CR-12","236"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-A05","title_ar":"توجيه المركبات التجارية","title_en":"Original English title not independently recovered","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["CR-19","210"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-A06","title_ar":"التعرف على العلامات والإشارات المرورية","title_en":"Original English title not independently recovered","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["CR-10"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-A07","title_ar":"تخصيص التوصيات بناءً على نمط القيادة","title_en":"Original English title not independently recovered","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["CR-06","3"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-A08","title_ar":"التكامل مع السيارات الذكية (Android Auto أو Apple CarPlay)","title_en":"Original English title not independently recovered","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["CR-11"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-A09","title_ar":"إشعارات حول جودة الهواء","title_en":"Original English title not independently recovered","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["11","CR-13"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-A10","title_ar":"نظام تنبيهات الطوارئ","title_en":"Original English title not independently recovered","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["12"],"current_status":"candidate_reconciliation_pending"},
+    {"forensic_id":"ST-OCT17-A11","title_ar":"تكامل مع وسائل النقل العام","title_en":"Original English title not independently recovered","confidence":"B","forensic_status":"Direct conversation recovery","possible_overlap":["13","205"],"current_status":"candidate_reconciliation_pending"}
+  ]
+}
