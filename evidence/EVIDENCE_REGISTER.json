@@ -1,37 +1,38 @@
 {
-  "schema_version": "1.8",
-  "project": "Smart AI Traffic Platform",
-  "registry_total": 108,
-  "evidence_items": [
+  "schema_version":"1.9",
+  "project":"Smart AI Traffic Platform",
+  "registry_total":113,
+  "evidence_items":[
     {
-      "evidence_id": "SRC-QTOS-001",
-      "type": "original_source_artifact",
-      "status": "verified_archived_source",
-      "title": "QTOS Additional Features - Bilingual Standard File",
-      "path": "evidence/source/Smart_Traffic_QTOS_Additional_Features_Bilingual_Standard.html",
-      "sha256": "a0e7bf1e78e2fb271012dbca722b4d03a2a9e957c0a19778353a23e680472d9f",
-      "mapping_document": "evidence/QTOS_SOURCE_EVIDENCE.md",
-      "covers": ["QTOS-01","QTOS-02","QTOS-03","QTOS-04","QTOS-05","QTOS-06","QTOS-07","QTOS-08","QTOS-09","QTOS-10","QTOS-11","QTOS-12","QTOS-13","QTOS-14","QTOS-15","QTOS-16","QTOS-17","QTOS-18","QTOS-19","QTOS-20","QTOS-21","QTOS-22","QTOS-23","QTOS-24","QTOS-25"],
-      "count_effect": 0,
-      "reason": "The 25 QTOS records already exist in the unified registry; this artifact strengthens provenance and must not be double-counted."
+      "evidence_id":"SRC-QTOS-001",
+      "type":"original_source_artifact",
+      "status":"verified_archived_source",
+      "title":"QTOS Additional Features - Bilingual Standard File",
+      "path":"evidence/source/Smart_Traffic_QTOS_Additional_Features_Bilingual_Standard.html",
+      "sha256":"a0e7bf1e78e2fb271012dbca722b4d03a2a9e957c0a19778353a23e680472d9f",
+      "mapping_document":"evidence/QTOS_SOURCE_EVIDENCE.md",
+      "covers":["QTOS-01","QTOS-02","QTOS-03","QTOS-04","QTOS-05","QTOS-06","QTOS-07","QTOS-08","QTOS-09","QTOS-10","QTOS-11","QTOS-12","QTOS-13","QTOS-14","QTOS-15","QTOS-16","QTOS-17","QTOS-18","QTOS-19","QTOS-20","QTOS-21","QTOS-22","QTOS-23","QTOS-24","QTOS-25"],
+      "count_effect":0,
+      "reason":"The 25 QTOS records already exist in the unified registry; this artifact strengthens provenance and must not be double-counted."
     }
   ],
-  "located_sources": [
+  "located_sources":[
     {"source_id":"LOC-TRAFFIC-AR-001","type":"original_library_source","status":"located_library_source_not_byte_archived","title":"المرور الذكي.html","library_file_id":"file_00000000806c81f791b8e42e8778c10b","language":"ar","covers":["1","2","3","4","5","6","7","8","9","10"],"search_result":"Direct numbered Arabic source confirms historical features 1-10. Full-file searches did not recover feature headings 11-199.","raw_materialization_status":"unavailable_from_library_connector_at_intake","count_effect":0},
     {"source_id":"LOC-TRAFFIC-EN-001","type":"original_library_source","status":"located_library_source_not_byte_archived","title":"Smart AI Traffic.html","library_file_id":"file_00000000dc20823083aedaee47bc1d04","language":"en","covers":["1","2","3","4","5","6","7","8","9","10"],"search_result":"Original English traffic source corroborates the original English source family and initial feature block. Full-file searches did not recover Feature 11-199 headings.","raw_materialization_status":"unavailable_from_library_connector_at_intake","count_effect":0}
   ],
-  "conversation_sources": [
+  "conversation_sources":[
     {"source_id":"CONV-TRAFFIC-2024-10-17-001","type":"historical_conversation_retrieval","status":"direct_conversation_retrieval_verified","project":"Smart Traffic Platform / تطبيق إدارة حركة المرور الذكي","assistant_message_timestamp_utc":"2024-10-17T05:05:26Z","covers":["11","12","13","14"],"source_language":"ar","english_fields_status":"editorial_translation_from_arabic_source","sequence_evidence":"A single assistant output explicitly presented a numbered Smart Traffic feature sequence 1-14; items 11-14 were recovered from that same sequence.","count_effect":4},
+    {"source_id":"CONV-QCS-2025-03-05-097-101","type":"historical_conversation_retrieval","status":"direct_conversation_retrieval_verified","project":"نظام الاستشعار الكمومي الذكي لمنع التصادم / Quantum AI-Enhanced Collision Prevention Sensor","assistant_message_timestamp_utc":"2025-03-05T12:40:56Z/2025-03-05T12:53:52Z/2025-03-05T13:00:18Z/2025-03-05T13:08:05Z/2025-03-05T13:16:39Z","covers":["QCS-97","QCS-98","QCS-99","QCS-100","QCS-101"],"source_language":"mixed_ar_en","language_provenance_note":"QCS-97 and QCS-99 were directly reopened in Arabic; QCS-98 was directly reopened in English; QCS-100 and QCS-101 have direct bilingual title evidence. Registry language fields disclose editorial or forensic correspondence where a language version was not independently reopened.","sequence_evidence":"Original 5 March 2025 outputs directly bind QCS track-local Features 97-101 to their identities in the same collision-prevention / quantum-sensing innovation sequence.","count_effect":5},
     {"source_id":"CONV-QCS-2025-03-05-102-104","type":"historical_conversation_retrieval","status":"direct_conversation_retrieval_verified","project":"نظام الاستشعار الكمومي الذكي لمنع التصادم / Quantum AI-Enhanced Collision Prevention Sensor","assistant_message_timestamp_utc":"2025-03-05T13:22:29Z/2025-03-05T13:28:07Z/2025-03-05T13:34:47Z","covers":["QCS-102","QCS-103","QCS-104"],"source_language":"ar+en","english_fields_status":"original_conversation_titles_with_version_conflict_preserved_for_QCS-102","sequence_evidence":"Original March 2025 conversation retrieval directly re-established QCS track-local Features 102, 103 and 104. QCS numbering is track-local and does not fill the main Smart Traffic legacy gap.","count_effect":3}
   ],
-  "precursor_sources": [
+  "precursor_sources":[
     {"source_id":"CONV-SMARTCITY-2024-10-07-IDEA9","type":"direct_historical_conversation_precursor","status":"direct_source_reopened_precursor_not_main_legacy","source_context":"AI-powered smart-city project ideas for Saudi Arabia with direct-revenue emphasis","idea_number":9,"direct_brd_title":"AI-Powered Smart Toll Management System for Optimizing Traffic Flow and Revenue Generation","user_context_timestamp_utc":"2024-10-07T21:09:34Z/2024-10-07T21:10:02Z","brd_timestamp_utc":"2024-10-07T21:16:48Z","evidence_document":"evidence/OCT07_TRAFFIC_PRECURSOR_EVIDENCE.md","forensic_cross_reference":"ST-OCT07-009","number_conflict":"Later Main Legacy Feature 9 has different content","registry_effect":"none"}
   ],
-  "forensic_sources": [
+  "forensic_sources":[
     {"source_id":"FORENSIC-TRAFFIC-V0.3","type":"secondary_forensic_recovery_artifact","status":"materialized_and_hashed_secondary_source","title":"Smart_Traffic_Forensic_Master_Recovery_v0_3.html","library_file_id":"file_000000004bf481fbad2d48d7468d7480","sha256":"b0ca5ef84694fbbeda22c2c03a04ef8adecc1c968f3dc65b63f0510a1dd484f5","parsed_record_count":213,"confidence_counts":{"A":73,"B":79,"B2":42,"C":17,"D":2},"track_counts":{"BASE-LEGACY":10,"OCT07-TRAFFIC":1,"OCT17-APP":14,"DEC17-TRAFFIC":16,"DEC20-TRAFFIC":1,"DEC25-TRAFFIC":8,"IDEAS100-2025-02":3,"QCS":54,"QTC":14,"VERIFIED-200":38,"CR":22,"AR":5,"QTOS":25,"RELATED-ENV":2},"registry_effect":"none_by_itself","promotion_rule":"Secondary forensic classifications are recovery leads. Records enter the unified registry only after an evidence-specific promotion decision; direct original conversation retrieval is preferred where available."}
   ],
-  "forensic_candidate_maps": [
-    {"map_id":"FORENSIC-MAP-QCS-V0.3","path":"evidence/QCS_FORENSIC_CANDIDATE_MAP_v0_3.json","namespace":"QCS","record_count":54,"confidence_counts":{"B":49,"B2":3,"C":2},"promoted_direct":["QCS-102","QCS-103","QCS-104"],"registry_effect":"0 candidates; 3 already separately promoted from direct primary conversation retrieval"},
+  "forensic_candidate_maps":[
+    {"map_id":"FORENSIC-MAP-QCS-V0.3","path":"evidence/QCS_FORENSIC_CANDIDATE_MAP_v0_3.json","namespace":"QCS","record_count":54,"confidence_counts":{"B":49,"B2":3,"C":2},"promoted_direct":["QCS-97","QCS-98","QCS-99","QCS-100","QCS-101","QCS-102","QCS-103","QCS-104"],"registry_effect":"8 QCS rows are separately promoted from direct primary conversation retrieval; 46 remain forensic candidates"},
     {"map_id":"FORENSIC-MAP-MAIN-15-199-V0.3","path":"evidence/MAIN_LEGACY_FORENSIC_CANDIDATES_15_199_v0_3.json","namespace":"MAIN_LEGACY","range":{"from":15,"to":199},"record_count":23,"promoted_direct":[],"registry_effect":"none; all 23 remain candidates pending independent original-source confirmation"},
     {"map_id":"FORENSIC-MAP-QTC-V0.3","path":"evidence/QTC_FORENSIC_CANDIDATE_MAP_v0_3.json","namespace":"QTC","record_count":14,"promoted_direct":[],"registry_effect":"none; QTC is a separate quantum traffic-computing track pending primary-source reopening"},
     {"map_id":"FORENSIC-MAP-OCT17-APP-V0.3","path":"evidence/OCT17_APP_FORENSIC_CANDIDATE_MAP_v0_3.json","namespace":"OCT17-APP","record_count":14,"promoted_direct":[],"registry_effect":"none; unnumbered historical app rows require source and distinctness reconciliation against the unified registry"},
@@ -39,26 +40,19 @@
     {"map_id":"FORENSIC-MAP-DEC17-TRACK-V0.3","path":"evidence/DEC17_TRAFFIC_TRACK_FORENSIC_MAP_v0_3.json","namespace":"DEC17-TRAFFIC","record_count":16,"promoted_direct":[],"registry_effect":"none; full December 17 sequence preserved including existence-only 11/12 and candidate 46/47"},
     {"map_id":"FORENSIC-MAP-CROSS-PROJECT-ENV-V0.3","path":"evidence/CROSS_PROJECT_TRAFFIC_INTEGRATION_CANDIDATES_v0_3.json","namespace":"RELATED-ENV","record_count":2,"promoted_direct":[],"registry_effect":"none; source records belong to Smart AI Environment unless independent Smart Traffic provenance is recovered"}
   ],
-  "forensic_track_coverage_index": {
-    "path":"evidence/FORENSIC_V0_3_TRACK_COVERAGE_INDEX.json",
-    "source_record_count":213,
-    "track_count":14,
-    "status":"all_v0_3_tracks_have_explicit_destination_or_exclusion_boundary",
-    "registry_effect":"none"
-  },
-  "historical_recovery": {
-    "reserved_ranges": [{"from":15,"to":199,"status":"open_pending_original_evidence"}],
-    "rules": [
+  "forensic_track_coverage_index":{"path":"evidence/FORENSIC_V0_3_TRACK_COVERAGE_INDEX.json","source_record_count":213,"track_count":14,"status":"all_v0_3_tracks_have_explicit_destination_or_exclusion_boundary","registry_effect":"none"},
+  "historical_recovery":{
+    "reserved_ranges":[{"from":15,"to":199,"status":"open_pending_original_evidence"}],
+    "rules":[
       "Do not assign a main legacy feature number without direct source evidence.",
       "Track-local identifiers such as QCS, QTC and IDEAS100 numbers never fill the main Smart Traffic legacy numbering gap.",
+      "Language fields must disclose when only one language version was directly reopened and the paired language is editorial or secondary-forensic correspondence.",
       "Unnumbered OCT17 app rows are historical source records, not automatic new canonical features.",
       "Smart-city precursor records can be directly verified while still having zero Smart Traffic Main Legacy count effect.",
       "Cross-project environment records remain excluded from Smart Traffic legacy numbering unless independent Smart Traffic provenance is recovered.",
-      "Secondary forensic candidate maps preserve recovery leads without increasing the unified-registry count.",
+      "Secondary forensic candidate maps preserve recovery leads without increasing the unified-registry count unless a separate direct promotion is registered.",
       "Every forensic v0.3 track must have an explicit preservation, registry, precursor or exclusion destination in the coverage index.",
-      "Archive original source artifacts before promoting candidate records to verified historical status when byte-level access is available.",
       "Historical conversation retrieval may support promotion when the retrieved message directly binds project identity, number and feature identity in one coherent source context.",
-      "If a source is readable but raw-byte archival is unavailable, register its source type explicitly and do not claim byte-identical repository archival.",
       "Preserve conflicting versions and overlapping source records until canonical reconciliation is independently reviewed."
     ]
   }
