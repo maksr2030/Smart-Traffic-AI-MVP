@@ -14,6 +14,18 @@ The repository currently exposes 101 source records in a bilingual registry:
 
 The capability registry, MVP implementation status, and production-verification status are deliberately separate. A documented capability is not automatically a production integration.
 
+## Archived QTOS source evidence
+
+The original bilingual QTOS source artifact supplied by the project owner is preserved at:
+
+`evidence/source/Smart_Traffic_QTOS_Additional_Features_Bilingual_Standard.html`
+
+The mapping from the source document's 25 features to `QTOS-01` through `QTOS-25` is preserved at:
+
+`evidence/QTOS_SOURCE_EVIDENCE.md`
+
+The source artifact is protected by SHA-256 provenance validation in CI. Adding this evidence does not add duplicate registry records; the unified registry remains 101 source records.
+
 ## Engineering MVP v1.3
 
 The current branch includes:
@@ -60,7 +72,7 @@ npm test
 npm run check
 ```
 
-The validation pipeline checks registry provenance, historical-ID boundaries, one-to-one coverage rows, the prohibition on unsubstantiated production verification, traffic and operations logic, JavaScript syntax, required files, DOM wiring, scenario fixtures and emergency-fleet fixtures.
+The validation pipeline checks registry provenance, historical-ID boundaries, one-to-one coverage rows, the prohibition on unsubstantiated production verification, the presence and SHA-256 fingerprint of the archived QTOS source evidence, all 25 QTOS identifiers and source attribution, traffic and operations logic, JavaScript syntax, required files, DOM wiring, scenario fixtures and emergency-fleet fixtures.
 
 ## Evidence boundary
 
