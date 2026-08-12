@@ -78,8 +78,7 @@ for (const id of ['QCS-102','QCS-103','QCS-104']) {
 const qcs102 = records.find(item => item.id === 'QCS-102');
 if (!qcs102.version_conflict || !qcs102.alternate_title_en) fail('QCS-102 historical English-title conflict must remain explicit');
 
-const precursors = evidence.precursor_sources ?? [];
-const oct07 = precursors.find(source => source.source_id === 'CONV-SMARTCITY-2024-10-07-IDEA9');
+const oct07 = (evidence.precursor_sources ?? []).find(source => source.source_id === 'CONV-SMARTCITY-2024-10-07-IDEA9');
 if (!oct07 || oct07.idea_number !== 9 || oct07.registry_effect !== 'none' || !oct07.direct_brd_title?.includes('Smart Toll Management')) fail('October 7 smart-toll precursor evidence metadata drift detected');
 await readFile(oct07.evidence_document,'utf8');
 if (ids.has('OCT07-009')) fail('October 7 precursor must not silently enter unified registry');
@@ -135,6 +134,22 @@ const {map:envMap} = await getMap('FORENSIC-MAP-CROSS-PROJECT-ENV-V0.3');
 if (envMap.record_count !== 2 || envMap.records?.length !== 2 || !envMap.records.every(row => row.confidence === 'D' && row.unified_registry_effect === 'none')) fail('cross-project environment candidate boundary drift detected');
 for (const n of [306,568]) if (!envMap.records.some(row => row.source_number === n)) fail(`cross-project environment map lost ${n}`);
 
+const coverageIndexMeta = evidence.forensic_track_coverage_index;
+if (!coverageIndexMeta?.path || coverageIndexMeta.source_record_count !== 213 || coverageIndexMeta.track_count !== 14 || coverageIndexMeta.registry_effect !== 'none') fail('forensic coverage-index metadata drift detected');
+const coverageIndex = await loadJson(coverageIndexMeta.path);
+if (coverageIndex.forensic_arabic_record_count !== 213 || coverageIndex.track_row_sum !== 213 || coverageIndex.tracks?.length !== 14) fail('forensic track coverage index must account for exactly 213 rows across 14 tracks');
+const trackNames = new Set();
+let trackSum = 0;
+for (const track of coverageIndex.tracks) {
+  if (!track.track || !Number.isInteger(track.source_rows) || track.source_rows < 1 || !track.destination || !track.coverage_status) fail(`invalid forensic track coverage row: ${JSON.stringify(track)}`);
+  if (trackNames.has(track.track)) fail(`duplicate forensic track coverage row: ${track.track}`);
+  trackNames.add(track.track);
+  trackSum += track.source_rows;
+  if (forensic.track_counts?.[track.track] !== track.source_rows) fail(`forensic track count mismatch for ${track.track}: ${track.source_rows} != ${forensic.track_counts?.[track.track]}`);
+}
+if (trackSum !== 213 || trackNames.size !== Object.keys(forensic.track_counts ?? {}).length) fail('forensic track coverage index is incomplete');
+for (const [track,count] of Object.entries(forensic.track_counts ?? {})) if (!coverageIndex.tracks.some(row => row.track === track && row.source_rows === count)) fail(`forensic coverage index missing ${track}`);
+
 const reserved = evidence.historical_recovery?.reserved_ranges ?? [];
 if (!reserved.some(range => range.from === 15 && range.to === 199 && range.status === 'open_pending_original_evidence')) fail('Main Legacy gap must remain 15-199');
 
@@ -159,5 +174,6 @@ console.log(`Direct registry conversation evidence valid: ${conversationSources.
 console.log('Direct promotions valid: Main Legacy 11-14; QCS 102-104. October 7 Idea 9 retained as verified precursor with zero registry effect.');
 console.log(`Forensic v0.3 valid: ${forensic.parsed_record_count} recovery-ledger rows, confidence A/B/B2/C/D = 73/79/42/17/2.`);
 console.log('Normalized forensic maps valid: QCS=54, Main15-199=23, QTC=14, OCT17=14, IDEAS100=3/open4-100, DEC17=16, RelatedEnv=2.');
+console.log(`Forensic track coverage complete: ${coverageIndex.tracks.length} tracks account for ${trackSum} / ${forensic.parsed_record_count} v0.3 rows.`);
 console.log(`Coverage valid: ${coverageStats.implemented_demo} implemented demo, ${coverageStats.represented_demo} represented demo, ${coverageStats.catalogued_only} catalogued only, ${coverageStats.production_verified} production verified.`);
 console.log(`Reserved Main Legacy gap preserved: ${manifest.historical_gap}`);
