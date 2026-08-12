@@ -1,0 +1,62 @@
+[
+  {
+    "id":"11",
+    "legacy_id":11,
+    "group":"verified_historical",
+    "title_ar":"إشعارات حول جودة الهواء",
+    "title_en":"Air Quality Notifications",
+    "category_ar":"البيئة المرورية والتنبيهات",
+    "category_en":"Traffic Environment & Alerts",
+    "description_ar":"تقديم تنبيهات حول جودة الهواء في المناطق المزدحمة.",
+    "description_en":"Provide alerts about air quality in congested areas.",
+    "evidence_status":"verified_historical_conversation_retrieval",
+    "source":"Historical Smart Traffic conversation — 2024-10-17T05:05:26Z",
+    "title_en_provenance":"editorial_translation_from_arabic_source",
+    "overlap_refs":["CR-13"]
+  },
+  {
+    "id":"12",
+    "legacy_id":12,
+    "group":"verified_historical",
+    "title_ar":"نظام التنبيهات الطارئة",
+    "title_en":"Emergency Alert System",
+    "category_ar":"الطوارئ والتنبيهات",
+    "category_en":"Emergency & Alerts",
+    "description_ar":"إشعارات حول الحوادث أو الطرق المغلقة مع اقتراح بدائل.",
+    "description_en":"Provide notifications about accidents or closed roads together with alternative options.",
+    "evidence_status":"verified_historical_conversation_retrieval",
+    "source":"Historical Smart Traffic conversation — 2024-10-17T05:05:26Z",
+    "title_en_provenance":"editorial_translation_from_arabic_source",
+    "overlap_refs":["5"]
+  },
+  {
+    "id":"13",
+    "legacy_id":13,
+    "group":"verified_historical",
+    "title_ar":"تكامل مع وسائل النقل العامة",
+    "title_en":"Public Transport Integration",
+    "category_ar":"النقل العام والتكامل",
+    "category_en":"Public Transport & Integration",
+    "description_ar":"توفير معلومات عن المحطات القريبة وجداول النقل.",
+    "description_en":"Provide information about nearby stations and public transport schedules.",
+    "evidence_status":"verified_historical_conversation_retrieval",
+    "source":"Historical Smart Traffic conversation — 2024-10-17T05:05:26Z",
+    "title_en_provenance":"editorial_translation_from_arabic_source",
+    "overlap_refs":["205"]
+  },
+  {
+    "id":"14",
+    "legacy_id":14,
+    "group":"verified_historical",
+    "title_ar":"تتبع موقع السيارة",
+    "title_en":"Vehicle Location Tracking",
+    "category_ar":"المركبات المتصلة والموقع",
+    "category_en":"Connected Vehicles & Location",
+    "description_ar":"معرفة موقع السيارة في حال كان يقودها شخص آخر.",
+    "description_en":"Allow the vehicle location to be known when it is being driven by another person.",
+    "evidence_status":"verified_historical_conversation_retrieval",
+    "source":"Historical Smart Traffic conversation — 2024-10-17T05:05:26Z",
+    "title_en_provenance":"editorial_translation_from_arabic_source",
+    "overlap_refs":["CR-08"]
+  }
+]
