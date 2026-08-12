@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { buildCoverage, coverageSummary } from '../coverage/coverageModel.js';
 
 const manifest = JSON.parse(await readFile('data/features.json','utf8'));
 const files = manifest.files.map(name => `data/${name}`);
@@ -26,5 +27,14 @@ for (const [group,count] of Object.entries(manifest.groups)) {
   if (actual[group] !== count) throw new Error(`group count mismatch for ${group}: ${actual[group]} != ${count}`);
 }
 
+const coverage = buildCoverage(groups);
+const coverageStats = coverageSummary(coverage);
+if (coverage.length !== groups.length) throw new Error('coverage matrix must contain exactly one row per registry record');
+if (coverageStats.production_verified !== 0) throw new Error('production verification cannot be asserted without separate evidence');
+for (const row of coverage) {
+  if (!['implemented_demo','represented_demo','catalogued_only'].includes(row.status)) throw new Error(`invalid coverage status: ${row.id}`);
+}
+
 console.log(`Registry valid: ${groups.length} records, ${ids.size} unique IDs.`);
+console.log(`Coverage valid: ${coverageStats.implemented_demo} implemented demo, ${coverageStats.represented_demo} represented demo, ${coverageStats.catalogued_only} catalogued only, ${coverageStats.production_verified} production verified.`);
 console.log(`Reserved historical gap preserved: ${manifest.historical_gap}`);
