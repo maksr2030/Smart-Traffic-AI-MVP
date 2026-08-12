@@ -1,0 +1,25 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { buildCoverage, capabilityStatus, coverageSummary, coverageToCsv } from '../coverage/coverageModel.js';
+
+test('coverage statuses preserve evidence boundary', () => {
+  assert.equal(capabilityStatus('2'),'implemented_demo');
+  assert.equal(capabilityStatus('QTOS-18'),'represented_demo');
+  assert.equal(capabilityStatus('AR-05'),'catalogued_only');
+});
+
+test('coverage summary counts all rows without production claims', () => {
+  const rows = buildCoverage([
+    {id:'2',group:'verified_historical',title_ar:'a',title_en:'b'},
+    {id:'QTOS-18',group:'qtos',title_ar:'c',title_en:'d'},
+    {id:'AR-05',group:'additional_history',title_ar:'e',title_en:'f'}
+  ]);
+  const summary = coverageSummary(rows);
+  assert.deepEqual(summary,{total:3,implemented_demo:1,represented_demo:1,catalogued_only:1,production_verified:0});
+});
+
+test('coverage CSV contains evidence fields', () => {
+  const csv = coverageToCsv(buildCoverage([{id:'2',group:'verified_historical',title_ar:'مسار',title_en:'Route'}]));
+  assert.match(csv,/production_verified/);
+  assert.match(csv,/implemented_demo/);
+});
