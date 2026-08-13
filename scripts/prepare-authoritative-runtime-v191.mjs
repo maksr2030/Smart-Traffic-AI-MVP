@@ -190,7 +190,7 @@ const built = await readFile(appPath, 'utf8');
 for (const contract of [
   'authoritativeRuntimeStore.js',
   "stateAuthority:'unified-state-bus'",
-  "type:'traffic_drift_applied'",
+  "'traffic_drift_applied'",
   "'incident_injected'",
   "'scenario_loaded'",
   "'intervention_applied'",
