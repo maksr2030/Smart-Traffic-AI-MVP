@@ -1,14 +1,20 @@
-# Architecture and Evidence Boundary — Engineering MVP v1.8
+# Architecture and Evidence Boundary — Executable Engineering MVP v1.9
 
 ## Objective
 
-Version 1.8 extends the deterministic predictive traffic orchestration architecture with three governance-oriented layers:
+Version 1.9 extends the executable Smart Traffic AI MVP with production-hardening mechanisms for captured runtime state, decision integrity, exact deterministic replay, acquisition review and browser-level validation.
 
-1. deterministic decision explanation;
-2. configurable policy guardrails;
-3. scenario replay and sensitivity analysis.
+The architecture remains an engineering proof-of-concept simulation. No recommendation, policy decision, audit entry or replay result executes field control.
 
-The architecture remains a proof-of-concept simulation. Recommendation, policy screening and replay do not execute field control.
+## Architecture overview
+
+The v1.9 architecture preserves the traffic intelligence stack from v1.8 and adds five hardening concerns:
+
+1. synchronized captured live-state and runtime events;
+2. canonical SHA-256 state/input/policy/output fingerprints;
+3. chained decision-integrity ledger;
+4. captured deterministic Exact Replay;
+5. one executable build validated by desktop Chromium and mobile WebKit E2E before/alongside Pages deployment.
 
 ## Logical layers
 
@@ -16,118 +22,65 @@ The architecture remains a proof-of-concept simulation. Recommendation, policy s
 
 Potential authorized production sources include road sensors, traffic signals, cameras, connected vehicles, weather, positioning, public transport, parking, logistics and infrastructure feeds.
 
-The present MVP uses deterministic fixtures and simulation data. No live field or government feed is connected.
+The present MVP uses deterministic fixtures and simulated inputs. No live government or field feed is connected.
 
 ### 2. Network-state layer
 
 `data/network.json` defines the demo graph used by `engine/trafficEngine.js` for validation, travel-time calculation, shortest-path routing, incidents, demand, signal allocation and network metrics.
 
-The conventional shortest path remains an auditable time-only baseline.
-
 ### 3. Operations and scenario layer
 
-`engine/operationsEngine.js` provides:
+`engine/operationsEngine.js` provides concurrent incidents, operating scenarios, deterministic metrics, mitigation baselines, before/after comparison, short-horizon forecast baseline and operational snapshot export.
 
-- concurrent incidents;
-- operating scenarios;
-- operational metrics;
-- deterministic mitigation baselines;
-- before/after comparison;
-- short-horizon forecast baseline;
-- operational snapshot export.
+### 4. QCS proxy-risk layer
 
-`data/operations_scenarios.json` remains the scenario-fixture source used by both the core app and the v1.8 replay workspace.
+`engine/qcsRiskEngine.js` converts simulated QCS observations into deterministic proxy-risk assessments.
 
-### 4. QCS proxy risk layer
-
-`engine/qcsRiskEngine.js` converts simulated QCS observations into deterministic risk assessments.
-
-No output is evidence of connected quantum sensing, quantum communication or production vehicle integration.
+No output is evidence of real quantum sensing, real quantum V2V/V2I communication or production vehicle integration.
 
 ### 5. Dynamic Risk Digital Twin layer
 
-`engine/dynamicRiskTwinEngine.js` constructs a shared edge-level state from:
+`engine/dynamicRiskTwinEngine.js` constructs shared edge-level risk state from:
 
 - network load: `0.30`;
 - incident severity: `0.28`;
 - QCS proxy risk: `0.32`;
 - road closure: `0.10`.
 
-The twin tracks:
-
-- composite risk score;
-- risk level;
-- trend and delta;
-- current load;
-- incident severity;
-- closure state;
-- QCS proxy risk and observation presence;
-- simulated travel time.
-
-The same twin snapshot feeds route, signal and virtual emergency decisions.
+The twin tracks composite risk, risk level, trend, delta, load, incident severity, closure state, QCS proxy presence and simulated travel time.
 
 ### 6. Predictive network projection layer
 
-`engine/predictiveOrchestrationEngine.js` projects simulated network state at standard horizons:
+`engine/predictiveOrchestrationEngine.js` projects deterministic simulated network state at 5, 15, 30 and 60 minutes.
 
-- 5 minutes;
-- 15 minutes;
-- 30 minutes;
-- 60 minutes.
+Projection remains transparent and retains `trainedModel=false`.
 
-Projection inputs are transparent and deterministic:
+### 7. Predictive risk-propagation layer
 
-- current load;
-- congestion momentum;
-- incident severity;
-- neighboring-edge pressure;
-- horizon duration;
-- closure persistence.
-
-The forecast layer preserves `trainedModel=false`.
-
-### 7. Predictive risk propagation layer
-
-`forecastRiskPropagation()` rebuilds a Dynamic Risk Digital Twin for each projected network state.
-
-Each horizon records average risk, maximum risk, high/critical edge count, emerging hotspots, projected load and risk delta.
+`forecastRiskPropagation()` rebuilds a Dynamic Risk Digital Twin for every projected state and records average risk, maximum risk, high/critical edge count, emerging hotspots, projected load and risk delta.
 
 ### 8. Candidate intervention layer
 
-The current explicit candidate set is:
+The explicit candidate set remains:
 
 - `observe_only`;
 - `balanced_preemptive`;
 - `network_relief`;
 - `safety_priority`.
 
-`applyPredictiveIntervention()` targets the highest predicted-risk open edges according to candidate parameters.
-
-Closed roads remain closed through the intervention logic.
+Closed roads remain closed through the simulated intervention logic.
 
 ### 9. Multi-horizon evaluation layer
 
-`evaluateOrchestrationCandidate()` evaluates each candidate at every forecast horizon.
-
-For every candidate/horizon pair it:
-
-1. applies the simulated intervention;
-2. rebuilds the future twin;
-3. calculates operational metrics;
-4. generates the shared route/signal/emergency decision bundle;
-5. calculates the deterministic objective score.
-
-The objective includes average risk, maximum risk, high/critical share, average load and average edge travel time.
+`evaluateOrchestrationCandidate()` evaluates every candidate at every forecast horizon, rebuilding the future twin, calculating metrics and producing the shared route/signal/emergency decision bundle.
 
 ### 10. Robust orchestration layer
 
-`orchestratePredictiveRisk()` produces the v1.7 autonomous recommendation.
-
-The final score is:
+`orchestratePredictiveRisk()` ranks candidates using:
 
 `robustScore = 0.80 × weightedMeanScore + 0.20 × worstHorizonScore + interventionPenalty`
 
-The returned result preserves:
+The result preserves:
 
 - `simulation=true`;
 - `autonomousRecommendation=true`;
@@ -138,215 +91,262 @@ The returned result preserves:
 
 ### 11. Explainability layer
 
-`engine/explainableOrchestrationEngine.js` adds `explainOrchestration()`.
+`engine/explainableOrchestrationEngine.js` reconstructs the deterministic robust score and compares the selected candidate with alternatives.
 
-It reconstructs the deterministic robust score and reports:
-
-- weighted-mean contribution;
-- worst-horizon contribution;
-- intervention penalty;
-- reconstructed score;
-- differences versus `observe_only`;
-- final average-risk difference;
-- final maximum-risk difference;
-- final load difference;
-- pairwise comparison against each alternative.
-
-The explanation is arithmetic and model-internal.
-
-The output explicitly preserves:
-
-- `explanationType=deterministic_arithmetic_decision_explanation`;
-- `causalClaim=false`.
-
-This prevents arithmetic score decomposition from being presented as causal inference or a safety case.
+The explanation is arithmetic/model-internal and explicitly preserves `causalClaim=false`.
 
 ### 12. Policy guardrail layer
 
-`data/orchestration_policy.json` defines the current demo policy.
+`data/orchestration_policy.json` constrains target count, simulated load reduction, incident relief, intervention penalty, simulation-only operation, mandatory human approval, automatic-application prohibition and production-control prohibition.
 
-It currently constrains:
-
-- maximum target count;
-- maximum load reduction;
-- maximum incident relief;
-- maximum intervention penalty;
-- simulation-only mode;
-- mandatory human approval;
-- automatic-application prohibition;
-- production-control prohibition;
-- closed-road preservation invariant;
-- minimum candidate count.
-
-`evaluatePolicyGuardrails()` evaluates ranked candidates and identifies the highest-ranked compliant candidate.
-
-The policy-selected candidate may therefore differ from the raw scoring winner if a more aggressive candidate violates constraints.
-
-The demo policy is not a road authority policy and is not regulatory evidence.
+The policy is an engineering-demo policy, not road-authority operating policy.
 
 ### 13. Policy-aware recommendation layer
 
-`buildExplainablePolicyOrchestration()` combines:
+`buildExplainablePolicyOrchestration()` combines predictive orchestration, policy evaluation, compliant-candidate selection, arithmetic explanation and replay.
 
-1. predictive orchestration;
-2. policy evaluation;
-3. compliant candidate selection;
-4. deterministic explanation;
-5. scenario replay.
-
-If no candidate satisfies the policy, the result is blocked rather than silently selecting a prohibited plan.
-
-The returned object preserves:
-
-- `autoApply=false`;
-- `humanApprovalRequired=true`;
-- `productionControlConnected=false`.
+If no candidate satisfies policy, the result is blocked.
 
 ### 14. Scenario replay layer
 
-`buildScenarioReplay()` compares the policy-selected plan with the `observe_only` baseline at each shared horizon.
+`buildScenarioReplay()` compares the policy-selected plan with `observe_only` at every shared horizon.
 
-Every replay frame includes:
-
-- baseline objective metrics;
-- selected-plan objective metrics;
-- improvement deltas;
-- selected route;
-- virtual emergency decision;
-- signal phases.
-
-Replay outputs include:
-
-- `replayOnly=true`;
-- `fieldExecution=false`.
-
-This is a deterministic comparison of simulated alternatives, not a reconstruction of real field history.
+This is simulated candidate comparison, not field-event reconstruction.
 
 ### 15. Sensitivity layer
 
-`runOrchestrationSensitivity()` performs what-if analysis across combinations of:
+`runOrchestrationSensitivity()` performs what-if analysis across forecast horizon sets and route-safety weights.
 
-- forecast horizon sets;
-- route safety weights.
+### 16. Preventive command simulation layer
 
-The v1.8 runtime currently evaluates risk weights `0.8`, `1.8`, `3.5` and horizon sets `5/15` and `5/15/30/60`.
+`engine/preventiveCommandEngine.js` produces simulated preventive vehicle-response recommendations from directly observed QCS proxy information.
 
-Each sensitivity result reports:
+Every command remains actuator-disconnected and non-certified.
 
+### 17. Acquisition presentation layer
+
+`acquisitionRuntime.js` adds the acquisition-ready entry experience, executive navigation and complete feature explorer.
+
+The entry layer preserves the distinction among implemented demo, represented demo, catalogued only and production verified.
+
+### 18. Executive Guided Demo layer
+
+The deployed guided runtime provides an 11-step executive path through baseline state, incident injection, Dynamic Risk Twin, prediction, candidate comparison, explanation, policy gate, scenario replay, Acquisition Decision Room and capability portfolio.
+
+The tour acts on the executable demo controls and maintains the same evidence boundary.
+
+### 19. Acquisition Decision Room layer
+
+`decisionRoomRuntime.js` and `decisionRoom.css` expose acquisition-relevant material without exposing sensitive algorithmic implementation details.
+
+The Decision Room includes strategic acquisition rationale, architecture snapshot, evidence/readiness matrix, due-diligence links, MVP-to-production roadmap, deployment/transaction models, IP disclosure boundary and buyer next action.
+
+### 20. Synchronized captured live-state layer
+
+`engine/unifiedStateBus.js` introduces schema:
+
+`smart-traffic-live-state/v1`
+
+The captured state includes revision, sequence, tick, scenario, network/base-network snapshots, QCS observations, fleet, route parameters, emergency target, demo policy, incidents, twin snapshot, predictive snapshot, last decision and event history.
+
+Deterministic reducer events include scenario load, traffic drift, incident injection/clear, QCS update, route/policy changes, twin/predictive update, manual reset and runtime reconciliation.
+
+`hardeningRuntime.js` synchronizes this captured state with the executable demo runtime and wraps selected runtime mutation methods so changes are visible to the audit/replay layer.
+
+Current architectural boundary: `app.js` is still the primary operational UI/runtime state owner. The v1.9 unified state bus is a synchronized captured hardening state and has not yet replaced every direct core-state mutation. Therefore it must not be described as the sole authoritative production source-of-truth.
+
+### 21. Canonical cryptographic fingerprint layer
+
+`engine/auditHash.js` provides deterministic canonical JSON serialization and SHA-256 through Web Crypto.
+
+Fingerprints are used for captured state, inputs, policy, outputs and chained ledger entries.
+
+Evidence boundary:
+
+- cryptographic SHA-256 hash: yes;
+- digital signature: no;
+- blockchain anchoring: no;
+- non-repudiation: no;
+- production audit certification: no.
+
+### 22. Decision integrity ledger layer
+
+`engine/decisionLedgerEngine.js` introduces schema:
+
+`smart-traffic-decision-ledger/v1`
+
+Each entry contains sequence, state revision, state/input/policy/output fingerprints, previous entry hash, current entry hash, method metadata and evidence flags.
+
+`verifyLedgerChain()` recalculates the chain and detects stored-entry mutation.
+
+This is cryptographic integrity/tamper evidence within the captured engineering ledger, not a legally signed audit trail.
+
+### 23. Exact deterministic replay layer
+
+`engine/exactReplayEngine.js` captures the state, inputs, policy and deterministic orchestration output into:
+
+`smart-traffic-exact-replay-package/v1`
+
+Replay reruns `buildExplainablePolicyOrchestration()` and checks:
+
+- state hash;
+- input hash;
+- policy hash;
+- output hash;
 - selected candidate;
-- robust score;
-- final route minutes;
-- final route average risk;
-- `autoApply=false`.
+- robust score.
 
-### 16. Runtime UI separation
+An exact match means software/input deterministic exactness inside the captured MVP environment. It is not evidence that real traffic would reproduce the same physical outcome.
 
-The core `app.js` retains the v1.7 operational and predictive interface.
+### 24. Runtime Integrity UI layer
 
-`v18Runtime.js` is a separate browser module loaded by `index.html`. It adds the v1.8 governance panel without coupling policy rendering into the traffic engine.
+`hardeningRuntime.js` and `hardeningRuntime.css` add the Production Hardening panel to the Acquisition Decision Room.
 
-The panel exposes:
+It exposes state revision, shortened state hash, ledger-entry count, chain status, recent ledger hashes, recent state events and controls to capture, verify, replay and export an engineering audit bundle.
 
-- policy PASS/BLOCK state;
-- policy-selected plan;
-- score reconstruction;
-- reason table for alternatives;
-- policy compliance table;
-- scenario replay table;
-- sensitivity table.
+### 25. Dynamic capability evidence layer
 
-The v1.8 runtime uses the currently selected scenario identifier, reconstructs that scenario from the base fixture data, and evaluates the policy/replay layer against that scenario.
+`coverage/coverageModel.js` maintains one row for every unified source-registry capability.
 
-It does not yet consume every transient random load drift or manually injected in-memory incident from the core `app.js` state. This is an explicit synchronization limitation of v1.8.
-
-### 17. Preventive command simulation layer
-
-`engine/preventiveCommandEngine.js` remains downstream of current-state route analysis and generates simulated vehicle-response recommendations from directly observed QCS proxy information.
-
-Every command remains simulated, actuator-disconnected and non-certified.
-
-### 18. Dynamic capability evidence layer
-
-`coverage/coverageModel.js` maintains one row for every source-registry capability.
-
-Current CI-validated coverage remains:
+Current validated coverage remains:
 
 - 33 implemented-demo;
 - 17 represented-demo;
 - 73 catalogued-only;
 - 0 production-verified.
 
-Version 1.8 does not promote additional historical capabilities because increased explainability and governance depth alone is not sufficient evidence for a new historical feature mapping.
+### 26. Browser E2E assurance layer
 
-### 19. Governance and assurance layer
+`playwright.config.js` and `e2e/executable-platform.spec.js` test the assembled executable site rather than isolated JavaScript modules only.
+
+Current CI browser projects:
+
+- desktop Chromium at 1440 × 1000;
+- mobile WebKit emulation at 390 × 844 with touch enabled.
+
+Four scenarios run in both projects, eight browser tests total:
+
+1. entry-gate and mobile-action usability;
+2. Decision Room, Hardening Panel and Guided Demo loading;
+3. decision capture, ledger verification and Exact Replay;
+4. incident mutation synchronization into hardening state.
+
+Current result: 8/8 passed.
+
+WebKit mobile emulation is not physical-iPhone acceptance evidence.
+
+### 27. Single executable build layer
+
+`scripts/build-executable-site-v190.mjs` assembles the exact v1.9 executable site.
+
+The same builder is called by:
+
+- `.github/workflows/e2e.yml` for browser tests; and
+- the GitHub Pages deployment workflow.
+
+This removes duplicated site-assembly logic and materially reduces the risk of validating one artifact while publishing another.
+
+### 28. Governance and assurance boundary
 
 The repository separates:
 
-- source provenance;
-- demo implementation;
-- predictive assumptions;
+- historical source provenance;
+- demo implementation coverage;
+- captured runtime state;
+- deterministic decision logic;
 - policy configuration;
+- cryptographic integrity evidence;
+- browser compatibility evidence;
 - production verification.
 
-The code and tests explicitly protect against:
+The code/tests protect against claims that are not supported, including:
 
-- calling QCS fixtures real quantum data;
-- claiming a trained prediction model where none exists;
-- presenting predictive baselines as validated forecasts;
-- reopening closed roads through simulated intervention;
-- treating autonomous recommendation as field execution;
-- bypassing mandatory human approval;
-- treating arithmetic explanation as causal proof;
-- accepting over-limit intervention candidates through the policy gate;
-- treating scenario replay as field reconstruction;
-- claiming production verification without independent evidence.
+- real quantum data or communication;
+- trained production forecasting where none exists;
+- automatic field execution;
+- bypassing human approval;
+- causal explanation;
+- regulatory policy approval;
+- field-event replay;
+- digital signature/non-repudiation/blockchain anchoring;
+- physical iPhone validation from WebKit emulation;
+- production verification without independent evidence.
+
+## Runtime data flow — v1.9
+
+The current executable flow is:
+
+```text
+Demo fixtures / browser actions
+        ↓
+app.js operational runtime
+        ↓
+Traffic / Operations / QCS / Twin / Predictive engines
+        ↓
+Explainability + Policy + Scenario Replay
+        ↓
+Acquisition / Guided Demo / Decision Room
+        ↓
+hardeningRuntime synchronization
+        ↓
+Captured smart-traffic-live-state/v1
+        ↓
+SHA-256 fingerprints
+        ↓
+Decision Ledger + Exact Replay package
+```
+
+The future production-hardening target is to migrate the operational mutations themselves through the unified event/state architecture, so the bus becomes the authoritative runtime state rather than a synchronized audit mirror.
 
 ## Validation
 
-GitHub Actions currently validates:
+Version 1.9 validation currently includes:
 
 1. Registry and evidence integrity.
-2. Traffic engine.
-3. Operations engine.
-4. QCS proxy risk.
-5. Dynamic Risk Digital Twin.
-6. Twin-aware route, signal and emergency logic.
-7. Preventive command logic.
-8. Predictive network projection.
-9. Multi-horizon risk propagation.
-10. Predictive intervention and closed-road preservation.
-11. Autonomous candidate ranking.
-12. Deterministic recommendation regression.
-13. Robust-score explanation reconstruction.
-14. Alternative-plan explanation.
-15. Policy rejection of over-limit candidates.
-16. Policy-aware recommendation boundary.
-17. Scenario replay.
-18. Sensitivity determinism.
-19. Coverage semantics.
-20. JavaScript syntax for the core and v1.8 runtime modules.
-21. Static and runtime UI wiring.
-22. Manifest-driven feature-file existence.
-23. Policy-file safety boundaries.
-24. QCS fixture validation.
+2. Traffic/operations engines.
+3. QCS proxy risk.
+4. Dynamic Risk Digital Twin.
+5. Twin-aware route/signal/emergency logic.
+6. Preventive command logic.
+7. Predictive projection and multi-horizon propagation.
+8. Candidate ranking and deterministic regression.
+9. Explainability and policy guardrails.
+10. Scenario replay and sensitivity analysis.
+11. Unified-state reducer determinism and immutable mutation behavior.
+12. Stable canonical JSON and SHA-256 state fingerprints.
+13. SHA-256 decision chain verification.
+14. Tamper detection.
+15. Captured Exact Replay equality.
+16. Incident preservation in replay packages.
+17. Static Acquisition Decision Room contract.
+18. Static Production Hardening contract.
+19. Executable-site build contract.
+20. Browser E2E on desktop Chromium and mobile WebKit emulation.
 
-Latest successful CI before this documentation update reports:
+Current automated results:
 
-- 45/45 tests passing;
-- 31 required/dynamic files checked;
-- 81 static DOM bindings;
-- 9 runtime predictive bindings;
-- 11 runtime explainability/policy/replay bindings;
-- 12 road nodes;
-- 17 road links;
-- 5 scenarios;
-- 4 virtual emergency units;
-- 6 QCS observations.
+- 56/56 Node tests passing;
+- 8/8 Playwright browser E2E tests passing;
+- 123 registry records valid;
+- coverage 33 / 17 / 73 / 0;
+- executable smoke, Decision Room and Production Hardening contracts passing.
+
+Core v1.9 CI:
+
+https://github.com/maksr2030/Smart-Traffic-AI-MVP/actions/runs/31665290668
+
+Browser E2E:
+
+https://github.com/maksr2030/Smart-Traffic-AI-MVP/actions/runs/31665468699
+
+Unified-builder GitHub Pages deployment:
+
+https://github.com/maksr2030/Smart-Traffic-AI-MVP/actions/runs/31665486328
 
 ## Production-readiness boundary
 
-Production readiness remains outside the present proof-of-concept.
+Production readiness remains outside this proof-of-concept.
 
-The forecast layer is deterministic and untrained. The orchestration layer ranks simulated alternatives but never applies them automatically. The explanation layer is arithmetic, not causal. The policy file is an engineering-demo policy, not an approved operating policy. Replay is a simulation comparison, not field evidence.
+A production deployment requires authenticated authoritative interfaces, calibrated/approved data, validated forecasting where appropriate, source-level single-state/event migration, identity and authorization, authority-approved policies, cyber-security/privacy engineering, safety and hazard analysis, signed audit where required, observability and incident response, resilience/load/latency/failure testing, physical-device validation, traffic-controller and emergency-agency integration, shadow mode, staged deployment and controlled field evidence.
 
-Production deployment would require authenticated real-time interfaces, approved high-fidelity data, validated predictive models where appropriate, authority-approved operating policies, traffic-controller and emergency-agency integration, authorization and human-oversight controls, cyber-security and privacy engineering, safety and hazard analysis, audit logs, observability, resilience testing, performance benchmarking, staged deployment and controlled field validation.
+No live road controller, production vehicle actuator, emergency dispatch system, government feed, real quantum sensor or safety-certified closed-loop control is connected to the current MVP.
