@@ -1,4 +1,4 @@
-import { applyIncident, chooseBestScenario, edgeTravelMinutes, networkMetrics, shortestPath } from './engine/trafficEngine.js';
+import { applyIncident, edgeTravelMinutes, shortestPath } from './engine/trafficEngine.js';
 import {
   applyOperationalIntervention,
   compareOperations,
@@ -16,12 +16,13 @@ import {
   planTwinEmergencyDispatch,
   recommendTwinSignalPlan
 } from './engine/dynamicRiskTwinEngine.js';
+import { orchestratePredictiveRisk } from './engine/predictiveOrchestrationEngine.js';
 import { buildCoverage, coverageSummary, coverageToCsv } from './coverage/coverageModel.js';
 
 const state = {
   lang: 'ar', running: true, features: [], coverageRows: [], baseNetwork: null, networkModel: null,
   scenarios: [], fleet: [], qcsObservations: [], qcsResult: null, dynamicRiskTwin: null, lastTwinDecisionBundle: null,
-  currentScenario: 'normal', pendingIntervention: null, lastForecast: null, lastComparison: null,
+  lastPredictiveOrchestration: null, currentScenario: 'normal', pendingIntervention: null, lastForecast: null, lastComparison: null,
   lastRiskRouteComparison: null, lastCommandPlan: null, tick: 0
 };
 
@@ -29,12 +30,14 @@ const labels = {
   ar: {
     run:'تشغيل', pause:'إيقاف المحاكاة', resume:'استئناف المحاكاة', load:'الحمل', speed:'كم/س',
     route:'احسب المسار', riskRoute:'قارن مسار التوأم الديناميكي', unreachable:'لا يوجد مسار متاح', flowing:'انسيابي', busy:'مزدحم', critical:'حرج', closed:'مغلق',
-    forecast:'تشغيل التنبؤ', dispatch:'إرسال وحدة الطوارئ', applied:'تم تطبيق التدخل المحاكى', qcs:'تشغيل تحليل QCS المحاكى', twin:'حدّث التوأم وشغّل القرارات الموحدة'
+    forecast:'تشغيل التنبؤ', dispatch:'إرسال وحدة الطوارئ', applied:'تم تطبيق التدخل المحاكى', qcs:'تشغيل تحليل QCS المحاكى',
+    twin:'حدّث التوأم وشغّل القرارات الموحدة', predictive:'شغّل التنبؤ والاستعراض الاستباقي'
   },
   en: {
     run:'Run', pause:'Pause simulation', resume:'Resume simulation', load:'Load', speed:'km/h',
     route:'Calculate route', riskRoute:'Compare dynamic-twin route', unreachable:'No route available', flowing:'Flowing', busy:'Busy', critical:'Critical', closed:'Closed',
-    forecast:'Run forecast', dispatch:'Dispatch emergency unit', applied:'Simulated intervention applied', qcs:'Run simulated QCS analysis', twin:'Refresh twin and run unified decisions'
+    forecast:'Run forecast', dispatch:'Dispatch emergency unit', applied:'Simulated intervention applied', qcs:'Run simulated QCS analysis',
+    twin:'Refresh twin and run unified decisions', predictive:'Run predictive orchestration'
   }
 };
 
@@ -42,6 +45,32 @@ const arabicNodes = {
   N1:'البوابة الشمالية',N2:'طريق الملك',N3:'الجامعة',N4:'وصلة المطار',N5:'وسط المدينة الشرقي',N6:'وسط المدينة الغربي',
   N7:'مدخل الميناء',N8:'المنطقة الصناعية',N9:'المستشفى',N10:'منطقة المدارس',N11:'الطريق الدائري',N12:'المنطقة اللوجستية'
 };
+
+function ensurePredictiveUi(){
+  if(document.getElementById('predictiveOrchestrationPanel')) return;
+  const anchor=document.querySelector('.operations-grid');
+  const section=document.createElement('section'); section.className='card'; section.id='predictiveOrchestrationPanel';
+  section.innerHTML=`
+    <div class="section-title"><div><h2 data-ar="Predictive Risk & Autonomous Orchestration" data-en="Predictive Risk & Autonomous Orchestration">Predictive Risk & Autonomous Orchestration</h2><p data-ar="تنبؤ حتمي 5–60 دقيقة وترتيب تلقائي لخطط التدخل دون تطبيق ميداني" data-en="Deterministic 5–60 minute forecasting and autonomous ranking of intervention plans without field actuation">تنبؤ حتمي 5–60 دقيقة وترتيب تلقائي لخطط التدخل دون تطبيق ميداني</p></div><button class="btn primary" id="predictiveBtn">شغّل التنبؤ والاستعراض الاستباقي</button></div>
+    <div class="comparison-grid">
+      <div class="comparison-card"><span data-ar="الخطة الموصى بها" data-en="Recommended plan">الخطة الموصى بها</span><div><b id="predictiveSelected">—</b></div></div>
+      <div class="comparison-card"><span data-ar="تحسن مقابل المراقبة فقط" data-en="Improvement vs observe-only">تحسن مقابل المراقبة فقط</span><div><b id="predictiveImprovement">—</b></div></div>
+      <div class="comparison-card"><span data-ar="أسوأ درجة عبر الآفاق" data-en="Worst horizon score">أسوأ درجة عبر الآفاق</span><div><b id="predictiveWorst">—</b></div></div>
+      <div class="comparison-card"><span data-ar="Hotspots عند 60 دقيقة" data-en="60-minute hotspots">Hotspots عند 60 دقيقة</span><div><b id="predictiveHotspots">—</b></div></div>
+    </div>
+    <div id="predictiveResult" class="output">Predictive orchestrator ready.</div>
+    <div class="notice" data-ar="autonomousRecommendation=true ولكن autoApply=false وhumanApprovalRequired=true. التنبؤ baseline حتمي وليس نموذج AI مدرباً أو تحكماً إنتاجياً." data-en="autonomousRecommendation=true, but autoApply=false and humanApprovalRequired=true. Forecasting is a deterministic baseline, not a trained AI model or production control loop.">autonomousRecommendation=true ولكن autoApply=false وhumanApprovalRequired=true. التنبؤ baseline حتمي وليس نموذج AI مدرباً أو تحكماً إنتاجياً.</div>
+    <h3 data-ar="انتشار الخطر المتوقع" data-en="Predicted risk propagation">انتشار الخطر المتوقع</h3>
+    <div class="table-wrap coverage-table"><table><thead><tr><th>Horizon</th><th>Avg Risk</th><th>Max Risk</th><th>High/Critical</th><th>Emerging</th></tr></thead><tbody id="predictiveForecastRows"></tbody></table></div>
+    <h3 data-ar="ترتيب خطط التدخل" data-en="Intervention-plan ranking">ترتيب خطط التدخل</h3>
+    <div class="table-wrap coverage-table"><table><thead><tr><th>Rank</th><th>Candidate</th><th>Robust Score</th><th>Mean</th><th>Worst</th><th>Penalty</th></tr></thead><tbody id="predictiveCandidateRows"></tbody></table></div>`;
+  anchor?.insertAdjacentElement('beforebegin',section);
+  document.title='Smart AI Traffic Platform | Engineering MVP v1.7';
+  const brand=document.querySelector('.brand small'); if(brand) brand.textContent='Smart AI Traffic Platform | Engineering MVP v1.7';
+  const firstBadge=document.querySelector('.hero .badge'); if(firstBadge) firstBadge.textContent='MVP v1.7';
+  const badgeHolder=document.querySelector('.hero article.card > div');
+  if(badgeHolder&&!badgeHolder.textContent.includes('Predictive Orchestration')){const badge=document.createElement('span');badge.className='badge';badge.textContent='Predictive Orchestration';badgeHolder.appendChild(badge);}
+}
 
 function rnd(seed){ const x=Math.sin(seed*999.91)*43758.5453; return x-Math.floor(x); }
 function nodeLabel(id){ const node=state.networkModel?.nodes.find(n=>n.id===id); return state.lang==='ar'?(arabicNodes[id]||node?.name||id):(node?.name||id); }
@@ -103,8 +132,7 @@ function updateSim(){
     const drift=Math.round((rnd(state.tick*7+i)-.5)*5);
     edge.load=Math.max(15,Math.min(96,(edge.load||0)+drift));
   });
-  refreshDynamicTwin();
-  renderNetwork();
+  refreshDynamicTwin(); renderNetwork();
 }
 
 function logEvent(text){
@@ -164,6 +192,30 @@ function runTwinDecisionBundle(){
   const emergency=bundle.emergency.selected;
   document.getElementById('twinDecisionResult').innerHTML=`<strong>${state.lang==='ar'?'قرارات من حالة مخاطر واحدة':'Decisions from one shared risk state'}</strong><br>${state.lang==='ar'?'المسار':'Route'}: ${route.reachable?route.edgeIds.join(' → '):labels[state.lang].unreachable}<br>${state.lang==='ar'?'الإشارات':'Signals'}: ${signals}<br>${state.lang==='ar'?'الطوارئ':'Emergency'}: ${emergency?`${emergency.unit.id} · ${emergency.route.minutes.toFixed(1)} min · risk ${emergency.route.averageTwinRisk}/100`:'—'}<br><small>SIMULATION · ${state.dynamicRiskTwin.method}</small>`;
   logEvent(state.lang==='ar'?'تشغيل حزمة قرارات التوأم الديناميكي':'Dynamic twin decision bundle executed');
+}
+
+function runPredictiveOrchestration(){
+  if(!state.dynamicRiskTwin) refreshDynamicTwin();
+  const origin=document.getElementById('routeOrigin').value, destination=document.getElementById('routeDestination').value, target=document.getElementById('emergencyTarget').value;
+  const riskWeight=Number(document.getElementById('riskWeight').value||1.8);
+  const result=orchestratePredictiveRisk(state.networkModel,state.qcsObservations,state.fleet,origin,destination,target,{currentTwin:state.dynamicRiskTwin,routeRiskWeight:riskWeight,horizons:[5,15,30,60]});
+  state.lastPredictiveOrchestration=result;
+  const selected=result.selected;
+  const finalFrame=result.forecast.timeline.at(-1);
+  document.getElementById('predictiveSelected').textContent=selected.candidate.label;
+  document.getElementById('predictiveImprovement').textContent=result.improvementVsBaseline===null?'—':`${result.improvementVsBaseline>=0?'+':''}${result.improvementVsBaseline}`;
+  document.getElementById('predictiveWorst').textContent=selected.worstHorizonScore;
+  document.getElementById('predictiveHotspots').textContent=finalFrame.hotspots.length;
+  document.getElementById('predictiveResult').innerHTML=`<strong>${state.lang==='ar'?'التوصية الذاتية المحاكاة':'Simulated autonomous recommendation'}: ${selected.candidate.label}</strong><br>Robust score ${selected.robustScore} · mean ${selected.weightedMeanScore} · worst ${selected.worstHorizonScore}<br>${state.lang==='ar'?'لقطة التوأم':'Twin snapshot'}: tick ${result.forecast.currentTwin.tick} · horizons ${result.forecast.horizons.join('/')} min<br><small>trainedModel=false · autoApply=false · humanApprovalRequired=true · productionControlConnected=false</small>`;
+  const forecastRows=document.getElementById('predictiveForecastRows'); forecastRows.innerHTML='';
+  result.forecast.timeline.forEach(frame=>{
+    const tr=document.createElement('tr'); tr.innerHTML=`<td>${frame.horizonMinutes} min</td><td>${frame.summary.averageRiskScore}</td><td>${frame.summary.maxRiskScore}</td><td>${frame.summary.highOrCriticalCount}</td><td>${frame.summary.emergingHotspots}</td>`; forecastRows.appendChild(tr);
+  });
+  const candidateRows=document.getElementById('predictiveCandidateRows'); candidateRows.innerHTML='';
+  result.rankedCandidates.forEach((item,index)=>{
+    const tr=document.createElement('tr'); tr.innerHTML=`<td>${index+1}</td><td>${item.label}</td><td>${item.robustScore}</td><td>${item.weightedMeanScore}</td><td>${item.worstHorizonScore}</td><td>${item.interventionPenalty}</td>`; candidateRows.appendChild(tr);
+  });
+  logEvent(`${state.lang==='ar'?'التنظيم الاستباقي أوصى':'Predictive orchestrator recommended'}: ${selected.candidate.id}`);
 }
 
 function renderComparison(comparison){
@@ -252,16 +304,7 @@ function intervene(action){
   }
   if(action==='reroute'){ runRoute(); runRiskAwareRoute(); return; }
   if(action==='emergency'){ dispatchEmergency(); return; }
-  if(action==='qtos'){
-    const candidates=[7,10,13].map(loadReduction=>{
-      const network=applyOperationalIntervention(state.networkModel,{targetCount:7,loadReduction,incidentRelief:.25});
-      return {network,metrics:networkMetrics(network),loadReduction};
-    });
-    const best=chooseBestScenario(candidates); const comparison=compareOperations(state.networkModel,best.network);
-    state.pendingIntervention=best.network; state.lastComparison=comparison; renderComparison(comparison);
-    document.getElementById('engineeringOutput').textContent=`Scenario selector · candidate load relief ${best.loadReduction} · stress ${best.metrics.stressIndex.toFixed(1)}`;
-    logEvent('QTOS/classical scenario comparison completed');
-  }
+  if(action==='qtos'){ runPredictiveOrchestration(); document.getElementById('engineeringOutput').textContent=`Predictive orchestration · ${state.lastPredictiveOrchestration.selected.candidate.label} · robust ${state.lastPredictiveOrchestration.selected.robustScore}`; return; }
 }
 
 function injectIncident(){
@@ -335,6 +378,7 @@ function exportSnapshot(){
   snapshot.riskAwareRouting=state.lastRiskRouteComparison?{simulation:true,delta:state.lastRiskRouteComparison.delta,twinRoute:state.lastRiskRouteComparison.twinRoute}:null;
   snapshot.preventiveCommandPlan=state.lastCommandPlan?{simulation:true,actuatorConnected:false,summary:state.lastCommandPlan.summary}:null;
   snapshot.twinDecisionBundle=state.lastTwinDecisionBundle?{simulation:true,route:state.lastTwinDecisionBundle.route,signals:state.lastTwinDecisionBundle.signals,emergency:state.lastTwinDecisionBundle.emergency}:null;
+  snapshot.predictiveOrchestration=state.lastPredictiveOrchestration?{simulation:true,method:state.lastPredictiveOrchestration.method,rankedCandidates:state.lastPredictiveOrchestration.rankedCandidates,selected:{candidate:state.lastPredictiveOrchestration.selected.candidate,robustScore:state.lastPredictiveOrchestration.selected.robustScore},forecast:state.lastPredictiveOrchestration.forecast.timeline.map(frame=>({horizonMinutes:frame.horizonMinutes,summary:frame.summary,hotspots:frame.hotspots.slice(0,5)})),autoApply:false,humanApprovalRequired:true}:null;
   downloadFile('smart-traffic-operational-snapshot.json',JSON.stringify(snapshot,null,2),'application/json'); logEvent('Operational snapshot exported');
 }
 function exportCoverage(){ downloadFile('smart-traffic-feature-coverage.csv',coverageToCsv(state.coverageRows),'text/csv;charset=utf-8'); logEvent('Coverage matrix exported'); }
@@ -343,8 +387,8 @@ function translate(){
   const isAr=state.lang==='ar'; document.documentElement.lang=state.lang; document.documentElement.dir=isAr?'rtl':'ltr';
   document.querySelectorAll('[data-ar][data-en]').forEach(el=>el.textContent=el.dataset[state.lang]);
   document.getElementById('langBtn').textContent=isAr?'English':'العربية'; document.getElementById('pauseBtn').textContent=state.running?labels[state.lang].pause:labels[state.lang].resume;
-  document.querySelectorAll('[data-action]').forEach(b=>b.textContent=labels[state.lang].run); document.getElementById('routeBtn').textContent=labels[state.lang].route; document.getElementById('riskRouteBtn').textContent=labels[state.lang].riskRoute; document.getElementById('forecastBtn').textContent=labels[state.lang].forecast; document.getElementById('dispatchBtn').textContent=labels[state.lang].dispatch; document.getElementById('qcsRiskBtn').textContent=labels[state.lang].qcs; document.getElementById('twinDecisionBtn').textContent=labels[state.lang].twin;
-  rebuildCategories(); populateScenarios(); populateEngineeringSelectors(); renderFeatures(); renderCoverage(); renderDynamicRiskTwin(); renderNetwork(); if(state.qcsResult) runQcsRisk(); if(state.lastRiskRouteComparison) runRiskAwareRoute(); if(state.lastTwinDecisionBundle) runTwinDecisionBundle();
+  document.querySelectorAll('[data-action]').forEach(b=>b.textContent=labels[state.lang].run); document.getElementById('routeBtn').textContent=labels[state.lang].route; document.getElementById('riskRouteBtn').textContent=labels[state.lang].riskRoute; document.getElementById('forecastBtn').textContent=labels[state.lang].forecast; document.getElementById('dispatchBtn').textContent=labels[state.lang].dispatch; document.getElementById('qcsRiskBtn').textContent=labels[state.lang].qcs; document.getElementById('twinDecisionBtn').textContent=labels[state.lang].twin; document.getElementById('predictiveBtn').textContent=labels[state.lang].predictive;
+  rebuildCategories(); populateScenarios(); populateEngineeringSelectors(); renderFeatures(); renderCoverage(); renderDynamicRiskTwin(); renderNetwork(); if(state.qcsResult) runQcsRisk(); if(state.lastRiskRouteComparison) runRiskAwareRoute(); if(state.lastTwinDecisionBundle) runTwinDecisionBundle(); if(state.lastPredictiveOrchestration) runPredictiveOrchestration();
 }
 
 async function load(){
@@ -356,17 +400,18 @@ async function load(){
   state.features=datasets.flat();
   if(state.features.length!==manifest.total) throw new Error(`Feature registry mismatch ${state.features.length} != ${manifest.total}`);
   state.coverageRows=buildCoverage(state.features); state.baseNetwork=JSON.parse(JSON.stringify(network)); state.networkModel=network; state.scenarios=scenarios; state.fleet=fleet; state.qcsObservations=qcsObservations;
-  populateScenarios(); populateEngineeringSelectors(); rebuildCategories(); renderFeatures(); renderCoverage(); refreshDynamicTwin(); renderNetwork(); runRoute(); runForecast(); dispatchEmergency(); runScenario(); runQcsRisk(); runRiskAwareRoute(); runTwinDecisionBundle();
-  logEvent(state.lang==='ar'?'تم تحميل التوأم الديناميكي للمخاطر وربطه بالمسارات والإشارات والطوارئ':'Dynamic risk twin loaded and connected to routing, signals and emergency planning'); setInterval(updateSim,1600);
+  populateScenarios(); populateEngineeringSelectors(); rebuildCategories(); renderFeatures(); renderCoverage(); refreshDynamicTwin(); renderNetwork(); runRoute(); runForecast(); dispatchEmergency(); runScenario(); runQcsRisk(); runRiskAwareRoute(); runTwinDecisionBundle(); runPredictiveOrchestration();
+  logEvent(state.lang==='ar'?'تم تحميل التوأم الديناميكي وطبقة التنبؤ والتنظيم الاستباقي':'Dynamic risk twin, predictive risk and autonomous recommendation orchestration loaded'); setInterval(updateSim,1600);
 }
 
+ensurePredictiveUi();
 document.getElementById('langBtn').onclick=()=>{state.lang=state.lang==='ar'?'en':'ar';translate()};
 document.getElementById('pauseBtn').onclick=()=>{state.running=!state.running;translate();logEvent(state.running?'Simulation resumed':'Simulation paused')};
 document.getElementById('optimizeBtn').onclick=()=>intervene('qtos');
 document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>intervene(b.dataset.action));
-document.getElementById('routeBtn').onclick=runRoute; document.getElementById('riskRouteBtn').onclick=runRiskAwareRoute; document.getElementById('riskWeight').onchange=()=>{runRiskAwareRoute();runTwinDecisionBundle()}; document.getElementById('scenarioBtn').onclick=runScenario; document.getElementById('forecastBtn').onclick=runForecast; document.getElementById('dispatchBtn').onclick=dispatchEmergency; document.getElementById('qcsRiskBtn').onclick=runQcsRisk; document.getElementById('twinDecisionBtn').onclick=()=>{refreshDynamicTwin();renderNetwork();runRiskAwareRoute();runTwinDecisionBundle()};
+document.getElementById('routeBtn').onclick=runRoute; document.getElementById('riskRouteBtn').onclick=runRiskAwareRoute; document.getElementById('riskWeight').onchange=()=>{runRiskAwareRoute();runTwinDecisionBundle();runPredictiveOrchestration()}; document.getElementById('scenarioBtn').onclick=runScenario; document.getElementById('forecastBtn').onclick=runForecast; document.getElementById('dispatchBtn').onclick=dispatchEmergency; document.getElementById('qcsRiskBtn').onclick=runQcsRisk; document.getElementById('twinDecisionBtn').onclick=()=>{refreshDynamicTwin();renderNetwork();runRiskAwareRoute();runTwinDecisionBundle()}; document.getElementById('predictiveBtn').onclick=runPredictiveOrchestration;
 document.getElementById('incidentBtn').onclick=injectIncident; document.getElementById('applyInterventionBtn').onclick=applyPendingIntervention;
-document.getElementById('resetNetworkBtn').onclick=()=>{state.networkModel=JSON.parse(JSON.stringify(state.baseNetwork));state.pendingIntervention=null;state.lastComparison=null;state.dynamicRiskTwin=null;refreshDynamicTwin();populateEngineeringSelectors();renderNetwork();runRoute();runRiskAwareRoute();runTwinDecisionBundle();logEvent(state.lang==='ar'?'إعادة ضبط الشبكة والتوأم':'Network and twin reset')};
+document.getElementById('resetNetworkBtn').onclick=()=>{state.networkModel=JSON.parse(JSON.stringify(state.baseNetwork));state.pendingIntervention=null;state.lastComparison=null;state.dynamicRiskTwin=null;refreshDynamicTwin();populateEngineeringSelectors();renderNetwork();runRoute();runRiskAwareRoute();runTwinDecisionBundle();runPredictiveOrchestration();logEvent(state.lang==='ar'?'إعادة ضبط الشبكة والتوأم':'Network and twin reset')};
 document.getElementById('exportSnapshotBtn').onclick=exportSnapshot; document.getElementById('exportCoverageBtn').onclick=exportCoverage;
 ['search','groupFilter','categoryFilter'].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',renderFeatures));
 document.getElementById('coverageSearch').addEventListener('input',renderCoverage); document.getElementById('coverageStatus').addEventListener('change',renderCoverage);
