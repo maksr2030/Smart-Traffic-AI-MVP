@@ -1,160 +1,133 @@
-# Smart AI Traffic Platform — Engineering MVP v1.3
+# Smart AI Traffic Platform — Engineering MVP v1.4
 
 Public engineering proof-of-concept for a city-scale and sovereign traffic intelligence platform.
 
-## Unified registry status
+## Unified registry
 
-The repository currently exposes 108 source records in the bilingual unified registry:
+The branch currently exposes **123 source records** through a dynamic bilingual registry loaded from `data/features.json`:
 
-- 52 verified Main Legacy historical features from ranges 1-14 and 200-237.
-- 23 conversation-recovered capabilities without verified Main Legacy numbers.
-- 5 additional capabilities recovered from project history.
+- 52 verified Main Legacy historical features: 1-14 and 200-237.
+- 23 conversation-recovered capabilities.
+- 5 additional project-history capabilities.
 - 25 QTOS capabilities.
-- 3 directly reopened QCS track-local capabilities: `QCS-102`, `QCS-103`, and `QCS-104`.
+- 18 directly verified QCS track-local capabilities.
 
-Main Legacy identifiers 15-199 remain reserved and are not fabricated.
+Direct QCS registry records currently include `QCS-80`, `QCS-85`-`QCS-89`, `QCS-92`-`QCS-95`, and `QCS-97`-`QCS-104`.
 
-The registry count is intentionally separate from forensic recovery-ledger counts, candidate rows and cross-project source records.
+Main Legacy 15-199 remains reserved pending verified direct recovery.
+
+## Engineering MVP v1.4
+
+Version 1.4 adds two major engineering changes.
+
+### Dynamic registry loading
+
+The browser no longer contains a hard-coded list of feature JSON files. `app.js` loads `data/features.json`, follows `manifest.files`, validates the loaded row count against `manifest.total`, and builds the feature and coverage views from the resulting registry. This prevents newly recovered capabilities from silently disappearing from the UI.
+
+### QCS risk and preventive-response lab
+
+`engine/qcsRiskEngine.js` implements a deterministic simulation proxy for a subset of recovered QCS capabilities. It consumes simulated road observations such as road quality, roughness, visibility, weather severity, blind-spot risk, curvature risk, friction, hidden-hazard confidence and vehicle speed.
+
+The engine produces:
+
+- deterministic segment risk scores;
+- low/moderate/high/critical risk levels;
+- suggested preventive speeds;
+- simulated stability-control, suspension, blind-spot, curve, weather, braking and rerouting recommendations;
+- simulated V2X-style hazard messages;
+- corridor-level risk summaries.
+
+The QCS proxy explicitly reports:
+
+- `simulation: true`
+- `quantumHardwareConnected: false`
+- `quantumCommunicationClaim: false`
+- no connected vehicle actuator.
+
+No quantum sensing, quantum communications, vehicle control or field-road integration is claimed by this MVP.
+
+## QCS demo coverage
+
+Executable demo logic now meaningfully represents:
+
+- `QCS-80` — vehicle stability and skid-prevention risk logic.
+- `QCS-85` — rough-terrain response logic.
+- `QCS-86` — blind-spot risk logic.
+- `QCS-87` — severe-weather response logic.
+- `QCS-88` — sharp-turn risk logic.
+- `QCS-92` — road-quality and vehicle-response logic.
+
+Related capabilities such as `QCS-93`, `QCS-94`, `QCS-95`, `QCS-101`, `QCS-103` and `QCS-104` are represented by proxy workflows or design boundaries rather than claimed as fully implemented.
+
+## Validated coverage
+
+Latest successful CI validation reports:
+
+- 123 total registry records.
+- 30 `implemented_demo`.
+- 20 `represented_demo`.
+- 73 `catalogued_only`.
+- 0 `production_verified`.
+
+The current automated suite passes **21/21 tests** and validates the traffic engine, operations engine, QCS risk engine, coverage model, registry provenance and static application wiring.
+
+The static smoke check validates:
+
+- 24 required/dynamic files;
+- 64 DOM bindings;
+- 12 simulated road nodes;
+- 17 road links;
+- 5 operating scenarios;
+- 4 virtual emergency units;
+- 6 QCS simulated observations.
 
 ## Complete forensic accounting
 
-The secondary source `Smart_Traffic_Forensic_Master_Recovery_v0_3.html` has SHA-256:
+`Smart_Traffic_Forensic_Master_Recovery_v0_3.html` remains fingerprinted by SHA-256:
 
 `b0ca5ef84694fbbeda22c2c03a04ef8adecc1c968f3dc65b63f0510a1dd484f5`
 
-It preserves 213 Arabic recovery-ledger rows across 14 historical tracks. The repository now contains an explicit accounting index:
+It preserves 213 recovery-ledger rows across 14 historical tracks. `evidence/FORENSIC_V0_3_TRACK_COVERAGE_INDEX.json` continues to account for exactly 213/213 source rows.
 
-`evidence/FORENSIC_V0_3_TRACK_COVERAGE_INDEX.json`
+QCS-92 is a direct supplemental recovery absent from v0.3 and therefore increases the unified registry without changing the 213-row forensic source count.
 
-The CI validator requires all 14 tracks to have an explicit registry, evidence, candidate-map, precursor or exclusion destination, and verifies that their row counts sum to exactly 213/213.
+## Evidence framework
 
-The 213 recovery-ledger rows are not claimed to be 213 unique canonical features. They contain overlapping capabilities, reused historical numbers, secondary candidates and cross-project material.
+Key files include:
 
-## Historical evidence layers
+- `evidence/EVIDENCE_REGISTER.json`
+- `evidence/FORENSIC_V0_3_TRACK_COVERAGE_INDEX.json`
+- `evidence/QCS_RECOVERY_EVIDENCE.md`
+- `evidence/QCS_FORENSIC_CANDIDATE_MAP_v0_3.json`
+- `evidence/MAIN_LEGACY_FORENSIC_CANDIDATES_15_199_v0_3.json`
+- `evidence/QTC_FORENSIC_CANDIDATE_MAP_v0_3.json`
+- `FEATURE_PROVENANCE.md`
 
-### Directly promoted Main Legacy
+## Existing operational capabilities
 
-- 1-10 — original Arabic/English Smart Traffic files.
-- 11-14 — directly reopened 17 October 2024 Smart Traffic conversation.
-- 200-237 — verified REDS2 historical block.
+The branch also retains:
 
-### Directly promoted QCS
-
-- `QCS-102`
-- `QCS-103`
-- `QCS-104`
-
-`QCS-102` has two historical English-title variants; the conflict is preserved rather than silently reconciled.
-
-### Verified precursor with zero registry effect
-
-A directly reopened 7 October 2024 smart-city conversation confirms Idea 9 and the BRD title:
-
-`AI-Powered Smart Toll Management System for Optimizing Traffic Flow and Revenue Generation`
-
-Evidence:
-
-`evidence/OCT07_TRAFFIC_PRECURSOR_EVIDENCE.md`
-
-This is retained as a traffic-related smart-city precursor, not as a replacement for Main Legacy Feature 9, because the source context predates the later Smart Traffic feature sequence and reused number 9 for different content.
-
-## Normalized forensic maps
-
-The repository currently preserves these secondary forensic layers without inflating the 108-record unified registry:
-
-- `evidence/QCS_FORENSIC_CANDIDATE_MAP_v0_3.json` — 54 QCS rows; 3 separately promoted direct, 51 remain candidates.
-- `evidence/MAIN_LEGACY_FORENSIC_CANDIDATES_15_199_v0_3.json` — 23 Main Legacy candidates; zero promoted from this map.
-- `evidence/QTC_FORENSIC_CANDIDATE_MAP_v0_3.json` — 14 QTC candidates; zero promoted.
-- `evidence/OCT17_APP_FORENSIC_CANDIDATE_MAP_v0_3.json` — 14 unnumbered October 2024 traffic-app rows with overlap crosswalks; reconciliation pending.
-- `evidence/IDEAS100_FORENSIC_CANDIDATE_MAP_v0_3.json` — February 2025 100-ideas track: rows 1-3 recovered, 4-100 explicitly open.
-- `evidence/DEC17_TRAFFIC_TRACK_FORENSIC_MAP_v0_3.json` — full 16-row December 17 track: 2 B candidates and 14 existence-only rows.
-- `evidence/CROSS_PROJECT_TRAFFIC_INTEGRATION_CANDIDATES_v0_3.json` — 2 Smart AI Environment integration candidates kept outside Smart Traffic legacy numbering.
-
-Across QCS, Main Legacy and QTC alone, 88 rows remain unpromoted: 51 + 23 + 14. OCT17 and IDEAS100 are additional reconciliation rows and may overlap existing unified capabilities.
-
-## Highest-priority open recovery targets
-
-Main Legacy:
-
-- 46 — automated traffic control and congestion prevention.
-- 47 — intelligent traffic-signal management and congestion prevention.
-- 77 — heavy-truck monitoring and regulation.
-- 114 — instant traffic solutions during sudden crises.
-- 115 — road-fee and financial-flow management.
-- 116 — parking management and financial utilization.
-- 117 — traffic carbon-emissions reduction.
-- 118 — truck-flow and logistics-efficiency analysis.
-- 148 — existence lead only; title unrecovered.
-- 149 — AI traffic-violation monitoring platform.
-- 152 — real-time traffic-violation recognition.
-
-QCS next direct-source sequence:
-
-`101 → 100 → 99 → 98 → 97 → 96 → 95 → 94 → 93`
-
-QTC first direct-source targets:
-
-`46 → 47 → 48`, then `82 → 83`.
-
-IDEAS100 remains open from `4-100` because current source retrieval did not independently reopen those historical items.
-
-## Evidence framework files
-
-- `evidence/EVIDENCE_REGISTER.json` — central machine-readable evidence register.
-- `evidence/FORENSIC_V0_3_TRACK_COVERAGE_INDEX.json` — complete 213-row track accounting.
-- `evidence/QTOS_SOURCE_EVIDENCE.md` — QTOS source mapping.
-- `evidence/QCS_RECOVERY_EVIDENCE.md` — direct QCS 102-104 evidence.
-- `evidence/OCT07_TRAFFIC_PRECURSOR_EVIDENCE.md` — direct precursor evidence.
-- `evidence/SOURCE_INTAKE_TEMPLATE.md` — source-intake procedure.
-- `evidence/RECOVERY_QUEUE.md` — open recovery targets.
-- `FEATURE_PROVENANCE.md` — promotion and namespace policy.
-
-## Archived QTOS evidence
-
-The original bilingual QTOS source is archived at:
-
-`evidence/source/Smart_Traffic_QTOS_Additional_Features_Bilingual_Standard.html`
-
-Its SHA-256 is:
-
-`a0e7bf1e78e2fb271012dbca722b4d03a2a9e957c0a19778353a23e680472d9f`
-
-The artifact maps to `QTOS-01` through `QTOS-25` and does not duplicate registry records.
-
-## Engineering MVP v1.3
-
-The current branch includes:
-
-1. A testable graph traffic engine with 12 simulated nodes and 17 road links.
+1. A graph traffic engine with 12 nodes and 17 road links.
 2. Congestion-weighted routing and incident-aware rerouting.
 3. Deterministic adaptive signal allocation.
 4. Concurrent multi-incident scenarios.
-5. A city operations engine for demand, incidents and deterministic mitigation baselines.
-6. A transparent short-horizon forecast baseline for 15, 30 and 60 minutes; it is not represented as a trained AI model.
+5. City operations logic for demand, incidents and deterministic mitigation baselines.
+6. Transparent short-horizon forecast baselines.
 7. Simulated emergency-fleet dispatch.
-8. Before/after network comparison.
+8. Before/after intervention comparison.
 9. Operational JSON export carrying `simulation: true`.
-10. Feature coverage CSV export.
-11. A dynamic 108-capability coverage matrix.
-12. `production_verified` remains false for every unified capability until independent integration evidence exists.
-13. Automated registry, evidence, forensic-accounting, unit, syntax and static-wiring checks through GitHub Actions.
-
-Current validated coverage remains:
-
-- 24 `implemented_demo`
-- 14 `represented_demo`
-- 70 `catalogued_only`
-- 0 `production_verified`
+10. Coverage CSV export.
+11. Dynamic bilingual feature and evidence views.
 
 ## Coverage semantics
 
 `implemented_demo` means executable MVP logic exists for a meaningful portion of the documented capability.
 
-`represented_demo` means the capability is represented by a related simulation, workflow, design boundary or partial mechanism, but the full capability is not implemented.
+`represented_demo` means a related simulation, workflow, design boundary or partial mechanism exists, but the full capability is not implemented.
 
-`catalogued_only` means the source capability is preserved in the unified registry but not implemented in the current MVP.
+`catalogued_only` means the source capability is preserved in the registry but not implemented in the current MVP.
 
-`production_verified` is a separate evidence dimension.
+`production_verified` is a separate evidence dimension and remains false for all capabilities.
 
 ## Run locally
 
@@ -172,11 +145,9 @@ npm test
 npm run check
 ```
 
-The validation pipeline checks registry counts, namespace boundaries, direct evidence mappings, SHA-256 source provenance, candidate-map counts, the full 14-track / 213-row forensic accounting, the reserved Main Legacy range, coverage semantics, traffic-engine tests, JavaScript syntax and static MVP wiring.
-
 ## Evidence boundary
 
-All network, fleet, incident, scenario, forecast and intervention outputs in this repository are proof-of-concept simulation data. They do not claim live government, road, camera, vehicle, enforcement or emergency-service integration. Production readiness requires authenticated interfaces, integration tests, security testing, auditability, governance controls and controlled field or high-fidelity simulation validation.
+All network, fleet, incident, scenario, forecast, intervention and QCS outputs are proof-of-concept simulation data. Production readiness requires authenticated data interfaces, security controls, integration contracts, realistic datasets, observability, auditability, resilience testing and controlled field or high-fidelity validation.
 
 ## Intellectual property
 
