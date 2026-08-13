@@ -1,8 +1,30 @@
 import { test, expect } from '@playwright/test';
 
+test.beforeEach(async ({ page }, testInfo) => {
+  page.on('pageerror', error => console.error(`[${testInfo.project.name}] PAGE ERROR STACK:\n${error.stack || error.message}`));
+  page.on('requestfailed', request => console.error(`[${testInfo.project.name}] REQUEST FAILED: ${request.method()} ${request.url()} :: ${request.failure()?.errorText || 'unknown'}`));
+  page.on('console', message => {
+    if (message.type() === 'error') console.error(`[${testInfo.project.name}] CONSOLE ERROR: ${message.text()}`);
+  });
+});
+
 async function waitForPlatform(page) {
-  await page.goto('/?e2e=191', { waitUntil: 'domcontentloaded' });
-  await page.waitForFunction(() => window.smartTrafficAppReady === true, null, { timeout: 18_000 });
+  await page.goto('/?e2e=192', { waitUntil: 'domcontentloaded' });
+  try {
+    await page.waitForFunction(() => window.smartTrafficAppReady === true, null, { timeout: 18_000 });
+  } catch (error) {
+    const diagnostic = await page.evaluate(() => ({
+      appReady: window.smartTrafficAppReady ?? null,
+      appFailed: window.smartTrafficAppFailed ?? null,
+      runtimePublished: Boolean(window.smartTrafficRuntime),
+      runtimeReady: window.smartTrafficRuntime?.isReady?.() ?? false,
+      hardeningReady: window.smartTrafficHardeningReady ?? null,
+      healthStatus: window.smartTrafficHealth?.current?.status ?? null,
+      href: location.href
+    })).catch(diagnosticError => ({ diagnosticError: diagnosticError.message }));
+    console.error(`PLATFORM STARTUP DIAGNOSTIC: ${JSON.stringify(diagnostic)}`);
+    throw error;
+  }
   await expect(page.locator('#acquisitionEntry')).toBeVisible();
   await expect(page.locator('#acqEnter')).toBeVisible();
 }
