@@ -1,0 +1,57 @@
+name: Deploy Executable Smart Traffic MVP from Feature Branch
+
+on:
+  workflow_run:
+    workflows: ["Smart Traffic MVP CI"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-production
+  cancel-in-progress: true
+
+jobs:
+  deploy-feature-mvp:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'feature/unified-traffic-mvp-v1')
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout executable MVP feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/unified-traffic-mvp-v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate registry and evidence
+        run: npm run validate
+      - name: Run automated tests
+        run: npm test
+      - name: Check executable wiring
+        run: npm run check
+      - name: Prepare static executable site
+        run: |
+          mkdir -p site
+          cp index.html styles.css app.js v18Runtime.js site/
+          cp -R engine coverage data site/
+          touch site/.nojekyll
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
