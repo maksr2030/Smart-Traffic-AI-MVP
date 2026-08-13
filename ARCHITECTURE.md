@@ -1,180 +1,206 @@
-# Architecture and Evidence Boundary — Engineering MVP v1.6
+# Architecture and Evidence Boundary — Engineering MVP v1.7
 
 ## Objective
 
-The MVP demonstrates a city-scale traffic intelligence and operations layer rather than a standalone navigation application. Version 1.6 introduces a deterministic **Dynamic Risk Digital Twin** that maintains one shared edge-level risk state and exposes that state to routing, signal-priority, emergency-dispatch and preventive-response logic.
+The MVP demonstrates a city-scale traffic intelligence and operations layer. Version 1.7 extends the v1.6 Dynamic Risk Digital Twin into a deterministic predictive and orchestration architecture that projects risk across multiple short horizons, evaluates alternative intervention strategies, and autonomously recommends a simulated plan without applying field control.
 
 ## Logical layers
 
 ### 1. Source and ingestion layer
 
-Potential authorized production sources include road sensors, traffic signals, cameras, connected vehicles, weather, positioning, public transport, parking, logistics and infrastructure feeds. The current MVP substitutes deterministic fixtures and simulation data.
+Potential authorized production sources include road sensors, traffic signals, cameras, connected vehicles, weather, positioning, public transport, parking, logistics and infrastructure feeds.
 
-No live field or government feed is connected.
+The present MVP uses deterministic fixtures and simulation data only. No live field or government feed is connected.
 
 ### 2. Network-state layer
 
-`data/network.json` defines the demo graph. `engine/trafficEngine.js` validates the graph, calculates edge travel costs, routes traffic, applies incidents, adjusts demand, calculates signal plans and computes network metrics.
+`data/network.json` defines the graph used by `engine/trafficEngine.js` for validation, travel-time calculation, shortest-path routing, incidents, demand, signal allocation and network metrics.
 
-The conventional shortest-path output remains an auditable time-only baseline.
+The conventional shortest path remains an auditable time-only baseline.
 
 ### 3. Operations layer
 
-`engine/operationsEngine.js` adds concurrent incidents, operational scenarios, deterministic short-horizon forecasting, operational KPIs, simulated mitigation baselines, before/after comparison and exportable operational snapshots.
+`engine/operationsEngine.js` provides concurrent incidents, scenarios, operational metrics, deterministic mitigation baselines, before/after comparison, short-horizon baseline forecasting and operational snapshot export.
 
 ### 4. QCS proxy risk layer
 
-`engine/qcsRiskEngine.js` consumes six simulated observation fixtures from `data/qcs_demo_observations.json` and produces deterministic QCS proxy risk assessments.
-
-Inputs include road quality, roughness, visibility, weather severity, blind-spot risk, curvature risk, friction, hidden-hazard confidence and vehicle speed.
+`engine/qcsRiskEngine.js` consumes simulated QCS observation fixtures and produces deterministic road-risk assessments.
 
 No QCS output is evidence of connected quantum sensing, quantum communication or production vehicle integration.
 
 ### 5. Dynamic Risk Digital Twin layer
 
-`engine/dynamicRiskTwinEngine.js` constructs one edge-level composite risk state from four transparent inputs:
+`engine/dynamicRiskTwinEngine.js` maintains a shared road-edge risk state from:
 
 - network load: `0.30`;
 - incident severity: `0.28`;
 - QCS proxy risk: `0.32`;
-- road-closure state: `0.10`.
+- road closure: `0.10`.
 
-For each road edge the twin stores:
+The twin stores composite risk, risk level, trend, delta, traffic load, incident state, closure state, QCS proxy value, observation-presence state and simulated travel time for each edge.
 
-- edge identity and topology;
-- composite risk score;
-- risk level;
-- risk trend (`new`, `rising`, `stable`, `falling`);
-- risk delta versus the previous twin state;
-- network load;
-- incident severity;
-- closure state;
-- QCS proxy risk;
-- whether a direct QCS observation exists;
-- current simulated travel minutes;
-- source-presence flags.
+The same twin snapshot is consumed by twin-aware routing, risk-weighted signal priority and risk-aware virtual emergency dispatch.
 
-A declared fallback QCS risk is used only when an edge has no direct QCS fixture. Such edges remain explicitly marked `qcsObserved=false`; the fallback is never represented as a sensor measurement.
+### 6. Predictive network projection layer
 
-The twin summary includes network-wide average and maximum risk, highest-risk edge, critical/high counts, rising-risk count, QCS coverage, incident-edge count and closed-edge count.
+`engine/predictiveOrchestrationEngine.js` introduces `projectNetworkRiskState()`.
 
-The twin is recomputed as simulated load evolves and after scenario execution, incident injection, mitigation application, QCS refresh and network reset.
+For each requested future horizon, it projects the simulated network from transparent components:
 
-“Dynamic” therefore means stateful recomputation inside the deterministic simulation, not live production streaming.
+- current load;
+- congestion momentum;
+- current incident severity;
+- neighboring-edge load pressure;
+- horizon duration;
+- closure persistence.
 
-### 6. Unified twin decision layer
+The standard horizons are:
 
-The core architectural change in v1.6 is that several decisions consume the **same twin snapshot**.
+- 5 minutes;
+- 15 minutes;
+- 30 minutes;
+- 60 minutes.
 
-#### Twin-aware routing
+The projection method is deterministic and explicitly reports that it is not a trained model.
 
-`routeWithDynamicRiskTwin()` combines normal traffic travel time with composite twin risk. Closed edges remain unavailable. The conventional shortest route remains visible for comparison.
+### 7. Predictive risk propagation layer
 
-`compareConventionalAndTwinRoutes()` reports time, distance and composite-risk differences between the baseline and twin-aware alternatives.
+`forecastRiskPropagation()` rebuilds the Dynamic Risk Digital Twin for every projected network state.
 
-#### Risk-aware signal priority
+Each horizon records:
 
-`recommendTwinSignalPlan()` ranks open edges using risk-weighted traffic load and sends the selected candidate set to the deterministic signal allocator.
+- projected network;
+- projected twin;
+- average network risk;
+- maximum network risk;
+- high/critical edge count;
+- emerging hotspot count;
+- per-hotspot risk delta and projected load.
 
-This output is a simulated timing plan only. No field controller is connected.
+The current twin remains the reference snapshot for calculating future risk deltas.
 
-#### Risk-aware emergency dispatch
+### 8. Candidate intervention layer
 
-`planTwinEmergencyDispatch()` evaluates available virtual emergency units using twin-aware risk-adjusted route cost.
+`defaultOrchestrationCandidates()` currently defines four explicit strategies:
 
-This is planning against a simulated fleet only. No emergency agency dispatch integration exists.
+1. `observe_only`;
+2. `balanced_preemptive`;
+3. `network_relief`;
+4. `safety_priority`.
 
-#### Shared decision bundle
+`applyPredictiveIntervention()` targets the highest predicted-risk open edges according to each candidate's declared target count, load reduction and incident-relief settings.
 
-`buildTwinDecisionBundle()` generates route, signal and emergency decisions from one twin instance. This is the explicit guard against silently using different risk states across those three decision paths within one simulation step.
+Closed edges are never reopened by candidate evaluation.
 
-### 7. Preventive command simulation layer
+### 9. Multi-horizon evaluation layer
 
-`engine/preventiveCommandEngine.js` remains downstream of the selected route and uses directly observed QCS proxy information to generate simulated preventive recommendations.
+`evaluateOrchestrationCandidate()` evaluates every candidate against every forecast horizon.
 
-Potential outputs include target-speed reduction, stability-control readiness, suspension preparation, blind-spot guard, curve assistance, degraded-weather mode, brake-assist readiness, V2X proxy warning and reroute request.
+For each candidate/horizon pair the engine:
 
-Every command preserves:
+1. applies the simulated predictive intervention;
+2. rebuilds the future Dynamic Risk Twin;
+3. calculates operational metrics;
+4. generates a twin decision bundle containing route, signal and emergency decisions;
+5. calculates a transparent objective score.
 
-- `simulated=true`;
-- `actuatorConnected=false`;
+The objective uses:
+
+- average risk;
+- maximum risk;
+- high/critical share;
+- average load;
+- average edge travel time.
+
+### 10. Robust orchestration layer
+
+`orchestratePredictiveRisk()` ranks candidates across all horizons.
+
+The final robust score combines:
+
+- weighted multi-horizon mean score;
+- worst-horizon score;
+- explicit intervention penalty.
+
+Later horizons receive larger weights so a plan is not selected solely because it performs well at the first few minutes.
+
+The selected candidate is an autonomous recommendation, not an autonomous field command.
+
+The returned orchestration object always preserves:
+
+- `simulation=true`;
+- `autonomousRecommendation=true`;
+- `autoApply=false`;
+- `humanApprovalRequired=true`;
+- `productionControlConnected=false`;
 - `safetyCertified=false`.
 
-The V2X proxy warning preserves `quantumCommunicationClaim=false`.
+### 11. Unified decision layer
 
-An unobserved QCS route segment produces a monitor-only command rather than a fabricated observation.
+Each future candidate state uses `buildTwinDecisionBundle()` from the v1.6 architecture.
 
-### 8. Scenario layer
+Therefore each predicted horizon can coordinate:
 
-`data/operations_scenarios.json` contains normal, rush-hour, major-event, severe-weather and concurrent multi-incident fixtures.
+- twin-aware route selection;
+- risk-aware signal priority;
+- risk-aware virtual emergency dispatch.
 
-Scenario state changes are propagated into the Dynamic Risk Digital Twin before twin-dependent decisions are recalculated.
+The three decisions share one projected twin snapshot for that candidate and horizon.
 
-### 9. Dynamic capability evidence layer
+### 12. Preventive command simulation layer
 
-`data/features.json` is the registry manifest. The browser loads every dataset listed in `manifest.files` and verifies the resulting count against `manifest.total`.
+`engine/preventiveCommandEngine.js` remains downstream of the selected current-state twin route and generates simulated preventive recommendations from directly observed QCS proxy information.
 
-`coverage/coverageModel.js` generates exactly one coverage row for every unified registry record.
+Every command remains simulated, actuator-disconnected and non-certified.
+
+### 13. User and operations interface
+
+`app.js` injects a Predictive Risk & Autonomous Orchestration panel at runtime and updates the displayed MVP identity to v1.7.
+
+The panel shows:
+
+- selected candidate;
+- improvement versus `observe_only`;
+- worst horizon score;
+- 60-minute hotspot count;
+- 5/15/30/60-minute forecast table;
+- ranked candidate table;
+- explicit trained-model and auto-apply boundaries.
+
+The existing Dynamic Risk Twin, routes, signals, emergency planning, QCS lab, incidents, scenarios, exports and coverage registry remain available.
+
+### 14. Dynamic capability evidence layer
+
+`coverage/coverageModel.js` maintains one status row per unified registry record.
 
 Current CI-validated coverage across 123 records is:
 
-- **32 implemented-demo**;
-- **18 represented-demo**;
+- **33 implemented-demo**;
+- **17 represented-demo**;
 - **73 catalogued-only**;
 - **0 production-verified**.
 
-`QTOS-02` is now `implemented_demo` because v1.6 includes executable dynamic-twin state construction, risk-trend tracking and shared-state decision consumption. This does not imply a production digital twin or a quantum implementation.
+`QTOS-05` moves to `implemented_demo` because v1.7 contains executable network-wide predictive candidate targeting and load-balancing recommendation logic across the graph.
 
-`QCS-101` remains `implemented_demo` because the current MVP includes deterministic risk analysis, twin-aware route selection and preventive decision logic. It does not imply quantum-hardware implementation.
+`QTOS-02`, `QTOS-03`, `QTOS-21` and `QTOS-22` continue to have meaningful executable demo coverage through the twin, forecasting, proactive orchestration and multi-horizon evaluation layers.
 
-### 10. User and operations interface
+This does not imply production traffic assignment, quantum optimization or field deployment.
 
-`index.html` and `app.js` expose:
+### 15. Governance and assurance layer
 
-- current network state;
-- Dynamic Risk Twin KPIs;
-- top-risk edge table;
-- risk trends and deltas;
-- QCS coverage indication;
-- time-only routing baseline;
-- twin-aware route comparison;
-- risk-aware signal planning;
-- twin-aware virtual emergency dispatch;
-- one-click shared twin decision bundle;
-- QCS proxy analysis;
-- preventive command recommendations;
-- scenarios and incident injection;
-- short-horizon forecast baseline;
-- before/after intervention evidence;
-- operational snapshot export;
-- coverage export;
-- dynamic bilingual source registry.
+The repository separates source provenance, demo implementation and production verification.
 
-### 11. Governance and assurance layer
+Tests and static checks explicitly protect against:
 
-The repository preserves historical namespaces, prevents invented Main Legacy records from entering verified ranges, preserves source-language provenance and historical version conflicts, and separates implementation status from production verification.
-
-The code and tests explicitly protect against:
-
-- calling QCS fixtures real quantum-sensor data;
-- claiming quantum V2X communication;
-- claiming connected vehicle actuation;
-- presenting fallback QCS risk as measured data;
-- routing through a closed road edge;
-- treating simulated signal plans as field commands;
-- treating virtual emergency selection as real dispatch;
-- treating preventive recommendations as safety-certified control;
-- claiming production verification without separate evidence.
-
-## Capability boundaries
-
-Executable proxy logic meaningfully supports demonstration of `QCS-80`, `QCS-85`, `QCS-86`, `QCS-87`, `QCS-88`, `QCS-92` and `QCS-101`.
-
-`QTOS-02` now has meaningful executable dynamic-twin demo logic.
-
-`QCS-93`, `QCS-94`, `QCS-95`, `QCS-103` and `QCS-104` remain represented by proxy workflows or integration boundaries rather than claimed as fully implemented.
-
-QTOS quantum or hybrid optimization remains a documented innovation namespace. No quantum computational advantage is claimed without a separate benchmark against appropriate classical baselines.
+- calling QCS fixtures real quantum data;
+- claiming a trained prediction model where none exists;
+- treating future projections as validated production forecasts;
+- routing through closed road edges;
+- reopening closed edges through simulated intervention;
+- presenting autonomous recommendation as autonomous field execution;
+- applying predictive recommendations automatically;
+- claiming connected traffic-signal, vehicle or emergency-system control;
+- claiming production verification without independent evidence.
 
 ## Validation
 
@@ -184,31 +210,38 @@ GitHub Actions executes:
 2. Traffic-engine tests.
 3. Operations-engine tests.
 4. QCS proxy-risk tests.
-5. Dynamic Risk Digital Twin fusion and trend tests.
-6. Twin-aware route tests.
-7. Risk-weighted signal-plan tests.
-8. Twin-aware emergency-dispatch tests.
-9. Shared twin decision-bundle tests.
-10. Preventive command-plan tests.
-11. Legacy risk-aware routing regression tests.
-12. Coverage-model tests.
-13. JavaScript syntax checks for all operational engines.
-14. Static application and DOM wiring checks.
-15. Dynamic registry-file existence checks driven by the manifest.
-16. QCS observation-fixture validation.
+5. Dynamic Risk Digital Twin tests.
+6. Twin-aware route, signal and emergency tests.
+7. Preventive command tests.
+8. Predictive network-projection tests.
+9. Multi-horizon risk-propagation tests.
+10. Predictive intervention and closed-road preservation tests.
+11. Autonomous candidate-ranking tests.
+12. Shared future twin-decision tests.
+13. Determinism regression tests.
+14. Coverage-model tests.
+15. JavaScript syntax checks for all engines.
+16. Static and runtime UI wiring checks.
+17. Manifest-driven registry-file existence checks.
+18. QCS fixture validation.
 
 Latest CI-validated engineering suite before this documentation-only update:
 
-- **34/34 tests passing**;
-- **27 required/dynamic files checked**;
-- **81 DOM bindings checked**;
+- **40/40 tests passing**;
+- **28 required/dynamic files checked**;
+- **81 static DOM bindings**;
+- **9 runtime predictive bindings**;
 - 12 road nodes;
 - 17 road links;
 - 5 scenarios;
 - 4 virtual emergency units;
 - 6 QCS observations;
-- Dynamic Risk Digital Twin wiring confirmed.
+- Dynamic Risk Twin and Predictive Orchestration wiring confirmed.
 
 ## Production-readiness boundary
 
-Production readiness is outside the present proof-of-concept. It requires authenticated interfaces, approved integration contracts, calibrated real sensing or approved high-fidelity datasets, cyber security and privacy controls, safety engineering and hazard analysis, authorization policies, audit logs, operational observability, resilience testing, algorithm validation, traffic-controller integration validation, emergency-agency integration controls and controlled field or high-fidelity deployment evidence.
+Production readiness remains outside the present proof-of-concept.
+
+The forecast layer is deterministic and untrained. The orchestration layer ranks simulated alternatives but never applies them automatically.
+
+Production deployment would require authenticated real-time interfaces, calibrated or approved datasets, validated prediction models where appropriate, traffic-controller and emergency-agency integration, authorization and human-oversight policies, cyber security and privacy controls, safety engineering and hazard analysis, audit logs, observability, resilience testing, performance benchmarking, staged deployment and controlled field validation.
