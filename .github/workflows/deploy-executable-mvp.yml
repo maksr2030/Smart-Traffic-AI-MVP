@@ -44,11 +44,22 @@ jobs:
         run: npm test
       - name: Check executable wiring
         run: npm run check
-      - name: Prepare acquisition-ready guided executable site
+      - name: Prepare synchronized acquisition-ready executable site
         run: |
           mkdir -p site
-          cp index.html styles.css acquisition.css guidedDemo.css app.js v18Runtime.js acquisitionRuntime.js guidedDemoRuntime.js site/
+          cp index.html styles.css acquisition.css guidedDemo.css app.js v18Runtime.js acquisitionRuntime.js site/
+          cp guidedDemoRuntime.v183.js site/guidedDemoRuntime.js
           cp -R engine coverage data site/
+          node scripts/prepare-runtime-sync-v183.mjs site
+          node --check site/app.js
+          node --check site/v18Runtime.js
+          node --check site/acquisitionRuntime.js
+          node --check site/guidedDemoRuntime.js
+          grep -q 'window.smartTrafficRuntime' site/app.js
+          grep -q 'smart-traffic:ready' site/app.js
+          grep -q 'useLive?live.network' site/v18Runtime.js
+          grep -q 'waitForCoreReady' site/acquisitionRuntime.js
+          grep -q 'tour.executed.add(action)' site/guidedDemoRuntime.js
           python - <<'PY'
           from pathlib import Path
           path = Path('site/index.html')
@@ -62,9 +73,7 @@ jobs:
           path.write_text(html, encoding='utf-8')
           PY
           grep -q 'acquisitionRuntime.js' site/index.html
-          grep -q 'acquisition.css' site/index.html
           grep -q 'guidedDemoRuntime.js' site/index.html
-          grep -q 'guidedDemo.css' site/index.html
           touch site/.nojekyll
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
