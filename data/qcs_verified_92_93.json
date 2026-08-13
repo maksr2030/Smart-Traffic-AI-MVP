@@ -1,0 +1,36 @@
+[
+  {
+    "id":"QCS-92",
+    "track_local_id":92,
+    "group":"qcs_recovered",
+    "title_ar":"تحليل جودة الطرق وتعديل استجابة المركبة لمنع التصادم",
+    "title_en":"Road Quality Analysis and Vehicle Response Adjustment for Collision Prevention",
+    "title_en_status":"editorial_translation_from_direct_arabic_source",
+    "category_ar":"جودة الطرق والاستجابة الوقائية للمركبة",
+    "category_en":"Road Quality & Preventive Vehicle Response",
+    "description_ar":"مسترد مباشرة من مخرجات 5 مارس 2025؛ يتناول تحليل جودة الطرق، وكشف الحفر والمطبات والانزلاقات، ثم تعديل إعدادات واستجابة المركبة استباقياً مع التكامل مع التحكم بالجر والتوجيه لدعم منع الاصطدام.",
+    "description_en":"Directly recovered from the 5 March 2025 Arabic source. It covers road-quality analysis, detection of potholes, bumps and slippery conditions, and proactive vehicle-response adjustment with traction-control and steering integration to support collision prevention.",
+    "evidence_status":"verified_track_local_conversation_retrieval",
+    "source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05",
+    "source_message_ar":"2025-03-05T12:13:06Z",
+    "forensic_v0_3_representation":"absent",
+    "main_legacy_effect":"none"
+  },
+  {
+    "id":"QCS-93",
+    "track_local_id":93,
+    "group":"qcs_recovered",
+    "title_ar":"الاتصال الفوري عبر الشبكات الكمومية (Quantum V2V & V2I) لمنع التصادم",
+    "title_en":"Instant Quantum Communication for V2V & V2I to Prevent Collisions",
+    "category_ar":"الاتصال الكمومي بين المركبات والبنية التحتية",
+    "category_en":"Quantum V2V & V2I Communication",
+    "description_ar":"مسترد مباشرة من مخرجات 5 مارس 2025؛ يصف تبادل بيانات V2V وV2I المشفرة كمومياً بصورة فورية وآمنة، وتحليل الطريق في الزمن الحقيقي، وتعديل المسار أو إطلاق التنبيهات والاستجابات الوقائية لتقليل مخاطر الاصطدام الناتجة عن تأخر الاتصال.",
+    "description_en":"Directly recovered from the 5 March 2025 conversation; it describes quantum-encrypted V2V/V2I data exchange for immediate secure communication, real-time road analysis, route adjustment, warnings and preventive actions to reduce collision risk caused by communication delay.",
+    "evidence_status":"verified_track_local_conversation_retrieval",
+    "source":"Original Quantum AI-Enhanced Collision Prevention Sensor conversation — 2025-03-05",
+    "source_message_ar":"2025-03-05T12:18:39Z",
+    "source_message_en":"2025-03-05T12:18:39Z",
+    "forensic_v0_3_representation":"present",
+    "main_legacy_effect":"none"
+  }
+]
