@@ -9,23 +9,25 @@ import {
   shortHorizonForecast
 } from './engine/operationsEngine.js';
 import { evaluateQcsCorridor } from './engine/qcsRiskEngine.js';
+import { compareConventionalAndRiskAwareRoutes } from './engine/riskAwareRoutingEngine.js';
+import { buildPreventiveCommandPlan } from './engine/preventiveCommandEngine.js';
 import { buildCoverage, coverageSummary, coverageToCsv } from './coverage/coverageModel.js';
 
 const state = {
   lang: 'ar', running: true, features: [], coverageRows: [], baseNetwork: null, networkModel: null,
   scenarios: [], fleet: [], qcsObservations: [], qcsResult: null, currentScenario: 'normal', pendingIntervention: null,
-  lastForecast: null, lastComparison: null, tick: 0
+  lastForecast: null, lastComparison: null, lastRiskRouteComparison: null, lastCommandPlan: null, tick: 0
 };
 
 const labels = {
   ar: {
     run:'تشغيل', pause:'إيقاف المحاكاة', resume:'استئناف المحاكاة', load:'الحمل', speed:'كم/س',
-    route:'احسب المسار', unreachable:'لا يوجد مسار متاح', flowing:'انسيابي', busy:'مزدحم', critical:'حرج', closed:'مغلق',
+    route:'احسب المسار', riskRoute:'قارن المسار الواعي بالمخاطر', unreachable:'لا يوجد مسار متاح', flowing:'انسيابي', busy:'مزدحم', critical:'حرج', closed:'مغلق',
     forecast:'تشغيل التنبؤ', dispatch:'إرسال وحدة الطوارئ', applied:'تم تطبيق التدخل المحاكى', qcs:'تشغيل تحليل QCS المحاكى'
   },
   en: {
     run:'Run', pause:'Pause simulation', resume:'Resume simulation', load:'Load', speed:'km/h',
-    route:'Calculate route', unreachable:'No route available', flowing:'Flowing', busy:'Busy', critical:'Critical', closed:'Closed',
+    route:'Calculate route', riskRoute:'Compare risk-aware route', unreachable:'No route available', flowing:'Flowing', busy:'Busy', critical:'Critical', closed:'Closed',
     forecast:'Run forecast', dispatch:'Dispatch emergency unit', applied:'Simulated intervention applied', qcs:'Run simulated QCS analysis'
   }
 };
@@ -87,6 +89,39 @@ function runRoute(){
   logEvent(`${state.lang==='ar'?'مسار محسوب':'Route calculated'}: ${route.edgeIds.join(' → ')}`);
 }
 
+function renderPreventiveCommandPlan(){
+  const tbody=document.getElementById('riskCommandRows'); tbody.innerHTML='';
+  const plan=state.lastCommandPlan;
+  if(!plan){ document.getElementById('riskCommandResult').textContent='Command simulator ready.'; return; }
+  plan.commands.slice(0,14).forEach(item=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="id">${item.edgeId}</td><td>${item.command}</td><td>${item.value}</td><td>${item.priority}</td><td>${item.actuatorConnected?'true':'false'}</td>`;
+    tbody.appendChild(tr);
+  });
+  const s=plan.summary;
+  document.getElementById('riskCommandResult').innerHTML=`<strong>${s.generatedCommands} ${state.lang==='ar'?'أمر وقائي محاكى':'simulated preventive commands'}</strong><br>${state.lang==='ar'?'مقاطع مرصودة':'Observed segments'}: ${s.observedSegments} · ${state.lang==='ar'?'غير مرصودة':'Unknown'}: ${s.unknownSegments} · ${state.lang==='ar'?'أعلى أولوية':'Highest priority'}: ${s.highestPriority}<br><small>actuatorConnected=false · safetyCertified=false</small>`;
+}
+
+function runRiskAwareRoute(){
+  const origin=document.getElementById('routeOrigin').value, destination=document.getElementById('routeDestination').value;
+  const riskWeight=Number(document.getElementById('riskWeight').value||1.6);
+  const result=compareConventionalAndRiskAwareRoutes(state.networkModel,origin,destination,state.qcsObservations,{riskWeight,unknownRiskScore:18,avoidRiskScore:96});
+  state.lastRiskRouteComparison=result;
+  const box=document.getElementById('riskRouteResult');
+  if(!result.conventional.reachable||!result.riskAware.reachable){
+    box.textContent=labels[state.lang].unreachable; state.lastCommandPlan=null; renderPreventiveCommandPlan(); return;
+  }
+  state.lastCommandPlan=buildPreventiveCommandPlan(result.riskAware,state.qcsObservations);
+  const c=result.conventional, r=result.riskAware, d=result.delta;
+  document.getElementById('riskTimeDelta').textContent=`${d.minutes>=0?'+':''}${d.minutes.toFixed(1)} min`;
+  document.getElementById('riskScoreDelta').textContent=`${d.averageRiskScore>=0?'+':''}${d.averageRiskScore.toFixed(1)}`;
+  document.getElementById('riskRouteMaxRisk').textContent=`${r.risk.maxRiskScore}/100`;
+  document.getElementById('riskCommandCount').textContent=state.lastCommandPlan.summary.generatedCommands;
+  box.innerHTML=`<strong>${state.lang==='ar'?'المسار التقليدي':'Conventional'}: ${c.minutes.toFixed(1)} min · risk ${c.risk.averageRiskScore}/100</strong><br>${c.edgeIds.join(' → ')}<br><strong>${state.lang==='ar'?'الواعي بالمخاطر':'Risk-aware'}: ${r.minutes.toFixed(1)} min · risk ${r.risk.averageRiskScore}/100</strong><br>${r.edgeIds.join(' → ')}<br><span>${state.lang==='ar'?'مقاطع QCS المرصودة':'Observed QCS edges'}: ${r.risk.observedEdges} · ${state.lang==='ar'?'غير المرصودة':'Unknown'}: ${r.risk.unknownEdges} · riskWeight=${riskWeight}</span><br><small>SIMULATION · ${r.method}</small>`;
+  renderPreventiveCommandPlan();
+  logEvent(`${state.lang==='ar'?'مقارنة مسار واعٍ بالمخاطر':'Risk-aware route comparison'}: ${r.edgeIds.join(' → ')}`);
+}
+
 function renderComparison(comparison){
   if(!comparison) return;
   const pairs=[
@@ -110,7 +145,7 @@ function runScenario(){
   const intervention=applyOperationalIntervention(result.network,{targetCount:7,loadReduction:11,incidentRelief:.28});
   const comparison=compareOperations(result.network,intervention);
   state.currentScenario=id; state.networkModel=result.network; state.pendingIntervention=intervention; state.lastComparison=comparison;
-  renderNetwork(); renderComparison(comparison); populateEngineeringSelectors(); runRoute();
+  renderNetwork(); renderComparison(comparison); populateEngineeringSelectors(); runRoute(); runRiskAwareRoute();
   const name=state.lang==='ar'?scenario.name_ar:scenario.name_en;
   document.getElementById('scenarioResult').textContent=`${name} · Stress ${result.metrics.stressIndex.toFixed(1)} · Avg load ${result.metrics.avgLoad.toFixed(1)}% · Incidents ${result.metrics.incidentCount}`;
   document.getElementById('comparisonNote').textContent=state.lang==='ar'?'المقارنة أدناه بين حالة السيناريو وخطة تدخل محاكاة محددة وليست نتيجة ميدانية.':'The comparison below is between the scenario state and a deterministic simulated mitigation plan, not a field result.';
@@ -119,7 +154,7 @@ function runScenario(){
 
 function applyPendingIntervention(){
   if(!state.pendingIntervention) runScenario();
-  state.networkModel=JSON.parse(JSON.stringify(state.pendingIntervention)); renderNetwork(); runRoute();
+  state.networkModel=JSON.parse(JSON.stringify(state.pendingIntervention)); renderNetwork(); runRoute(); runRiskAwareRoute();
   logEvent(labels[state.lang].applied);
 }
 
@@ -170,7 +205,7 @@ function intervene(action){
     const text=plan.phases.map(p=>`${p.id}:${p.greenSeconds.toFixed(0)}s`).join(' · ');
     document.getElementById('engineeringOutput').textContent=`Adaptive signal plan · ${text}`; logEvent(text); return;
   }
-  if(action==='reroute'){ runRoute(); return; }
+  if(action==='reroute'){ runRoute(); runRiskAwareRoute(); return; }
   if(action==='emergency'){ dispatchEmergency(); return; }
   if(action==='qtos'){
     const candidates=[7,10,13].map(loadReduction=>{
@@ -187,7 +222,7 @@ function intervene(action){
 function injectIncident(){
   const edgeId=document.getElementById('incidentEdge').value;
   state.networkModel=applyIncident(state.networkModel,edgeId,{severity:.9,close:document.getElementById('closeEdge').checked,loadIncrease:18});
-  renderNetwork(); runRoute(); logEvent(`${state.lang==='ar'?'حادث محاكى':'Simulated incident'}: ${edgeId}`);
+  renderNetwork(); runRoute(); runRiskAwareRoute(); logEvent(`${state.lang==='ar'?'حادث محاكى':'Simulated incident'}: ${edgeId}`);
 }
 
 function groupTag(g){ return {verified_historical:['verified','Verified'],conversation_recovered:['recovered','Recovered'],additional_history:['history','History'],qtos:['qtos','QTOS'],qcs_recovered:['recovered','QCS Direct']}[g]||['','']; }
@@ -251,6 +286,8 @@ function downloadFile(name,content,type){
 function exportSnapshot(){
   const snapshot=makeOperationalSnapshot({network:state.networkModel,scenarioName:state.currentScenario,forecast:state.lastForecast,comparison:state.lastComparison,coverageSummary:coverageSummary(state.coverageRows)});
   snapshot.qcsRiskDemo=state.qcsResult?{simulation:true,method:state.qcsResult.method,summary:state.qcsResult.summary}:null;
+  snapshot.riskAwareRouting=state.lastRiskRouteComparison?{simulation:true,delta:state.lastRiskRouteComparison.delta,saferRouteSelected:state.lastRiskRouteComparison.saferRouteSelected,riskAware:state.lastRiskRouteComparison.riskAware}:null;
+  snapshot.preventiveCommandPlan=state.lastCommandPlan?{simulation:true,actuatorConnected:false,summary:state.lastCommandPlan.summary}:null;
   downloadFile('smart-traffic-operational-snapshot.json',JSON.stringify(snapshot,null,2),'application/json'); logEvent('Operational snapshot exported');
 }
 function exportCoverage(){ downloadFile('smart-traffic-feature-coverage.csv',coverageToCsv(state.coverageRows),'text/csv;charset=utf-8'); logEvent('Coverage matrix exported'); }
@@ -259,8 +296,8 @@ function translate(){
   const isAr=state.lang==='ar'; document.documentElement.lang=state.lang; document.documentElement.dir=isAr?'rtl':'ltr';
   document.querySelectorAll('[data-ar][data-en]').forEach(el=>el.textContent=el.dataset[state.lang]);
   document.getElementById('langBtn').textContent=isAr?'English':'العربية'; document.getElementById('pauseBtn').textContent=state.running?labels[state.lang].pause:labels[state.lang].resume;
-  document.querySelectorAll('[data-action]').forEach(b=>b.textContent=labels[state.lang].run); document.getElementById('routeBtn').textContent=labels[state.lang].route; document.getElementById('forecastBtn').textContent=labels[state.lang].forecast; document.getElementById('dispatchBtn').textContent=labels[state.lang].dispatch; document.getElementById('qcsRiskBtn').textContent=labels[state.lang].qcs;
-  rebuildCategories(); populateScenarios(); populateEngineeringSelectors(); renderFeatures(); renderCoverage(); renderNetwork(); if(state.qcsResult) runQcsRisk();
+  document.querySelectorAll('[data-action]').forEach(b=>b.textContent=labels[state.lang].run); document.getElementById('routeBtn').textContent=labels[state.lang].route; document.getElementById('riskRouteBtn').textContent=labels[state.lang].riskRoute; document.getElementById('forecastBtn').textContent=labels[state.lang].forecast; document.getElementById('dispatchBtn').textContent=labels[state.lang].dispatch; document.getElementById('qcsRiskBtn').textContent=labels[state.lang].qcs;
+  rebuildCategories(); populateScenarios(); populateEngineeringSelectors(); renderFeatures(); renderCoverage(); renderNetwork(); if(state.qcsResult) runQcsRisk(); if(state.lastRiskRouteComparison) runRiskAwareRoute();
 }
 
 async function load(){
@@ -272,17 +309,17 @@ async function load(){
   state.features=datasets.flat();
   if(state.features.length!==manifest.total) throw new Error(`Feature registry mismatch ${state.features.length} != ${manifest.total}`);
   state.coverageRows=buildCoverage(state.features); state.baseNetwork=JSON.parse(JSON.stringify(network)); state.networkModel=network; state.scenarios=scenarios; state.fleet=fleet; state.qcsObservations=qcsObservations;
-  populateScenarios(); populateEngineeringSelectors(); rebuildCategories(); renderFeatures(); renderCoverage(); renderNetwork(); runRoute(); runForecast(); dispatchEmergency(); runScenario(); runQcsRisk();
-  logEvent(state.lang==='ar'?'تم تحميل طبقة عمليات المدينة والسجل الديناميكي ومختبر QCS':'City operations, dynamic registry and QCS lab loaded'); setInterval(updateSim,1600);
+  populateScenarios(); populateEngineeringSelectors(); rebuildCategories(); renderFeatures(); renderCoverage(); renderNetwork(); runRoute(); runForecast(); dispatchEmergency(); runScenario(); runQcsRisk(); runRiskAwareRoute();
+  logEvent(state.lang==='ar'?'تم تحميل عمليات المدينة والسجل الديناميكي ومختبر QCS والمسار الواعي بالمخاطر':'City operations, dynamic registry, QCS lab and risk-aware routing loaded'); setInterval(updateSim,1600);
 }
 
 document.getElementById('langBtn').onclick=()=>{state.lang=state.lang==='ar'?'en':'ar';translate()};
 document.getElementById('pauseBtn').onclick=()=>{state.running=!state.running;translate();logEvent(state.running?'Simulation resumed':'Simulation paused')};
 document.getElementById('optimizeBtn').onclick=()=>intervene('qtos');
 document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>intervene(b.dataset.action));
-document.getElementById('routeBtn').onclick=runRoute; document.getElementById('scenarioBtn').onclick=runScenario; document.getElementById('forecastBtn').onclick=runForecast; document.getElementById('dispatchBtn').onclick=dispatchEmergency; document.getElementById('qcsRiskBtn').onclick=runQcsRisk;
+document.getElementById('routeBtn').onclick=runRoute; document.getElementById('riskRouteBtn').onclick=runRiskAwareRoute; document.getElementById('riskWeight').onchange=runRiskAwareRoute; document.getElementById('scenarioBtn').onclick=runScenario; document.getElementById('forecastBtn').onclick=runForecast; document.getElementById('dispatchBtn').onclick=dispatchEmergency; document.getElementById('qcsRiskBtn').onclick=runQcsRisk;
 document.getElementById('incidentBtn').onclick=injectIncident; document.getElementById('applyInterventionBtn').onclick=applyPendingIntervention;
-document.getElementById('resetNetworkBtn').onclick=()=>{state.networkModel=JSON.parse(JSON.stringify(state.baseNetwork));state.pendingIntervention=null;state.lastComparison=null;populateEngineeringSelectors();renderNetwork();runRoute();logEvent(state.lang==='ar'?'إعادة ضبط الشبكة':'Network reset')};
+document.getElementById('resetNetworkBtn').onclick=()=>{state.networkModel=JSON.parse(JSON.stringify(state.baseNetwork));state.pendingIntervention=null;state.lastComparison=null;populateEngineeringSelectors();renderNetwork();runRoute();runRiskAwareRoute();logEvent(state.lang==='ar'?'إعادة ضبط الشبكة':'Network reset')};
 document.getElementById('exportSnapshotBtn').onclick=exportSnapshot; document.getElementById('exportCoverageBtn').onclick=exportCoverage;
 ['search','groupFilter','categoryFilter'].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',renderFeatures));
 document.getElementById('coverageSearch').addEventListener('input',renderCoverage); document.getElementById('coverageStatus').addEventListener('change',renderCoverage);
