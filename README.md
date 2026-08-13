@@ -1,4 +1,4 @@
-# Smart AI Traffic Platform — Engineering MVP v1.5
+# Smart AI Traffic Platform — Engineering MVP v1.6
 
 Public engineering proof-of-concept for a city-scale and sovereign traffic intelligence platform.
 
@@ -16,59 +16,72 @@ Direct QCS registry records currently include `QCS-80`, `QCS-85`-`QCS-89`, `QCS-
 
 Main Legacy 15-199 remains reserved pending verified direct recovery.
 
-## Engineering MVP v1.5
+## Engineering MVP v1.6 — Dynamic Risk Digital Twin
 
-Version 1.5 extends the v1.4 QCS risk lab into a closed deterministic decision loop for demonstration purposes:
+Version 1.6 adds an executable **Dynamic Risk Digital Twin** that converts the current simulated road network into one shared edge-level risk state and uses that same state across multiple decision engines.
 
-1. evaluate simulated QCS road-risk observations;
-2. compare the conventional fastest route with a risk-aware route;
-3. calculate the safety-versus-time tradeoff;
-4. build a simulated preventive command plan for the selected route;
-5. export the resulting QCS, routing and command summaries inside the operational snapshot.
+`engine/dynamicRiskTwinEngine.js` fuses four transparent deterministic inputs for every road edge:
 
-The browser continues to load the feature registry dynamically from `data/features.json`, so newly recovered registry files are automatically included without maintaining a second hard-coded file list.
+- network load — weight `0.30`;
+- incident severity — weight `0.28`;
+- QCS proxy risk — weight `0.32`;
+- closure state — weight `0.10`.
 
-## Risk-aware routing engine
+Each edge receives:
 
-`engine/riskAwareRoutingEngine.js` adds deterministic time-plus-risk routing.
+- composite risk score;
+- `low`, `moderate`, `high`, or `critical` risk level;
+- `new`, `rising`, `stable`, or `falling` risk trend;
+- risk delta versus the previous twin state;
+- traffic load;
+- incident severity;
+- closure state;
+- QCS risk and whether it is directly observed;
+- current simulated travel time.
 
-The conventional route remains visible as a baseline. The risk-aware route uses the same traffic graph and travel-time model, then applies a transparent QCS proxy-risk penalty to each road segment.
+Edges without a direct QCS observation use the disclosed simulation fallback value and remain explicitly marked as unobserved. The UI never presents a fallback value as a measured QCS reading.
 
-The route output reports:
+## Shared twin decision loop
 
-- conventional route time and road sequence;
-- risk-aware route time and road sequence;
-- time and distance deltas;
-- average-risk delta;
+The Dynamic Risk Digital Twin is not only a dashboard. The same twin instance drives three executable decision paths:
+
+1. **Twin-aware routing** — compares the conventional time-only route with a route whose cost combines travel time and composite twin risk.
+2. **Risk-aware signal priority** — ranks candidate approaches using traffic load weighted by current twin risk before calculating a deterministic green-time plan.
+3. **Risk-aware emergency dispatch** — evaluates available virtual emergency units using risk-adjusted route cost rather than travel time alone.
+
+`buildTwinDecisionBundle()` packages these three decisions from one shared twin state so the route, signal and emergency outputs cannot silently use different risk snapshots within the same simulation step.
+
+The twin is rebuilt when simulated network load changes and after scenario execution, incident injection, intervention application, QCS refresh, or network reset.
+
+## Twin-aware routing
+
+The conventional shortest path remains visible as an auditable baseline. The twin-aware route reports:
+
+- conventional route and travel time;
+- twin-aware route and travel time;
+- time delta;
+- average composite-risk delta;
 - maximum route risk;
-- observed versus unknown QCS-risk segments;
-- the configured `riskWeight`;
-- a deterministic risk-adjusted route cost.
+- risk-adjusted route cost;
+- configured `riskWeight`.
 
-The UI exposes four safety/time settings: `0.8`, `1.6`, `2.5`, and `3.5`.
+Closed road edges remain unavailable regardless of their calculated risk score. This is deterministic proof-of-concept routing and is not represented as safety-certified navigation.
 
-A separate `avoidRiskScore` option supports hard avoidance of directly observed extreme-risk segments. A value of `100` explicitly disables hard blocking; lower values enable the threshold. The zero-risk-weight test verifies that the engine returns to the travel-time routing baseline when hard blocking is disabled.
+## Risk-aware signal simulation
 
-This module is not represented as safety-certified navigation.
+`recommendTwinSignalPlan()` uses the current shared twin state to prioritize open road edges with a transparent risk-weighted load score. It then uses the existing deterministic signal optimizer to produce green-time allocations.
 
-## Preventive vehicle command simulator
+No physical signal controller is connected. The result is a simulation plan only.
 
-`engine/preventiveCommandEngine.js` translates route-segment QCS proxy assessments into an auditable simulated command plan.
+## Risk-aware emergency simulation
 
-Possible command types include:
+`planTwinEmergencyDispatch()` evaluates the virtual emergency fleet using the same twin risk state. It compares reachable units by risk-adjusted route cost and reports the selected virtual unit, route, travel time and route risk.
 
-- `set_target_speed`;
-- `arm_stability_control`;
-- `prepare_adaptive_suspension`;
-- `enable_blind_spot_guard`;
-- `enable_curve_speed_assist`;
-- `enable_weather_degraded_mode`;
-- `broadcast_v2x_hazard_proxy`;
-- `arm_brake_assist`;
-- `request_risk_aware_reroute`;
-- `monitor`.
+No emergency agency or real dispatch system is connected.
 
-The plan reports observed and unknown route segments, command counts, command priorities, reroute requests, brake-assist readiness and simulated hazard broadcasts.
+## Preventive command simulator
+
+`engine/preventiveCommandEngine.js` remains downstream of the selected twin-aware route. It translates directly observed QCS proxy conditions on route segments into simulated preventive recommendations such as target-speed reduction, stability readiness, degraded-weather mode, brake-assist readiness and reroute requests.
 
 The command layer enforces:
 
@@ -77,17 +90,11 @@ The command layer enforces:
 - `safetyCertified: false`;
 - `quantumCommunicationClaim: false` for the V2X proxy broadcast.
 
-Unobserved route segments are never silently assigned fabricated QCS measurements; they remain explicitly unknown and receive a monitor-only command.
+Unobserved QCS route segments remain monitor-only rather than receiving fabricated sensor measurements.
 
-## QCS risk and preventive-response lab
+## QCS and QTOS demo coverage
 
-`engine/qcsRiskEngine.js` remains the deterministic proxy risk source for the v1.5 decision loop. It consumes simulated road-quality, roughness, visibility, weather, blind-spot, curvature, friction, hidden-hazard and vehicle-speed observations.
-
-The QCS lab produces risk scores, risk levels, suggested preventive speeds, response recommendations and proxy hazard broadcasts while preserving the explicit boundary that no quantum hardware is connected.
-
-## QCS demo coverage
-
-Executable demo logic meaningfully represents:
+Executable QCS proxy logic meaningfully represents:
 
 - `QCS-80` — vehicle stability and skid-prevention risk logic.
 - `QCS-85` — rough-terrain response logic.
@@ -95,7 +102,9 @@ Executable demo logic meaningfully represents:
 - `QCS-87` — severe-weather response logic.
 - `QCS-88` — sharp-turn risk logic.
 - `QCS-92` — road-quality and vehicle-response logic.
-- `QCS-101` — deterministic risk analysis plus risk-aware route selection and preemptive command-plan logic.
+- `QCS-101` — deterministic risk analysis plus twin-aware route selection and preemptive command-plan logic.
+
+`QTOS-02` is now `implemented_demo` because v1.6 contains an executable dynamic traffic risk twin that maintains a shared edge-level state and feeds multiple decision engines. This does not imply a production digital twin or quantum implementation.
 
 Related QCS capabilities such as `QCS-93`, `QCS-94`, `QCS-95`, `QCS-103` and `QCS-104` remain represented by proxy workflows or integration boundaries rather than overstated as fully implemented.
 
@@ -104,42 +113,45 @@ Related QCS capabilities such as `QCS-93`, `QCS-94`, `QCS-95`, `QCS-103` and `QC
 Latest successful CI validation reports:
 
 - 123 total registry records.
-- **31 `implemented_demo`.**
-- **19 `represented_demo`.**
+- **32 `implemented_demo`.**
+- **18 `represented_demo`.**
 - **73 `catalogued_only`.**
 - **0 `production_verified`.**
 
-The current automated suite passes **27/27 tests**. It covers registry provenance, traffic routing, city operations, QCS proxy risk, risk-aware routing, preventive commands, coverage semantics and static application wiring.
+The current automated suite passes **34/34 tests** and covers registry provenance, traffic routing, city operations, QCS proxy risk, Dynamic Risk Digital Twin fusion and trends, twin-aware routing, risk-weighted signals, risk-aware emergency dispatch, shared decision bundles, preventive commands, coverage semantics and static application wiring.
 
 The static smoke check validates:
 
-- **26 required/dynamic files**;
-- **73 DOM bindings**;
+- **27 required/dynamic files**;
+- **81 DOM bindings**;
 - 12 simulated road nodes;
 - 17 road links;
 - 5 operating scenarios;
 - 4 virtual emergency units;
-- 6 QCS simulated observations.
+- 6 QCS simulated observations;
+- Dynamic Risk Digital Twin wiring.
 
 ## Existing operational capabilities
 
-The branch also retains:
+The branch currently demonstrates:
 
 1. Graph traffic engine and network validation.
 2. Congestion-weighted conventional routing.
 3. Incident-aware rerouting.
-4. Deterministic adaptive signal allocation.
-5. Concurrent multi-incident scenarios.
-6. City operations and deterministic mitigation baselines.
-7. Transparent short-horizon forecast baselines.
-8. Simulated emergency-fleet dispatch.
-9. Before/after intervention comparison.
-10. QCS corridor risk analysis.
-11. Risk-aware routing comparison.
-12. Preventive command-plan simulation.
-13. Operational JSON export carrying `simulation: true` and the latest QCS/routing/command summaries.
-14. Coverage CSV export.
-15. Dynamic bilingual feature and evidence views.
+4. Concurrent multi-incident scenarios.
+5. Deterministic city-operations and mitigation baselines.
+6. Transparent short-horizon forecast baselines.
+7. QCS corridor risk analysis.
+8. Dynamic composite road-risk state with trend tracking.
+9. Twin-aware routing comparison.
+10. Risk-aware signal-priority simulation.
+11. Risk-aware virtual emergency dispatch.
+12. Shared twin decision bundle for route, signals and emergency response.
+13. Preventive command-plan simulation.
+14. Before/after intervention comparison.
+15. Operational JSON export containing the current twin state, top-risk edges, decision bundle, QCS summary and preventive-command summary.
+16. Coverage CSV export.
+17. Dynamic bilingual feature and evidence views.
 
 ## Complete forensic accounting
 
@@ -191,9 +203,11 @@ npm run check
 
 ## Evidence boundary
 
-All network, fleet, incident, scenario, forecast, intervention, QCS, risk-aware routing and preventive-command outputs are proof-of-concept simulation data. No quantum sensor, quantum communication link, live road feed, production V2X infrastructure, vehicle actuator or safety-certified control loop is connected.
+“Dynamic” in v1.6 means continuously recomputed within the deterministic browser simulation. It does **not** mean live field streaming.
 
-Production readiness requires authenticated data interfaces, calibrated real sensing or approved high-fidelity data, integration contracts, cyber security and privacy controls, safety engineering, auditability, resilience testing, observability and controlled field or high-fidelity validation.
+All network, fleet, incident, scenario, forecast, intervention, QCS, twin-risk, routing, signal, emergency and preventive-command outputs are proof-of-concept simulation data. No quantum sensor, quantum communication link, live road feed, production V2X infrastructure, traffic-signal controller, government feed, emergency dispatch integration, vehicle actuator or safety-certified control loop is connected.
+
+Production readiness requires authenticated data interfaces, calibrated real sensing or approved high-fidelity data, integration contracts, cyber security and privacy controls, safety engineering, authorization policies, auditability, resilience testing, operational observability, algorithm validation and controlled field or high-fidelity validation.
 
 ## Intellectual property
 
