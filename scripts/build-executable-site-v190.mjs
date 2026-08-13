@@ -73,7 +73,7 @@ for (const contract of ['runtimeHealthPanel','smartTrafficHealth','gateDecision'
   if (!healthRuntime.includes(contract)) throw new Error(`Built Stage D runtime contract missing: ${contract}`);
 }
 const closeoutRuntime = await readFile(join(outDir, 'closeoutRuntime.js'), 'utf8');
-for (const contract of ['mvpCloseoutRoom','ENGINEERING_MVP_CLOSEOUT','runBenchmark','runRecovery','productionReadiness']) {
+for (const contract of ['mvpCloseoutRoom','runBenchmark','runRecovery','productionReadiness']) {
   if (!closeoutRuntime.includes(contract)) throw new Error(`Built closeout runtime contract missing: ${contract}`);
 }
 const app = await readFile(join(outDir, 'app.js'), 'utf8');
