@@ -18,7 +18,8 @@ function fixture() {
     qcsObservations: load('qcs_demo_observations.json'),
     fleet: load('emergency_fleet.json'),
     policy: load('orchestration_policy.json'),
-    decisionInputs: { origin: 'N1', destination: 'N8', emergencyTarget: 'N6', routeRiskWeight: 1.8 }
+    routeParameters: { origin: 'N1', destination: 'N8', routeRiskWeight: 1.8 },
+    emergencyTarget: 'N6'
   };
 }
 
