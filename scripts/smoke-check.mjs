@@ -3,7 +3,7 @@ import { access, readFile } from 'node:fs/promises';
 const manifest = JSON.parse(await readFile('data/features.json','utf8'));
 const manifestFiles = manifest.files.map(name => `data/${name}`);
 const requiredFiles = [
-  'index.html','styles.css','app.js','v18Runtime.js','acquisitionRuntime.js','acquisition.css','engine/trafficEngine.js','engine/operationsEngine.js','engine/qcsRiskEngine.js',
+  'index.html','styles.css','app.js','v18Runtime.js','acquisitionRuntime.js','acquisition.css','guidedDemoRuntime.js','guidedDemo.css','engine/trafficEngine.js','engine/operationsEngine.js','engine/qcsRiskEngine.js',
   'engine/riskAwareRoutingEngine.js','engine/preventiveCommandEngine.js','engine/dynamicRiskTwinEngine.js','engine/predictiveOrchestrationEngine.js','engine/explainableOrchestrationEngine.js','coverage/coverageModel.js',
   'data/network.json','data/operations_scenarios.json','data/emergency_fleet.json','data/qcs_demo_observations.json','data/orchestration_policy.json','data/features.json',
   ...manifestFiles
@@ -15,6 +15,8 @@ const app = await readFile('app.js','utf8');
 const v18Runtime = await readFile('v18Runtime.js','utf8');
 const acquisitionRuntime = await readFile('acquisitionRuntime.js','utf8');
 const acquisitionCss = await readFile('acquisition.css','utf8');
+const guidedRuntime = await readFile('guidedDemoRuntime.js','utf8');
+const guidedCss = await readFile('guidedDemo.css','utf8');
 const predictiveEngine = await readFile('engine/predictiveOrchestrationEngine.js','utf8');
 const explainableEngine = await readFile('engine/explainableOrchestrationEngine.js','utf8');
 const policy = JSON.parse(await readFile('data/orchestration_policy.json','utf8'));
@@ -87,6 +89,20 @@ for (const styleContract of ['.acq-entry','.acq-dashboard','.acq-feature-grid','
   if (!acquisitionCss.includes(styleContract)) throw new Error(`acquisition presentation style missing: ${styleContract}`);
 }
 
+const guidedIds = ['guidedDemoController','guidedStepCount','guidedTitle','guidedBody','guidedProgress','guidedClose','guidedPrev','guidedPause','guidedNext','acqGuidedStart','guidedDemoStart'];
+for (const id of guidedIds) {
+  if (!guidedRuntime.includes(id)) throw new Error(`guided demo runtime contract missing: ${id}`);
+}
+for (const phrase of ['STEPS','baseline','incident','twin','predictive','explain','policyRows','replayRows','acquisitionFeatureExplorer','humanApprovalRequired=true','production_verified=0']) {
+  if (!guidedRuntime.includes(phrase)) throw new Error(`guided demo sequence/evidence contract missing: ${phrase}`);
+}
+if (!guidedRuntime.includes("edge.value = 'E09'")) throw new Error('guided demo must use deterministic incident edge E09 when available');
+if (!guidedRuntime.includes("closed.checked = false")) throw new Error('guided demo must not close the deterministic incident edge');
+if (!guidedRuntime.includes("byId('resetNetworkBtn')?.click()")) throw new Error('guided demo must reset network before deterministic tour');
+for (const styleContract of ['.guided-controller','.guided-focus','.guided-progress','.guided-start']) {
+  if (!guidedCss.includes(styleContract)) throw new Error(`guided demo presentation style missing: ${styleContract}`);
+}
+
 if (policy.simulationOnly !== true || policy.autoApplyAllowed !== false || policy.requireHumanApproval !== true || policy.productionControlAllowed !== false) throw new Error('orchestration policy safety boundary invalid');
 if (Number(policy.maxLoadReduction) > 20 || Number(policy.maxIncidentRelief) > 0.5) throw new Error('demo policy limits unexpectedly permissive');
 if (network.nodes.length !== 12) throw new Error(`expected 12 demo nodes, got ${network.nodes.length}`);
@@ -95,4 +111,4 @@ if (scenarios.length < 5 || !scenarios.some(s=>s.id==='multi' && s.incidents?.le
 if (fleet.length < 3 || !fleet.every(unit=>unit.currentNode && unit.status)) throw new Error('emergency fleet fixture invalid');
 if (qcsObservations.length < 5 || !qcsObservations.every(row=>row.edgeId && Number.isFinite(row.vehicleSpeedKph))) throw new Error('QCS observation fixture invalid');
 
-console.log(`Static smoke check passed: ${new Set(requiredFiles).size} files, ${requiredIds.length} static DOM bindings + ${predictiveIds.length} predictive + ${v18Ids.length} explainability/policy/replay + ${acquisitionIds.length} acquisition bindings, ${network.nodes.length} nodes, ${network.edges.length} edges, ${scenarios.length} scenarios, ${fleet.length} fleet units, ${qcsObservations.length} QCS observations, acquisition-ready presentation contract wired.`);
+console.log(`Static smoke check passed: ${new Set(requiredFiles).size} files, ${requiredIds.length} static DOM bindings + ${predictiveIds.length} predictive + ${v18Ids.length} explainability/policy/replay + ${acquisitionIds.length} acquisition + ${guidedIds.length} guided-demo bindings, ${network.nodes.length} nodes, ${network.edges.length} edges, ${scenarios.length} scenarios, ${fleet.length} fleet units, ${qcsObservations.length} QCS observations, executive guided demo contract wired.`);
