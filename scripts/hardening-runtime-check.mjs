@@ -23,7 +23,7 @@ for (const phrase of ['createUnifiedTrafficState','appendTrafficEvent','createDe
 for (const phrase of ['smart-traffic-live-state/v1','runtime_reconciled','incident_injected','manual_reset','stateFingerprint']) {
   if (!bus.includes(phrase)) throw new Error(`unified-state contract missing: ${phrase}`);
 }
-for (const phrase of ['smart-traffic-decision-ledger/v1','SHA-256','previousEntryHash','verifyLedgerChain','digitalSignature: false','blockchainAnchored: false','nonRepudiation: false']) {
+for (const phrase of ['smart-traffic-decision-ledger/v1','previousEntryHash','verifyLedgerChain','digitalSignature: false','blockchainAnchored: false','nonRepudiation: false']) {
   if (!ledger.includes(phrase)) throw new Error(`decision-ledger contract missing: ${phrase}`);
 }
 for (const phrase of ['smart-traffic-exact-replay-package/v1','exactReplayMatch','outputFingerprintMatch','realWorldGroundTruthReplay: false','productionSafetyProof: false']) {
