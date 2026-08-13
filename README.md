@@ -1,10 +1,10 @@
-# Smart AI Traffic Platform — Engineering MVP v1.7
+# Smart AI Traffic Platform — Engineering MVP v1.8
 
 Public engineering proof-of-concept for a city-scale and sovereign traffic intelligence platform.
 
 ## Unified registry
 
-The branch currently exposes **123 source records** through a dynamic bilingual registry loaded from `data/features.json`:
+The branch currently exposes 123 source records through a dynamic bilingual registry loaded from `data/features.json`:
 
 - 52 verified Main Legacy historical features: 1-14 and 200-237.
 - 23 conversation-recovered capabilities.
@@ -16,115 +16,152 @@ Direct QCS registry records currently include `QCS-80`, `QCS-85`-`QCS-89`, `QCS-
 
 Main Legacy 15-199 remains reserved pending verified direct recovery.
 
-## Engineering MVP v1.7 — Predictive Risk & Autonomous Orchestration
+## Engineering MVP v1.8 — Explainable Orchestration, Policy Guardrails & Scenario Replay
 
-Version 1.7 extends the v1.6 Dynamic Risk Digital Twin with a deterministic multi-horizon predictive and orchestration layer.
+Version 1.8 extends the v1.7 Predictive Risk & Autonomous Orchestration layer with explicit decision explanation, a configurable policy gate, scenario replay, and sensitivity analysis.
 
-`engine/predictiveOrchestrationEngine.js` adds four capabilities:
+The new implementation consists of:
 
-1. project the simulated network state at **5, 15, 30 and 60 minutes**;
-2. rebuild the Dynamic Risk Digital Twin for each projected horizon;
-3. generate multiple candidate intervention plans;
-4. rank those candidates across all forecast horizons and autonomously recommend the lowest-scoring robust plan.
+- `engine/explainableOrchestrationEngine.js`;
+- `data/orchestration_policy.json`;
+- `v18Runtime.js`;
+- `tests/explainableOrchestrationEngine.test.js`.
 
-The recommendation is autonomous only at the decision-support level. The engine always preserves:
+The v1.8 layer does not change the field-control boundary. It preserves:
 
-- `simulation: true`;
-- `trainedModel: false` for the forecast baseline;
-- `autonomousRecommendation: true`;
-- `autoApply: false`;
-- `humanApprovalRequired: true`;
-- `productionControlConnected: false`;
-- `safetyCertified: false`.
+- `simulation=true`;
+- `autoApply=false`;
+- `humanApprovalRequired=true`;
+- `productionControlConnected=false`;
+- `causalClaim=false` for the explanation layer;
+- `trainedModel=false` for the predictive baseline.
 
-No field control is executed.
+## Explainable orchestration
 
-## Predictive risk propagation baseline
+`explainOrchestration()` explains the selected simulated intervention by decomposing the same deterministic score used by the orchestrator.
 
-`forecastRiskPropagation()` creates deterministic forecasts at 5, 15, 30 and 60 minutes.
+The v1.7 robust score is reconstructed as:
 
-The network projection uses transparent simulated inputs:
+`0.80 × weightedMeanScore + 0.20 × worstHorizonScore + interventionPenalty`
 
-- current road-edge load;
-- current incident severity;
-- local congestion momentum;
-- pressure from neighboring connected edges;
-- current closure state;
-- current QCS proxy observations when the future twin is rebuilt.
+The explanation reports:
 
-Each future horizon reports:
+- contribution from the weighted multi-horizon mean;
+- contribution from the worst forecast horizon;
+- intervention penalty;
+- reconstructed robust score;
+- difference versus `observe_only`;
+- final average-risk difference;
+- final maximum-risk difference;
+- final average-load difference;
+- why each alternative lost relative to the selected candidate.
 
-- projected Dynamic Risk Twin;
-- average risk score;
-- maximum risk score;
-- high/critical edge count;
-- emerging hotspot count;
-- hotspot edge identity, projected load and risk delta.
+This is an arithmetic decision explanation. It is not a causal proof, safety case, regulatory justification, or production decision certificate.
 
-This is a deterministic engineering baseline, not a trained AI traffic prediction model and not a validated production forecast.
+## Policy guardrails
 
-## Candidate intervention generation
+`data/orchestration_policy.json` defines the current engineering-demo policy boundary.
 
-The current orchestration layer evaluates four transparent candidate strategies:
+The policy currently constrains:
 
-- `observe_only` — no simulated intervention;
-- `balanced_preemptive` — moderate targeted load and incident relief;
-- `network_relief` — broader network load relief;
-- `safety_priority` — stronger incident-risk relief on the highest predicted-risk edges.
+- maximum number of targeted edges;
+- maximum simulated load reduction;
+- maximum simulated incident relief;
+- maximum intervention penalty;
+- mandatory simulation-only operation;
+- mandatory human approval;
+- prohibition of automatic application;
+- prohibition of production-control connection;
+- preservation of closed-road state through the underlying intervention invariant;
+- minimum candidate-set size.
 
-Candidate intervention logic never reopens a closed road and only changes simulated state.
+`evaluatePolicyGuardrails()` screens candidate plans and returns the highest-ranked compliant plan rather than automatically accepting the raw scoring winner.
 
-For every future horizon, each candidate receives a new Dynamic Risk Twin and a unified decision bundle containing:
+The current policy file is a demo policy, not a public-road operating rule set. A production deployment would require policy supplied and approved by the relevant road, emergency, safety, cyber-security, privacy and regulatory authorities.
 
-- twin-aware route decision;
-- risk-aware signal plan;
-- risk-aware virtual emergency dispatch.
+## Scenario replay
 
-## Robust multi-horizon scoring
+`buildScenarioReplay()` compares the policy-selected candidate with `observe_only` at every forecast horizon.
 
-Every candidate is evaluated at all forecast horizons rather than being optimized for a single instant.
+The standard replay frames are:
 
-The objective combines:
+- 5 minutes;
+- 15 minutes;
+- 30 minutes;
+- 60 minutes.
 
-- average network risk;
-- maximum network risk;
-- share of high/critical edges;
+Each replay frame reports the simulated difference in:
+
+- objective score;
+- average risk;
+- maximum risk;
 - average network load;
 - average edge travel time;
-- an explicit intervention penalty.
+- network stress index.
 
-The final `robustScore` combines the weighted multi-horizon mean with the worst horizon score and intervention penalty. Lower is better.
+The frame also preserves the selected simulated route, virtual emergency decision and signal timing plan for that horizon.
 
-The selected plan is therefore the best simulated compromise across near-term and longer short-horizon risk rather than simply the most aggressive intervention.
+Replay is retrospective comparison inside the deterministic simulation. It does not execute or recreate real-world road operations.
 
-## Runtime Predictive Orchestration panel
+## Sensitivity analysis
 
-`app.js` creates the v1.7 panel at runtime and updates the page identity to Engineering MVP v1.7.
+`runOrchestrationSensitivity()` runs controlled what-if combinations across forecast horizons and route safety weights.
 
-The panel exposes:
+The v1.8 browser panel currently evaluates:
 
-- recommended candidate plan;
-- improvement versus `observe_only`;
-- worst horizon score;
-- 60-minute hotspot count;
-- forecast table for 5/15/30/60 minutes;
-- ranked candidate table;
-- explicit `trainedModel=false` and `autoApply=false` boundaries.
+- risk weights `0.8`, `1.8`, and `3.5`;
+- horizon sets `5/15` and `5/15/30/60` minutes.
 
-The top-level optimization action now invokes the predictive orchestrator instead of the older single-state scenario selector.
+Each row reports:
+
+- selected candidate;
+- robust score;
+- final route time;
+- final route average twin risk;
+- preserved `autoApply=false` boundary.
+
+This provides a visible check of how recommendation and route behavior respond to policy-relevant modeling choices.
+
+## v1.8 runtime panel
+
+`v18Runtime.js` adds a separate Explainable Orchestration panel to the existing MVP page.
+
+It displays:
+
+- policy PASS/BLOCK status;
+- policy-selected plan;
+- reconstructed robust score;
+- 60-minute replay improvement;
+- alternative-plan comparison table;
+- policy compliance table;
+- 5/15/30/60-minute scenario replay table;
+- horizon × safety-weight sensitivity table.
+
+The v1.8 runtime intentionally reads the currently selected scenario fixture and reconstructs that scenario from `data/network.json` and `data/operations_scenarios.json`. It does not yet consume every transient random browser drift or manually injected in-memory incident created after page load. This limitation is explicit and avoids claiming state synchronization that is not implemented.
+
+## Predictive orchestration retained from v1.7
+
+`engine/predictiveOrchestrationEngine.js` continues to:
+
+1. project the simulated network at 5, 15, 30 and 60 minutes;
+2. rebuild a Dynamic Risk Digital Twin for each future state;
+3. identify emerging hotspots;
+4. evaluate `observe_only`, `balanced_preemptive`, `network_relief`, and `safety_priority`;
+5. rank candidates across all horizons;
+6. return an autonomous recommendation without applying it.
+
+Forecasting remains a deterministic engineering baseline and not a trained production AI model.
 
 ## Dynamic Risk Digital Twin retained from v1.6
 
-`engine/dynamicRiskTwinEngine.js` continues to fuse four deterministic inputs for every road edge:
+`engine/dynamicRiskTwinEngine.js` continues to fuse:
 
-- network load — weight `0.30`;
-- incident severity — weight `0.28`;
-- QCS proxy risk — weight `0.32`;
-- closure state — weight `0.10`.
+- network load with weight `0.30`;
+- incident severity with weight `0.28`;
+- QCS proxy risk with weight `0.32`;
+- closure state with weight `0.10`.
 
-Each edge receives a composite risk score, risk level, trend, delta, load, incident state, closure state, QCS proxy risk and current simulated travel time.
-
-The same twin state remains shared across route, signal and emergency decisions.
+The same future twin snapshot is shared by route, signal and virtual emergency decisions inside each candidate/horizon evaluation.
 
 ## QCS and QTOS demo coverage
 
@@ -136,67 +173,68 @@ Executable QCS proxy logic meaningfully represents:
 - `QCS-87` — severe-weather response logic.
 - `QCS-88` — sharp-turn risk logic.
 - `QCS-92` — road-quality and vehicle-response logic.
-- `QCS-101` — deterministic risk analysis plus twin-aware route selection and preemptive command-plan logic.
+- `QCS-101` — deterministic risk analysis, twin-aware route selection and preemptive command-plan logic.
 
-QTOS implementation mapping now includes:
+QTOS executable demo mappings remain:
 
 - `QTOS-02` — Dynamic City Traffic Digital Twin;
 - `QTOS-03` — predictive congestion/risk baseline;
-- `QTOS-05` — network-wide traffic load balancing through predictive candidate orchestration;
+- `QTOS-05` — network-wide predictive load-balancing recommendation;
 - `QTOS-21` — proactive crisis-management recommendation workflow;
 - `QTOS-22` — multi-horizon candidate simulation and ranking.
 
-`QTOS-05` moves from `represented_demo` to `implemented_demo` in v1.7 because executable candidate plans now target the highest predicted-risk parts of the network and are evaluated across the city graph. This remains a simulation implementation, not production traffic assignment.
+Version 1.8 deliberately does not increase historical capability coverage counts solely because explainability and governance depth increased. No historical feature is promoted without a direct semantic mapping.
 
 ## Validated coverage
 
-Latest successful CI validation reports:
+Latest successful CI validation before this documentation update reports:
 
 - 123 total registry records.
-- **33 `implemented_demo`.**
-- **17 `represented_demo`.**
-- **73 `catalogued_only`.**
-- **0 `production_verified`.**
+- 33 `implemented_demo`.
+- 17 `represented_demo`.
+- 73 `catalogued_only`.
+- 0 `production_verified`.
 
-The current automated suite passes **40/40 tests**.
+The automated suite passes 45/45 tests.
 
 The static smoke check validates:
 
-- **28 required/dynamic files**;
-- **81 static DOM bindings**;
-- **9 runtime Predictive Orchestration bindings**;
+- 31 required/dynamic files;
+- 81 static DOM bindings;
+- 9 runtime Predictive Orchestration bindings;
+- 11 runtime Explainability/Policy/Replay bindings;
 - 12 simulated road nodes;
 - 17 road links;
 - 5 operating scenarios;
 - 4 virtual emergency units;
-- 6 QCS simulated observations;
-- Dynamic Risk Digital Twin and Predictive Orchestration wiring.
+- 6 QCS simulated observations.
 
-## Existing operational capabilities
+## Operational capabilities demonstrated
 
 The branch currently demonstrates:
 
-1. Graph traffic engine and network validation.
-2. Congestion-weighted conventional routing.
+1. Graph traffic engine and validation.
+2. Conventional congestion-aware routing.
 3. Incident-aware rerouting.
-4. Concurrent multi-incident scenarios.
-5. Deterministic city-operations and mitigation baselines.
-6. Short-horizon operational forecast baseline.
-7. QCS corridor risk analysis.
-8. Dynamic composite road-risk state with trend tracking.
-9. Twin-aware routing comparison.
-10. Risk-aware signal-priority simulation.
-11. Risk-aware virtual emergency dispatch.
-12. Shared twin decision bundle.
-13. Preventive command-plan simulation.
-14. Predictive 5/15/30/60-minute risk propagation.
-15. Emerging-hotspot detection.
-16. Multi-plan intervention generation.
-17. Robust candidate scoring across all horizons.
-18. Autonomous recommendation with human-approval boundary.
-19. Operational JSON export including predictive orchestration summary.
-20. Coverage CSV export.
-21. Dynamic bilingual feature and evidence views.
+4. Multi-incident scenarios.
+5. Deterministic operational metrics and mitigation baselines.
+6. QCS proxy road-risk analysis.
+7. Dynamic Risk Digital Twin state and trends.
+8. Twin-aware route comparison.
+9. Risk-aware signal-priority simulation.
+10. Risk-aware virtual emergency dispatch.
+11. Preventive vehicle-command simulation.
+12. 5/15/30/60-minute risk propagation.
+13. Emerging-hotspot detection.
+14. Multi-plan intervention generation.
+15. Robust multi-horizon candidate ranking.
+16. Autonomous recommendation with human approval boundary.
+17. Arithmetic score explanation.
+18. Policy-compliance screening.
+19. Observe-only versus selected-plan replay.
+20. Horizon and safety-weight sensitivity analysis.
+21. Operational JSON and coverage export from the core v1.7 application.
+22. Dynamic bilingual feature and evidence views.
 
 ## Complete forensic accounting
 
@@ -236,13 +274,19 @@ npm run check
 
 ## Evidence boundary
 
-“Predictive” in v1.7 means deterministic simulated projection over 5–60 minutes. It does not mean a trained production AI model.
+“Predictive” means deterministic simulated projection over short horizons, not a trained validated production forecast.
 
-“Autonomous Orchestration” means autonomous ranking and recommendation inside the simulation. It does not mean automatic field execution.
+“Autonomous Orchestration” means autonomous ranking and recommendation inside the simulation, not automatic field execution.
+
+“Explainable” means deterministic arithmetic decomposition and comparison of the implemented scoring logic, not causal proof or regulatory certification.
+
+“Policy Guardrails” means the current configurable engineering-demo constraints, not approved public-road policy.
+
+“Scenario Replay” means simulated comparison of candidate and baseline outcomes, not reconstruction of field events.
 
 No quantum sensor, quantum communication link, live road feed, production V2X infrastructure, traffic-signal controller, government feed, emergency dispatch integration, vehicle actuator or safety-certified control loop is connected.
 
-Production readiness requires authenticated data interfaces, calibrated sensing or approved high-fidelity datasets, trained/validated forecasting where appropriate, cyber security and privacy controls, safety engineering, authorization policies, auditability, resilience testing, observability, controller integration validation, emergency-agency integration controls and controlled deployment evidence.
+Production readiness requires authenticated data interfaces, calibrated sensing or approved high-fidelity datasets, validated forecasting where appropriate, approved operating policy, cyber-security and privacy controls, safety engineering, authorization and human-oversight design, auditability, resilience testing, observability, field-controller integration validation, emergency-agency controls and staged controlled deployment evidence.
 
 ## Intellectual property
 
