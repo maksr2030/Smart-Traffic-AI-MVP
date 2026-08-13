@@ -8,11 +8,12 @@ import {
   runOperationalScenario,
   shortHorizonForecast
 } from './engine/operationsEngine.js';
+import { evaluateQcsCorridor } from './engine/qcsRiskEngine.js';
 import { buildCoverage, coverageSummary, coverageToCsv } from './coverage/coverageModel.js';
 
 const state = {
   lang: 'ar', running: true, features: [], coverageRows: [], baseNetwork: null, networkModel: null,
-  scenarios: [], fleet: [], currentScenario: 'normal', pendingIntervention: null,
+  scenarios: [], fleet: [], qcsObservations: [], qcsResult: null, currentScenario: 'normal', pendingIntervention: null,
   lastForecast: null, lastComparison: null, tick: 0
 };
 
@@ -20,12 +21,12 @@ const labels = {
   ar: {
     run:'تشغيل', pause:'إيقاف المحاكاة', resume:'استئناف المحاكاة', load:'الحمل', speed:'كم/س',
     route:'احسب المسار', unreachable:'لا يوجد مسار متاح', flowing:'انسيابي', busy:'مزدحم', critical:'حرج', closed:'مغلق',
-    forecast:'تشغيل التنبؤ', dispatch:'إرسال وحدة الطوارئ', applied:'تم تطبيق التدخل المحاكى'
+    forecast:'تشغيل التنبؤ', dispatch:'إرسال وحدة الطوارئ', applied:'تم تطبيق التدخل المحاكى', qcs:'تشغيل تحليل QCS المحاكى'
   },
   en: {
     run:'Run', pause:'Pause simulation', resume:'Resume simulation', load:'Load', speed:'km/h',
     route:'Calculate route', unreachable:'No route available', flowing:'Flowing', busy:'Busy', critical:'Critical', closed:'Closed',
-    forecast:'Run forecast', dispatch:'Dispatch emergency unit', applied:'Simulated intervention applied'
+    forecast:'Run forecast', dispatch:'Dispatch emergency unit', applied:'Simulated intervention applied', qcs:'Run simulated QCS analysis'
   }
 };
 
@@ -139,6 +140,29 @@ function dispatchEmergency(){
   logEvent(`${state.lang==='ar'?'اختيار وحدة طوارئ':'Emergency unit selected'}: ${unit.id}`);
 }
 
+function runQcsRisk(){
+  const result=evaluateQcsCorridor(state.qcsObservations); state.qcsResult=result;
+  const top=result.assessments[0];
+  document.getElementById('qcsRiskScore').textContent=`${top.score}`;
+  document.getElementById('qcsRiskEdge').textContent=top.edgeId;
+  document.getElementById('qcsTargetSpeed').textContent=`${top.response.targetSpeedKph} km/h`;
+  document.getElementById('qcsBroadcasts').textContent=result.summary.hazardBroadcasts;
+  const actions=top.response.actions.join(' · ')||'monitor';
+  document.getElementById('qcsRiskResult').innerHTML=`<strong>${top.edgeId} · ${top.level.toUpperCase()} · ${top.score}/100</strong><br>${state.lang==='ar'?'متوسط الخطر':'Average risk'}: ${result.summary.averageRiskScore}/100 · ${state.lang==='ar'?'أعلى سرعة مقترحة للمقطع':'Suggested target speed'}: ${top.response.targetSpeedKph} km/h<br><span>${actions}</span><br><small>SIMULATION · ${result.method} · quantumHardwareConnected=false</small>`;
+  renderQcsRiskTable();
+  logEvent(`${state.lang==='ar'?'تحليل مخاطر QCS محاكى':'Simulated QCS risk analysis'}: ${top.edgeId} ${top.score}/100`);
+}
+
+function renderQcsRiskTable(){
+  const tbody=document.getElementById('qcsRiskRows'); tbody.innerHTML='';
+  if(!state.qcsResult) return;
+  state.qcsResult.assessments.slice(0,6).forEach(item=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="id">${item.edgeId}</td><td>${item.score}</td><td>${item.level}</td><td>${item.response.currentSpeedKph}</td><td>${item.response.targetSpeedKph}</td><td>${item.response.actions.join(', ')||'monitor'}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
 function intervene(action){
   if(action==='signals'){
     const busiest=[...state.networkModel.edges].filter(e=>!e.closed).sort((a,b)=>(b.load||0)-(a.load||0)).slice(0,4);
@@ -166,7 +190,13 @@ function injectIncident(){
   renderNetwork(); runRoute(); logEvent(`${state.lang==='ar'?'حادث محاكى':'Simulated incident'}: ${edgeId}`);
 }
 
-function groupTag(g){ return {verified_historical:['verified','Verified'],conversation_recovered:['recovered','Recovered'],additional_history:['history','History'],qtos:['qtos','QTOS']}[g]||['','']; }
+function groupTag(g){ return {verified_historical:['verified','Verified'],conversation_recovered:['recovered','Recovered'],additional_history:['history','History'],qtos:['qtos','QTOS'],qcs_recovered:['recovered','QCS Direct']}[g]||['','']; }
+
+function renderRegistryStats(){
+  const counts=state.features.reduce((acc,f)=>{acc[f.group]=(acc[f.group]||0)+1;return acc;},{});
+  document.getElementById('registryStats').innerHTML=`<span class="stat-pill">${counts.verified_historical||0} Verified Historical</span><span class="stat-pill">${counts.conversation_recovered||0} Conversation-Recovered</span><span class="stat-pill">${counts.additional_history||0} Project-History</span><span class="stat-pill">${counts.qtos||0} QTOS</span><span class="stat-pill">${counts.qcs_recovered||0} QCS Direct</span>`;
+  document.getElementById('registryBadge').textContent=`${state.features.length} Source Records`;
+}
 
 function renderFeatures(){
   const q=document.getElementById('search').value.trim().toLowerCase(), g=document.getElementById('groupFilter').value, c=document.getElementById('categoryFilter').value, rows=document.getElementById('featureRows'); rows.innerHTML='';
@@ -178,6 +208,7 @@ function renderFeatures(){
     tr.innerHTML=`<td class="id">${f.id}</td><td class="title-ar">${f.title_ar}</td><td>${f.title_en}</td><td>${state.lang==='ar'?f.category_ar:f.category_en}</td><td class="desc">${state.lang==='ar'?f.description_ar:f.description_en}</td><td><span class="tag ${cls}">${txt}</span></td>`; rows.appendChild(tr);
   });
   document.getElementById('featureCount').textContent=state.features.length;
+  renderRegistryStats();
 }
 
 function renderCoverage(){
@@ -198,7 +229,7 @@ function renderCoverage(){
 
 function rebuildCategories(){
   const sel=document.getElementById('categoryFilter'), current=sel.value;
-  const cats=[...new Set(state.features.map(f=>state.lang==='ar'?f.category_ar:f.category_en))].sort((a,b)=>a.localeCompare(b));
+  const cats=[...new Set(state.features.map(f=>state.lang==='ar'?f.category_ar:f.category_en).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
   sel.innerHTML=`<option value="">${state.lang==='ar'?'كل الفئات':'All categories'}</option>`+cats.map(c=>`<option>${c}</option>`).join(''); if(cats.includes(current)) sel.value=current;
 }
 
@@ -219,6 +250,7 @@ function downloadFile(name,content,type){
 }
 function exportSnapshot(){
   const snapshot=makeOperationalSnapshot({network:state.networkModel,scenarioName:state.currentScenario,forecast:state.lastForecast,comparison:state.lastComparison,coverageSummary:coverageSummary(state.coverageRows)});
+  snapshot.qcsRiskDemo=state.qcsResult?{simulation:true,method:state.qcsResult.method,summary:state.qcsResult.summary}:null;
   downloadFile('smart-traffic-operational-snapshot.json',JSON.stringify(snapshot,null,2),'application/json'); logEvent('Operational snapshot exported');
 }
 function exportCoverage(){ downloadFile('smart-traffic-feature-coverage.csv',coverageToCsv(state.coverageRows),'text/csv;charset=utf-8'); logEvent('Coverage matrix exported'); }
@@ -227,26 +259,28 @@ function translate(){
   const isAr=state.lang==='ar'; document.documentElement.lang=state.lang; document.documentElement.dir=isAr?'rtl':'ltr';
   document.querySelectorAll('[data-ar][data-en]').forEach(el=>el.textContent=el.dataset[state.lang]);
   document.getElementById('langBtn').textContent=isAr?'English':'العربية'; document.getElementById('pauseBtn').textContent=state.running?labels[state.lang].pause:labels[state.lang].resume;
-  document.querySelectorAll('[data-action]').forEach(b=>b.textContent=labels[state.lang].run); document.getElementById('routeBtn').textContent=labels[state.lang].route; document.getElementById('forecastBtn').textContent=labels[state.lang].forecast; document.getElementById('dispatchBtn').textContent=labels[state.lang].dispatch;
-  rebuildCategories(); populateScenarios(); populateEngineeringSelectors(); renderFeatures(); renderCoverage(); renderNetwork();
+  document.querySelectorAll('[data-action]').forEach(b=>b.textContent=labels[state.lang].run); document.getElementById('routeBtn').textContent=labels[state.lang].route; document.getElementById('forecastBtn').textContent=labels[state.lang].forecast; document.getElementById('dispatchBtn').textContent=labels[state.lang].dispatch; document.getElementById('qcsRiskBtn').textContent=labels[state.lang].qcs;
+  rebuildCategories(); populateScenarios(); populateEngineeringSelectors(); renderFeatures(); renderCoverage(); renderNetwork(); if(state.qcsResult) runQcsRisk();
 }
 
 async function load(){
-  const featurePaths=['data/verified_1_10.json','data/verified_200_237.json','data/conversation_recovered.json','data/additional_history.json','data/qtos.json'];
-  const [datasets,network,scenarios,fleet]=await Promise.all([
-    Promise.all(featurePaths.map(async p=>{const r=await fetch(p);if(!r.ok)throw new Error(`Failed ${p}`);return r.json()})),
-    fetch('data/network.json').then(r=>r.json()), fetch('data/operations_scenarios.json').then(r=>r.json()), fetch('data/emergency_fleet.json').then(r=>r.json())
+  const [manifest,network,scenarios,fleet,qcsObservations]=await Promise.all([
+    fetch('data/features.json').then(r=>{if(!r.ok)throw new Error('Failed data/features.json');return r.json()}),
+    fetch('data/network.json').then(r=>r.json()), fetch('data/operations_scenarios.json').then(r=>r.json()), fetch('data/emergency_fleet.json').then(r=>r.json()), fetch('data/qcs_demo_observations.json').then(r=>r.json())
   ]);
-  state.features=datasets.flat(); state.coverageRows=buildCoverage(state.features); state.baseNetwork=JSON.parse(JSON.stringify(network)); state.networkModel=network; state.scenarios=scenarios; state.fleet=fleet;
-  populateScenarios(); populateEngineeringSelectors(); rebuildCategories(); renderFeatures(); renderCoverage(); renderNetwork(); runRoute(); runForecast(); dispatchEmergency(); runScenario();
-  logEvent(state.lang==='ar'?'تم تحميل طبقة عمليات المدينة وسجل الميزات':'City operations layer and feature registry loaded'); setInterval(updateSim,1600);
+  const datasets=await Promise.all(manifest.files.map(async p=>{const path=`data/${p}`;const r=await fetch(path);if(!r.ok)throw new Error(`Failed ${path}`);return r.json()}));
+  state.features=datasets.flat();
+  if(state.features.length!==manifest.total) throw new Error(`Feature registry mismatch ${state.features.length} != ${manifest.total}`);
+  state.coverageRows=buildCoverage(state.features); state.baseNetwork=JSON.parse(JSON.stringify(network)); state.networkModel=network; state.scenarios=scenarios; state.fleet=fleet; state.qcsObservations=qcsObservations;
+  populateScenarios(); populateEngineeringSelectors(); rebuildCategories(); renderFeatures(); renderCoverage(); renderNetwork(); runRoute(); runForecast(); dispatchEmergency(); runScenario(); runQcsRisk();
+  logEvent(state.lang==='ar'?'تم تحميل طبقة عمليات المدينة والسجل الديناميكي ومختبر QCS':'City operations, dynamic registry and QCS lab loaded'); setInterval(updateSim,1600);
 }
 
 document.getElementById('langBtn').onclick=()=>{state.lang=state.lang==='ar'?'en':'ar';translate()};
 document.getElementById('pauseBtn').onclick=()=>{state.running=!state.running;translate();logEvent(state.running?'Simulation resumed':'Simulation paused')};
 document.getElementById('optimizeBtn').onclick=()=>intervene('qtos');
 document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>intervene(b.dataset.action));
-document.getElementById('routeBtn').onclick=runRoute; document.getElementById('scenarioBtn').onclick=runScenario; document.getElementById('forecastBtn').onclick=runForecast; document.getElementById('dispatchBtn').onclick=dispatchEmergency;
+document.getElementById('routeBtn').onclick=runRoute; document.getElementById('scenarioBtn').onclick=runScenario; document.getElementById('forecastBtn').onclick=runForecast; document.getElementById('dispatchBtn').onclick=dispatchEmergency; document.getElementById('qcsRiskBtn').onclick=runQcsRisk;
 document.getElementById('incidentBtn').onclick=injectIncident; document.getElementById('applyInterventionBtn').onclick=applyPendingIntervention;
 document.getElementById('resetNetworkBtn').onclick=()=>{state.networkModel=JSON.parse(JSON.stringify(state.baseNetwork));state.pendingIntervention=null;state.lastComparison=null;populateEngineeringSelectors();renderNetwork();runRoute();logEvent(state.lang==='ar'?'إعادة ضبط الشبكة':'Network reset')};
 document.getElementById('exportSnapshotBtn').onclick=exportSnapshot; document.getElementById('exportCoverageBtn').onclick=exportCoverage;
