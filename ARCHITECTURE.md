@@ -1,20 +1,24 @@
-# Architecture and Evidence Boundary — Executable Engineering MVP v1.9
+# Architecture and Evidence Boundary — Executable Engineering MVP v1.9.1
 
 ## Objective
 
-Version 1.9 extends the executable Smart Traffic AI MVP with production-hardening mechanisms for captured runtime state, decision integrity, exact deterministic replay, acquisition review and browser-level validation.
+Version 1.9.1 completes Stage C of the Smart Traffic AI MVP production-hardening path for the assembled executable: operational mutations now pass through one deterministic Unified State Bus owned by `engine/authoritativeRuntimeStore.js`, while SHA-256 decision integrity, Exact Replay, acquisition review and browser E2E assurance remain active.
 
 The architecture remains an engineering proof-of-concept simulation. No recommendation, policy decision, audit entry or replay result executes field control.
 
 ## Architecture overview
 
-The v1.9 architecture preserves the traffic intelligence stack from v1.8 and adds five hardening concerns:
+The v1.9.1 executable architecture adds a strict state-authority relationship to the existing traffic-intelligence stack:
 
-1. synchronized captured live-state and runtime events;
-2. canonical SHA-256 state/input/policy/output fingerprints;
-3. chained decision-integrity ledger;
-4. captured deterministic Exact Replay;
-5. one executable build validated by desktop Chromium and mobile WebKit E2E before/alongside Pages deployment.
+1. deterministic fixtures and browser actions generate explicit operational events;
+2. `engine/authoritativeRuntimeStore.js` owns the current `smart-traffic-live-state/v1` state;
+3. `engine/unifiedStateBus.js` is the deterministic reducer for accepted mutations;
+4. the transformed executable `app.js` derives its legacy UI mirror from that authoritative state;
+5. traffic, QCS, twin, predictive and policy logic operate on the authoritative snapshots/mutations;
+6. `hardeningRuntime.js` directly subscribes to the same state instead of polling/reconciling a second state;
+7. decisions are fingerprinted and chained with SHA-256;
+8. captured state/policy/inputs can be rerun by Exact Replay;
+9. the same assembled executable build is validated in desktop Chromium and mobile WebKit E2E.
 
 ## Logical layers
 
@@ -24,7 +28,7 @@ Potential authorized production sources include road sensors, traffic signals, c
 
 The present MVP uses deterministic fixtures and simulated inputs. No live government or field feed is connected.
 
-### 2. Network-state layer
+### 2. Network-state and traffic-engine layer
 
 `data/network.json` defines the demo graph used by `engine/trafficEngine.js` for validation, travel-time calculation, shortest-path routing, incidents, demand, signal allocation and network metrics.
 
@@ -125,41 +129,81 @@ Every command remains actuator-disconnected and non-certified.
 
 ### 17. Acquisition presentation layer
 
-`acquisitionRuntime.js` adds the acquisition-ready entry experience, executive navigation and complete feature explorer.
-
-The entry layer preserves the distinction among implemented demo, represented demo, catalogued only and production verified.
+`acquisitionRuntime.js` adds the acquisition-ready entry experience, executive navigation and complete feature explorer while preserving the distinction among implemented demo, represented demo, catalogued only and production verified.
 
 ### 18. Executive Guided Demo layer
 
 The deployed guided runtime provides an 11-step executive path through baseline state, incident injection, Dynamic Risk Twin, prediction, candidate comparison, explanation, policy gate, scenario replay, Acquisition Decision Room and capability portfolio.
 
-The tour acts on the executable demo controls and maintains the same evidence boundary.
-
 ### 19. Acquisition Decision Room layer
 
-`decisionRoomRuntime.js` and `decisionRoom.css` expose acquisition-relevant material without exposing sensitive algorithmic implementation details.
+`decisionRoomRuntime.js` and `decisionRoom.css` expose strategic acquisition rationale, architecture snapshot, evidence/readiness matrix, due-diligence links, MVP-to-production roadmap, deployment/transaction models, IP disclosure boundary and buyer next action.
 
-The Decision Room includes strategic acquisition rationale, architecture snapshot, evidence/readiness matrix, due-diligence links, MVP-to-production roadmap, deployment/transaction models, IP disclosure boundary and buyer next action.
+### 20. Authoritative unified-state layer
 
-### 20. Synchronized captured live-state layer
-
-`engine/unifiedStateBus.js` introduces schema:
+`engine/unifiedStateBus.js` defines schema:
 
 `smart-traffic-live-state/v1`
 
-The captured state includes revision, sequence, tick, scenario, network/base-network snapshots, QCS observations, fleet, route parameters, emergency target, demo policy, incidents, twin snapshot, predictive snapshot, last decision and event history.
+The state includes revision, monotonic sequence, tick, simulation-running status, scenario, current/base network snapshots, QCS observations, fleet, route parameters, emergency target, demo policy, active incidents, twin snapshot, predictive snapshot, last decision and bounded event history.
 
-Deterministic reducer events include scenario load, traffic drift, incident injection/clear, QCS update, route/policy changes, twin/predictive update, manual reset and runtime reconciliation.
+`engine/authoritativeRuntimeStore.js` is the singleton owner of that state. It exposes cloned snapshots and a deterministic dispatch interface. Consumers cannot mutate the stored state by modifying returned snapshots or subscriber payloads.
 
-`hardeningRuntime.js` synchronizes this captured state with the executable demo runtime and wraps selected runtime mutation methods so changes are visible to the audit/replay layer.
+Authoritative Stage C operational events include:
 
-Current architectural boundary: `app.js` is still the primary operational UI/runtime state owner. The v1.9 unified state bus is a synchronized captured hardening state and has not yet replaced every direct core-state mutation. Therefore it must not be described as the sole authoritative production source-of-truth.
+- `traffic_drift_applied`;
+- `incident_injected`;
+- `incident_cleared`;
+- `scenario_loaded`;
+- `intervention_applied`;
+- `decision_inputs_updated`;
+- `route_parameters_updated`;
+- `emergency_target_updated`;
+- `simulation_running_changed`;
+- `qcs_observations_updated`;
+- `fleet_updated`;
+- `twin_updated`;
+- `predictive_updated`;
+- `policy_updated`;
+- `decision_recorded`;
+- `manual_reset`.
 
-### 21. Canonical cryptographic fingerprint layer
+`runtime_reconciled` is retained in the reducer only for compatibility/backward use. The normal v1.9.1 executable path no longer relies on a periodic reconciliation event.
+
+### 21. Executable source-migration layer
+
+The historical raw `app.js` remains in the repository, but the executable artifact is assembled through `scripts/build-executable-site-v190.mjs` and transformed by `scripts/prepare-authoritative-runtime-v191.mjs`.
+
+The Stage C transformation:
+
+- imports the authoritative runtime store;
+- initializes the unified state from the loaded fixtures;
+- converts simulation drift to `traffic_drift_applied`;
+- converts incident mutation to `incident_injected`;
+- converts scenario selection to `scenario_loaded`;
+- converts simulated mitigation application to `intervention_applied`;
+- converts route/emergency/risk UI changes to `decision_inputs_updated`;
+- converts pause/resume to `simulation_running_changed`;
+- converts reset to `manual_reset`;
+- records twin and predictive outputs with `twin_updated` and `predictive_updated`;
+- exposes `getUnifiedState()`, `dispatch()` and `subscribe()` through `window.smartTrafficRuntime`;
+- makes the transformed legacy top-level `state` a derived UI mirror of the authoritative state.
+
+This build-time distinction is important: the architectural source-of-truth claim applies to the **assembled v1.9.1 executable**, not to an isolated reading of the untransformed historical `app.js` source file.
+
+### 22. Direct hardening-state subscription layer
+
+`hardeningRuntime.js` no longer builds and reconciles a separate live-state copy.
+
+It waits for the authoritative runtime, reads `getUnifiedState()`, subscribes through `runtime.subscribe()`, and displays the same revision/state used by the executable runtime. There is no normal Stage C polling/reconciliation loop.
+
+When an audited decision is captured, the hardening layer uses that exact authoritative snapshot, links it to the ledger, and dispatches `decision_recorded` back through the same state authority.
+
+### 23. Canonical cryptographic fingerprint layer
 
 `engine/auditHash.js` provides deterministic canonical JSON serialization and SHA-256 through Web Crypto.
 
-Fingerprints are used for captured state, inputs, policy, outputs and chained ledger entries.
+Fingerprints are used for state, inputs, policy, outputs and chained ledger entries.
 
 Evidence boundary:
 
@@ -169,42 +213,35 @@ Evidence boundary:
 - non-repudiation: no;
 - production audit certification: no.
 
-### 22. Decision integrity ledger layer
+### 24. Decision integrity ledger layer
 
-`engine/decisionLedgerEngine.js` introduces schema:
+`engine/decisionLedgerEngine.js` uses schema:
 
 `smart-traffic-decision-ledger/v1`
 
-Each entry contains sequence, state revision, state/input/policy/output fingerprints, previous entry hash, current entry hash, method metadata and evidence flags.
+Each entry contains sequence, authoritative state revision, state/input/policy/output fingerprints, previous entry hash, current entry hash, method metadata and evidence flags.
 
 `verifyLedgerChain()` recalculates the chain and detects stored-entry mutation.
 
-This is cryptographic integrity/tamper evidence within the captured engineering ledger, not a legally signed audit trail.
+This is cryptographic integrity/tamper evidence within the engineering ledger, not a legally signed audit trail.
 
-### 23. Exact deterministic replay layer
+### 25. Exact deterministic replay layer
 
-`engine/exactReplayEngine.js` captures the state, inputs, policy and deterministic orchestration output into:
+`engine/exactReplayEngine.js` captures state, inputs, policy and deterministic orchestration output into:
 
 `smart-traffic-exact-replay-package/v1`
 
-Replay reruns `buildExplainablePolicyOrchestration()` and checks:
-
-- state hash;
-- input hash;
-- policy hash;
-- output hash;
-- selected candidate;
-- robust score.
+Replay reruns `buildExplainablePolicyOrchestration()` and checks state hash, input hash, policy hash, output hash, selected candidate and robust score.
 
 An exact match means software/input deterministic exactness inside the captured MVP environment. It is not evidence that real traffic would reproduce the same physical outcome.
 
-### 24. Runtime Integrity UI layer
+### 26. Runtime Integrity UI layer
 
-`hardeningRuntime.js` and `hardeningRuntime.css` add the Production Hardening panel to the Acquisition Decision Room.
+`hardeningRuntime.js` and `hardeningRuntime.css` expose `Authoritative Runtime State, Decision Ledger & Exact Replay` in the Acquisition Decision Room.
 
-It exposes state revision, shortened state hash, ledger-entry count, chain status, recent ledger hashes, recent state events and controls to capture, verify, replay and export an engineering audit bundle.
+The panel shows authoritative state revision, shortened state hash, ledger-entry count, chain status, recent ledger hashes, recent authoritative state events and controls to capture, verify, replay and export an engineering audit bundle.
 
-### 25. Dynamic capability evidence layer
+### 27. Dynamic capability evidence layer
 
 `coverage/coverageModel.js` maintains one row for every unified source-registry capability.
 
@@ -215,51 +252,52 @@ Current validated coverage remains:
 - 73 catalogued-only;
 - 0 production-verified.
 
-### 26. Browser E2E assurance layer
+Stage C does not change those counts merely because state governance became stronger.
 
-`playwright.config.js` and `e2e/executable-platform.spec.js` test the assembled executable site rather than isolated JavaScript modules only.
+### 28. Browser E2E assurance layer
 
-Current CI browser projects:
+`playwright.config.js` and `e2e/executable-platform.spec.js` test the assembled executable site.
+
+Current browser projects:
 
 - desktop Chromium at 1440 × 1000;
 - mobile WebKit emulation at 390 × 844 with touch enabled.
 
-Four scenarios run in both projects, eight browser tests total:
+Six scenarios run in both projects, 12 browser tests total:
 
 1. entry-gate and mobile-action usability;
-2. Decision Room, Hardening Panel and Guided Demo loading;
+2. Decision Room, Hardening Panel, Guided Demo, runtime version and state-authority loading;
 3. decision capture, ledger verification and Exact Replay;
-4. incident mutation synchronization into hardening state.
+4. authoritative incident mutation with no `runtime_reconciled` dependency;
+5. authoritative route/emergency/risk input mutation;
+6. explicit authoritative traffic-drift mutation with exact revision/tick progression.
 
-Current result: 8/8 passed.
+Current engineering result: 12/12 passed.
 
 WebKit mobile emulation is not physical-iPhone acceptance evidence.
 
-### 27. Single executable build layer
+### 29. Single executable build layer
 
-`scripts/build-executable-site-v190.mjs` assembles the exact v1.9 executable site.
+`scripts/build-executable-site-v190.mjs` is the shared builder. The filename is historical; the current output is v1.9.1.
 
-The same builder is called by:
+The build runs the v1.8.3 compatibility patch and then the v1.9.1 authoritative migration before assembling the same artifact used by browser E2E and the Pages workflow.
 
-- `.github/workflows/e2e.yml` for browser tests; and
-- the GitHub Pages deployment workflow.
+This materially reduces the risk of validating one artifact while publishing another.
 
-This removes duplicated site-assembly logic and materially reduces the risk of validating one artifact while publishing another.
-
-### 28. Governance and assurance boundary
+### 30. Governance and assurance boundary
 
 The repository separates:
 
 - historical source provenance;
 - demo implementation coverage;
-- captured runtime state;
+- authoritative executable runtime state;
 - deterministic decision logic;
 - policy configuration;
 - cryptographic integrity evidence;
 - browser compatibility evidence;
 - production verification.
 
-The code/tests protect against claims that are not supported, including:
+The code/tests protect against unsupported claims including:
 
 - real quantum data or communication;
 - trained production forecasting where none exists;
@@ -267,40 +305,43 @@ The code/tests protect against claims that are not supported, including:
 - bypassing human approval;
 - causal explanation;
 - regulatory policy approval;
-- field-event replay;
+- real-world field-event replay;
 - digital signature/non-repudiation/blockchain anchoring;
 - physical iPhone validation from WebKit emulation;
 - production verification without independent evidence.
 
-## Runtime data flow — v1.9
-
-The current executable flow is:
+## Runtime data flow — v1.9.1 executable
 
 ```text
 Demo fixtures / browser actions
         ↓
-app.js operational runtime
+Explicit operational events
         ↓
-Traffic / Operations / QCS / Twin / Predictive engines
+engine/authoritativeRuntimeStore.js
         ↓
-Explainability + Policy + Scenario Replay
+engine/unifiedStateBus.js
+smart-traffic-live-state/v1
         ↓
-Acquisition / Guided Demo / Decision Room
-        ↓
-hardeningRuntime synchronization
-        ↓
-Captured smart-traffic-live-state/v1
-        ↓
-SHA-256 fingerprints
-        ↓
-Decision Ledger + Exact Replay package
+Authoritative state snapshot
+        ├──────────────→ transformed app.js UI mirror
+        ├──────────────→ Traffic / Operations / QCS engines
+        ├──────────────→ Dynamic Risk Twin
+        ├──────────────→ Predictive Orchestration
+        ├──────────────→ Explainability + Policy
+        └──────────────→ hardeningRuntime direct subscription
+                                ↓
+                         SHA-256 fingerprints
+                                ↓
+                       Decision Integrity Ledger
+                                ↓
+                          Exact Replay package
 ```
 
-The future production-hardening target is to migrate the operational mutations themselves through the unified event/state architecture, so the bus becomes the authoritative runtime state rather than a synchronized audit mirror.
+The prior v1.9 architecture used synchronization around an app-owned runtime. Stage C removes that normal-path ownership split in the assembled executable: the bus/store is authoritative and the legacy UI state is derived.
 
 ## Validation
 
-Version 1.9 validation currently includes:
+Version 1.9.1 Stage C validation covers:
 
 1. Registry and evidence integrity.
 2. Traffic/operations engines.
@@ -312,41 +353,46 @@ Version 1.9 validation currently includes:
 8. Candidate ranking and deterministic regression.
 9. Explainability and policy guardrails.
 10. Scenario replay and sensitivity analysis.
-11. Unified-state reducer determinism and immutable mutation behavior.
-12. Stable canonical JSON and SHA-256 state fingerprints.
-13. SHA-256 decision chain verification.
-14. Tamper detection.
-15. Captured Exact Replay equality.
-16. Incident preservation in replay packages.
-17. Static Acquisition Decision Room contract.
-18. Static Production Hardening contract.
-19. Executable-site build contract.
-20. Browser E2E on desktop Chromium and mobile WebKit emulation.
+11. Unified-state reducer determinism and immutable behavior.
+12. Authoritative store snapshot isolation.
+13. Incident mutation through authoritative reducer.
+14. Traffic drift/tick mutation through authoritative reducer.
+15. Decision-input and running-state governance through the same bus.
+16. Explicit intervention replacement through the bus.
+17. Subscriber isolation from store mutation.
+18. Stable canonical JSON and SHA-256 fingerprints.
+19. SHA-256 decision-chain verification.
+20. Ledger tamper detection.
+21. Captured Exact Replay equality.
+22. Incident preservation in replay packages.
+23. Static Acquisition Decision Room contract.
+24. Authoritative Production Hardening contract.
+25. Executable-site migration/build contract.
+26. Browser E2E on desktop Chromium and mobile WebKit emulation.
+27. Browser proof that incident mutation requires no reconciliation poll.
+28. Browser proof that route/emergency/risk inputs update authoritative state.
+29. Browser proof that explicit traffic drift advances authoritative revision/tick exactly.
 
-Current automated results:
+Latest Stage C engineering results before documentation-head verification:
 
-- 56/56 Node tests passing;
-- 8/8 Playwright browser E2E tests passing;
+- 62/62 Node tests passing;
+- 12/12 Playwright browser E2E tests passing;
 - 123 registry records valid;
 - coverage 33 / 17 / 73 / 0;
-- executable smoke, Decision Room and Production Hardening contracts passing.
+- executable smoke, Decision Room and Authoritative Production Hardening contracts passing.
 
-Core v1.9 CI:
+Engineering E2E run:
 
-https://github.com/maksr2030/Smart-Traffic-AI-MVP/actions/runs/31665290668
+https://github.com/maksr2030/Smart-Traffic-AI-MVP/actions/runs/31666941448
 
-Browser E2E:
-
-https://github.com/maksr2030/Smart-Traffic-AI-MVP/actions/runs/31665468699
-
-Unified-builder GitHub Pages deployment:
-
-https://github.com/maksr2030/Smart-Traffic-AI-MVP/actions/runs/31665486328
+The final documentation-head CI/E2E links are verified after this documentation commit.
 
 ## Production-readiness boundary
 
 Production readiness remains outside this proof-of-concept.
 
-A production deployment requires authenticated authoritative interfaces, calibrated/approved data, validated forecasting where appropriate, source-level single-state/event migration, identity and authorization, authority-approved policies, cyber-security/privacy engineering, safety and hazard analysis, signed audit where required, observability and incident response, resilience/load/latency/failure testing, physical-device validation, traffic-controller and emergency-agency integration, shadow mode, staged deployment and controlled field evidence.
+A production deployment still requires authenticated authoritative interfaces, calibrated/approved data, validated forecasting where appropriate, identity and authorization, authority-approved policies, cyber-security/privacy engineering, safety and hazard analysis, signed audit where required, observability and incident response, resilience/load/latency/failure testing, physical-device validation, traffic-controller and emergency-agency integration, shadow mode, staged deployment and controlled field evidence.
+
+The next hardening stage is health/error monitoring and controlled failure injection with explicit READY/DEGRADED/BLOCKED behavior. That stage is not claimed as complete in v1.9.1.
 
 No live road controller, production vehicle actuator, emergency dispatch system, government feed, real quantum sensor or safety-certified closed-loop control is connected to the current MVP.
