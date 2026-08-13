@@ -3,7 +3,7 @@ import { access, readFile } from 'node:fs/promises';
 const manifest = JSON.parse(await readFile('data/features.json','utf8'));
 const manifestFiles = manifest.files.map(name => `data/${name}`);
 const requiredFiles = [
-  'index.html','styles.css','app.js','v18Runtime.js','engine/trafficEngine.js','engine/operationsEngine.js','engine/qcsRiskEngine.js',
+  'index.html','styles.css','app.js','v18Runtime.js','acquisitionRuntime.js','acquisition.css','engine/trafficEngine.js','engine/operationsEngine.js','engine/qcsRiskEngine.js',
   'engine/riskAwareRoutingEngine.js','engine/preventiveCommandEngine.js','engine/dynamicRiskTwinEngine.js','engine/predictiveOrchestrationEngine.js','engine/explainableOrchestrationEngine.js','coverage/coverageModel.js',
   'data/network.json','data/operations_scenarios.json','data/emergency_fleet.json','data/qcs_demo_observations.json','data/orchestration_policy.json','data/features.json',
   ...manifestFiles
@@ -13,6 +13,8 @@ for (const file of new Set(requiredFiles)) await access(file);
 const html = await readFile('index.html','utf8');
 const app = await readFile('app.js','utf8');
 const v18Runtime = await readFile('v18Runtime.js','utf8');
+const acquisitionRuntime = await readFile('acquisitionRuntime.js','utf8');
+const acquisitionCss = await readFile('acquisition.css','utf8');
 const predictiveEngine = await readFile('engine/predictiveOrchestrationEngine.js','utf8');
 const explainableEngine = await readFile('engine/explainableOrchestrationEngine.js','utf8');
 const policy = JSON.parse(await readFile('data/orchestration_policy.json','utf8'));
@@ -72,6 +74,19 @@ for (const id of v18Ids) {
   if (!v18Runtime.includes(`id="${id}"`) && !v18Runtime.includes(`'${id}'`) && !v18Runtime.includes(`"${id}"`)) throw new Error(`runtime v1.8 DOM id missing: ${id}`);
 }
 
+const acquisitionIds = ['acquisitionEntry','acqEnter','acqFeatures','acqNav','acquisitionDashboard','acquisitionFeatureExplorer','acqVisibleCount','acqSearch','acqStatus','acqGroup','acqFeatureGrid','acqPager','acqModal'];
+for (const id of acquisitionIds) {
+  if (!acquisitionRuntime.includes(id)) throw new Error(`acquisition runtime contract missing: ${id}`);
+}
+for (const phrase of ['buildCoverage','coverageSummary','implemented_demo','represented_demo','catalogued_only','production_verified','MODULE_TARGETS','manifest.files.map']) {
+  if (!acquisitionRuntime.includes(phrase)) throw new Error(`acquisition coverage/evidence contract missing: ${phrase}`);
+}
+if (!acquisitionRuntime.includes("fetch('data/features.json')")) throw new Error('acquisition explorer must load the same feature manifest');
+if (!acquisitionRuntime.includes('0 Production Verified')) throw new Error('acquisition entry must preserve production evidence boundary');
+for (const styleContract of ['.acq-entry','.acq-dashboard','.acq-feature-grid','.acq-modal','.acq-status.exec']) {
+  if (!acquisitionCss.includes(styleContract)) throw new Error(`acquisition presentation style missing: ${styleContract}`);
+}
+
 if (policy.simulationOnly !== true || policy.autoApplyAllowed !== false || policy.requireHumanApproval !== true || policy.productionControlAllowed !== false) throw new Error('orchestration policy safety boundary invalid');
 if (Number(policy.maxLoadReduction) > 20 || Number(policy.maxIncidentRelief) > 0.5) throw new Error('demo policy limits unexpectedly permissive');
 if (network.nodes.length !== 12) throw new Error(`expected 12 demo nodes, got ${network.nodes.length}`);
@@ -80,4 +95,4 @@ if (scenarios.length < 5 || !scenarios.some(s=>s.id==='multi' && s.incidents?.le
 if (fleet.length < 3 || !fleet.every(unit=>unit.currentNode && unit.status)) throw new Error('emergency fleet fixture invalid');
 if (qcsObservations.length < 5 || !qcsObservations.every(row=>row.edgeId && Number.isFinite(row.vehicleSpeedKph))) throw new Error('QCS observation fixture invalid');
 
-console.log(`Static smoke check passed: ${new Set(requiredFiles).size} files, ${requiredIds.length} static DOM bindings + ${predictiveIds.length} predictive + ${v18Ids.length} explainability/policy/replay bindings, ${network.nodes.length} nodes, ${network.edges.length} edges, ${scenarios.length} scenarios, ${fleet.length} fleet units, ${qcsObservations.length} QCS observations, v1.8 explainable orchestration wired.`);
+console.log(`Static smoke check passed: ${new Set(requiredFiles).size} files, ${requiredIds.length} static DOM bindings + ${predictiveIds.length} predictive + ${v18Ids.length} explainability/policy/replay + ${acquisitionIds.length} acquisition bindings, ${network.nodes.length} nodes, ${network.edges.length} edges, ${scenarios.length} scenarios, ${fleet.length} fleet units, ${qcsObservations.length} QCS observations, acquisition-ready presentation contract wired.`);
