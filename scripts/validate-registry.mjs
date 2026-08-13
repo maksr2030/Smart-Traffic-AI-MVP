@@ -65,11 +65,12 @@ for (const id of ['11','12','13','14']) {
   if (records.find(r => r.id === id)?.evidence_status !== 'verified_historical_conversation_retrieval') fail(`Main Legacy ${id} lost direct conversation status`);
 }
 
-const qcsDirectNumbers = [80,85,86,87,88,89,94,95,97,98,99,100,101,102,103,104];
+const qcsDirectNumbers = [80,85,86,87,88,89,92,93,94,95,97,98,99,100,101,102,103,104];
 const qcsDirectIds = qcsDirectNumbers.map(n => `QCS-${n}`);
 const qcsSourceIds = [
   'CONV-QCS-2025-03-05-080',
   'CONV-QCS-2025-03-05-085-089',
+  'CONV-QCS-2025-03-05-092-093',
   'CONV-QCS-2025-03-05-094-095',
   'CONV-QCS-2025-03-05-097-101',
   'CONV-QCS-2025-03-05-102-104'
@@ -83,8 +84,14 @@ for (const id of qcsDirectIds) {
   if (!qcsCovered.has(id)) fail(`direct QCS evidence missing ${id}`);
   if (feature.main_legacy_effect !== 'none') fail(`QCS record changed Main Legacy boundary: ${id}`);
 }
+
 const qcs80 = records.find(r => r.id === 'QCS-80');
 if (qcs80?.title_ar_status !== 'normalized_from_forensic_correspondence_to_direct_english_source') fail('QCS-80 Arabic provenance disclosure missing');
+const qcs92 = records.find(r => r.id === 'QCS-92');
+if (qcs92?.title_en_status !== 'editorial_translation_from_direct_arabic_source') fail('QCS-92 English provenance disclosure missing');
+if (qcs92?.forensic_v0_3_representation !== 'absent') fail('QCS-92 must remain explicitly absent from forensic v0.3');
+const qcs93 = records.find(r => r.id === 'QCS-93');
+if (qcs93?.forensic_v0_3_representation !== 'present') fail('QCS-93 must remain explicitly represented in forensic v0.3');
 const qcs97 = records.find(r => r.id === 'QCS-97');
 const qcs98 = records.find(r => r.id === 'QCS-98');
 const qcs99 = records.find(r => r.id === 'QCS-99');
@@ -93,7 +100,7 @@ if (qcs98?.title_ar_status !== 'normalized_from_forensic_correspondence_to_direc
 if (!qcs99?.title_en_status?.includes('not_independently_reopened')) fail('QCS-99 English provenance disclosure missing');
 const qcs102 = records.find(r => r.id === 'QCS-102');
 if (!qcs102?.version_conflict || !qcs102.alternate_title_en) fail('QCS-102 historical English-title conflict must remain explicit');
-for (const open of ['QCS-81','QCS-82','QCS-83','QCS-84','QCS-90','QCS-91','QCS-92','QCS-93','QCS-96']) if (ids.has(open)) fail(`${open} must remain unpromoted pending direct evidence`);
+for (const open of ['QCS-81','QCS-82','QCS-83','QCS-84','QCS-90','QCS-91','QCS-96']) if (ids.has(open)) fail(`${open} must remain unpromoted pending direct evidence`);
 
 const precursor = (evidence.precursor_sources ?? []).find(s => s.source_id === 'CONV-SMARTCITY-2024-10-07-IDEA9');
 if (!precursor || precursor.idea_number !== 9 || precursor.registry_effect !== 'none' || !precursor.direct_brd_title?.includes('Smart Toll Management')) fail('October 7 smart-toll precursor boundary drift');
@@ -111,16 +118,21 @@ const getMap = async id => {
 };
 
 const {meta:qcsMeta,map:qcsMap} = await getMap('FORENSIC-MAP-QCS-V0.3');
-if (qcsMap.record_count !== 54 || qcsMap.records?.length !== 54) fail('QCS forensic map must preserve 54 rows');
+if (qcsMap.record_count !== 54 || qcsMap.records?.length !== 54) fail('QCS forensic map must preserve exactly 54 v0.3 rows');
+if (qcsMap.records.some(r => r.number === 92)) fail('QCS-92 must not be inserted into the 54-row v0.3 forensic source map');
 const qcsConf = qcsMap.records.reduce((a,r) => ((a[r.confidence]=(a[r.confidence]||0)+1),a), {});
 for (const [key,value] of Object.entries({B:49,B2:3,C:2})) if (qcsConf[key] !== value) fail(`QCS forensic confidence drift: ${key}`);
-if (qcsMap.promoted_direct?.length !== 16 || qcsMeta.promoted_direct?.length !== 16) fail('QCS promotion lists must contain exactly 16 direct records');
-for (const id of qcsDirectIds) if (!qcsMap.promoted_direct.includes(id) || !qcsMeta.promoted_direct.includes(id)) fail(`QCS promotion map missing ${id}`);
+
+const qcsMapPromotedNumbers = [80,85,86,87,88,89,93,94,95,97,98,99,100,101,102,103,104];
+const qcsMapPromotedIds = qcsMapPromotedNumbers.map(n => `QCS-${n}`);
+if (qcsMap.promoted_direct?.length !== 17 || qcsMeta.promoted_direct?.length !== 17) fail('QCS v0.3 promotion lists must contain exactly 17 direct records');
+for (const id of qcsMapPromotedIds) if (!qcsMap.promoted_direct.includes(id) || !qcsMeta.promoted_direct.includes(id)) fail(`QCS v0.3 promotion map missing ${id}`);
 for (const row of qcsMap.records) {
-  const promoted = qcsDirectNumbers.includes(row.number);
+  const promoted = qcsMapPromotedNumbers.includes(row.number);
   if (promoted && row.current_status !== 'promoted_direct') fail(`QCS promoted status lost: ${row.number}`);
   if (!promoted && row.current_status !== 'candidate_not_promoted') fail(`QCS candidate silently promoted: ${row.number}`);
 }
+if (qcsMeta.direct_supplemental_not_in_v0_3?.length !== 1 || qcsMeta.direct_supplemental_not_in_v0_3[0] !== 'QCS-92') fail('QCS-92 supplemental direct recovery metadata missing');
 
 const {map:mainMap} = await getMap('FORENSIC-MAP-MAIN-15-199-V0.3');
 if (mainMap.record_count !== 23 || mainMap.records?.length !== 23) fail('Main Legacy candidate map must preserve 23 rows');
@@ -145,8 +157,9 @@ const indexMeta = evidence.forensic_track_coverage_index;
 const index = await load(indexMeta.path);
 if (indexMeta.source_record_count !== 213 || indexMeta.track_count !== 14 || index.track_row_sum !== 213 || index.tracks?.length !== 14) fail('forensic 213/213 track accounting drift');
 if (index.unified_registry_total !== manifest.total) fail(`forensic coverage registry total mismatch: ${index.unified_registry_total} != ${manifest.total}`);
+if (index.direct_supplemental_recoveries_absent_from_v0_3?.length !== 1 || index.direct_supplemental_recoveries_absent_from_v0_3[0] !== 'QCS-92') fail('forensic coverage index must preserve QCS-92 as a supplemental direct recovery');
 const qcsTrack = index.tracks.find(t => t.track === 'QCS');
-if (!qcsTrack?.count_effect_context?.includes('16 unified QCS records') || !qcsTrack.count_effect_context.includes('38 rows remain candidates')) fail('QCS track accounting must state 16 promoted / 38 candidates');
+if (!qcsTrack?.count_effect_context?.includes('18 unified QCS records') || !qcsTrack.count_effect_context.includes('17 are represented in v0.3') || !qcsTrack.count_effect_context.includes('37 v0.3 rows remain candidates') || !qcsTrack.count_effect_context.includes('QCS-92')) fail('QCS track accounting must state 18 unified, 17 v0.3 promoted, 37 v0.3 candidates and supplemental QCS-92');
 let trackSum = 0;
 const trackNames = new Set();
 for (const track of index.tracks) {
@@ -177,8 +190,9 @@ console.log(`Registry valid: ${records.length} records, ${ids.size} unique IDs.`
 console.log(`Archived evidence valid: ${(evidence.evidence_items ?? []).length} source(s), ${archivedLinks} linked registry record(s).`);
 console.log(`Located library sources valid: ${(evidence.located_sources ?? []).length} source(s), ${locatedLinks} links.`);
 console.log(`Direct registry conversation evidence valid: ${conversationSources.length} source(s), ${conversationLinks} links.`);
-console.log('Direct QCS promotions valid: 80, 85-89, 94-95, 97-104; 81-84, 90-93 and 96 remain unpromoted.');
+console.log('Direct QCS registry recoveries valid: 80, 85-89, 92-95, 97-104. QCS-92 is supplemental and absent from v0.3; QCS-93 is promoted within v0.3.');
+console.log('Open direct-QCS gaps preserved: 81-84, 90-91 and 96.');
 console.log(`Forensic v0.3 valid: ${forensic.parsed_record_count} rows; complete ${trackSum}/213 track accounting.`);
-console.log('Forensic candidate maps valid: QCS 54 (16 promoted / 38 candidates), Main15-199 23, QTC 14, OCT17 14, IDEAS100 3/open4-100, DEC17 16, RelatedEnv 2.');
+console.log('Forensic candidate maps valid: QCS 54 (17 promoted / 37 candidates + supplemental QCS-92), Main15-199 23, QTC 14, OCT17 14, IDEAS100 3/open4-100, DEC17 16, RelatedEnv 2.');
 console.log(`Coverage valid: ${stats.implemented_demo} implemented demo, ${stats.represented_demo} represented demo, ${stats.catalogued_only} catalogued only, ${stats.production_verified} production verified.`);
 console.log(`Reserved Main Legacy gap preserved: ${manifest.historical_gap}`);
