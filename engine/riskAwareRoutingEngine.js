@@ -22,21 +22,15 @@ export function buildQcsRiskProfile(observations = [], { unknownRiskScore = 18 }
     fallbackRiskScore: fallback,
     assessments,
     byEdge,
-    scoreFor(edgeId) {
-      return byEdge.get(edgeId)?.score ?? fallback;
-    },
-    observed(edgeId) {
-      return byEdge.has(edgeId);
-    }
+    scoreFor(edgeId) { return byEdge.get(edgeId)?.score ?? fallback; },
+    observed(edgeId) { return byEdge.has(edgeId); }
   };
 }
 
 export function summarizeRouteRisk(edgeIds = [], profile) {
   if (!profile?.scoreFor) throw new Error('risk profile is required');
   if (!Array.isArray(edgeIds)) throw new Error('edgeIds must be an array');
-  if (!edgeIds.length) {
-    return { averageRiskScore: 0, maxRiskScore: 0, observedEdges: 0, unknownEdges: 0, edgeRisks: [] };
-  }
+  if (!edgeIds.length) return { averageRiskScore: 0, maxRiskScore: 0, observedEdges: 0, unknownEdges: 0, edgeRisks: [] };
   const edgeRisks = edgeIds.map(edgeId => ({ edgeId, riskScore: profile.scoreFor(edgeId), observed: profile.observed(edgeId) }));
   const total = edgeRisks.reduce((sum, item) => sum + item.riskScore, 0);
   return {
@@ -51,6 +45,7 @@ export function summarizeRouteRisk(edgeIds = [], profile) {
 export function riskAwareRoute(network, origin, destination, observations = [], options = {}) {
   const riskWeight = clamp(options.riskWeight ?? 1.6, 0, 5);
   const avoidRiskScore = clamp(options.avoidRiskScore ?? 96, 0, 100);
+  const hardBlockEnabled = avoidRiskScore < 100;
   const profile = buildQcsRiskProfile(observations, { unknownRiskScore: options.unknownRiskScore ?? 18 });
   const graph = buildAdjacency(network);
   if (!graph.has(origin) || !graph.has(destination)) throw new Error('unknown origin or destination');
@@ -74,7 +69,7 @@ export function riskAwareRoute(network, origin, destination, observations = [], 
       if (!unvisited.has(next)) continue;
       const baseMinutes = edgeTravelMinutes(edge);
       const riskScore = profile.scoreFor(edge.id);
-      const blockedByRisk = profile.observed(edge.id) && riskScore >= avoidRiskScore;
+      const blockedByRisk = hardBlockEnabled && profile.observed(edge.id) && riskScore >= avoidRiskScore;
       const weight = blockedByRisk || !Number.isFinite(baseMinutes)
         ? Number.POSITIVE_INFINITY
         : baseMinutes * (1 + riskWeight * riskScore / 100);
@@ -88,17 +83,9 @@ export function riskAwareRoute(network, origin, destination, observations = [], 
 
   if (!Number.isFinite(dist.get(destination))) {
     return {
-      reachable: false,
-      nodes: [],
-      edgeIds: [],
-      minutes: Number.POSITIVE_INFINITY,
-      distanceKm: Number.POSITIVE_INFINITY,
-      riskAdjustedCost: Number.POSITIVE_INFINITY,
-      risk: summarizeRouteRisk([], profile),
-      riskWeight,
-      avoidRiskScore,
-      simulation: true,
-      method: 'deterministic_time_plus_qcs_proxy_risk'
+      reachable: false, nodes: [], edgeIds: [], minutes: Number.POSITIVE_INFINITY, distanceKm: Number.POSITIVE_INFINITY,
+      riskAdjustedCost: Number.POSITIVE_INFINITY, risk: summarizeRouteRisk([], profile), riskWeight, avoidRiskScore,
+      simulation: true, method: 'deterministic_time_plus_qcs_proxy_risk'
     };
   }
 
@@ -126,6 +113,7 @@ export function riskAwareRoute(network, origin, destination, observations = [], 
     risk: summarizeRouteRisk(edgeIds, profile),
     riskWeight,
     avoidRiskScore,
+    hardBlockEnabled,
     simulation: true,
     method: 'deterministic_time_plus_qcs_proxy_risk',
     evidenceBoundary: 'Uses simulated QCS proxy observations; no quantum sensor or production road feed is connected.'
