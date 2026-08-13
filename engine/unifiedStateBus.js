@@ -32,6 +32,7 @@ function normalizeInitial(initial = {}) {
     revision: 0,
     sequence: 0,
     tick: Number(initial.tick || 0),
+    running: initial.running !== false,
     scenarioId: initial.scenarioId || 'normal',
     network,
     baseNetwork,
@@ -118,6 +119,8 @@ export function reduceTrafficEvent(state, event) {
         close: payload.closed ?? payload.close ?? false,
         loadIncrease: payload.loadIncrease ?? 18
       });
+      next.dynamicRiskTwin = null;
+      next.predictiveOrchestration = null;
       break;
     }
     case 'incident_cleared': {
@@ -126,10 +129,22 @@ export function reduceTrafficEvent(state, event) {
       edge.incidentSeverity = 0;
       edge.closed = false;
       if (payload.load != null) edge.load = clamp(payload.load, 0, 100);
+      next.dynamicRiskTwin = null;
+      next.predictiveOrchestration = null;
+      break;
+    }
+    case 'intervention_applied': {
+      if (!payload.network) throw new Error('intervention_applied requires payload.network');
+      validateNetwork(payload.network);
+      next.network = cloneNetwork(payload.network);
+      next.dynamicRiskTwin = null;
+      next.predictiveOrchestration = null;
       break;
     }
     case 'qcs_observations_updated':
       next.qcsObservations = clone(payload.observations || []);
+      next.dynamicRiskTwin = null;
+      next.predictiveOrchestration = null;
       break;
     case 'fleet_updated':
       next.fleet = clone(payload.fleet || []);
@@ -137,11 +152,18 @@ export function reduceTrafficEvent(state, event) {
     case 'route_parameters_updated':
       next.routeParameters = { ...(next.routeParameters || {}), ...clone(payload) };
       break;
+    case 'decision_inputs_updated':
+      next.routeParameters = { ...(next.routeParameters || {}), ...clone(payload.routeParameters || {}) };
+      if (Object.prototype.hasOwnProperty.call(payload, 'emergencyTarget')) next.emergencyTarget = payload.emergencyTarget || null;
+      break;
     case 'emergency_target_updated':
       next.emergencyTarget = payload.target || null;
       break;
     case 'policy_updated':
       next.policy = clone(payload.policy || null);
+      break;
+    case 'simulation_running_changed':
+      next.running = Boolean(payload.running);
       break;
     case 'twin_updated':
       next.dynamicRiskTwin = clone(payload.twin || null);
@@ -157,6 +179,7 @@ export function reduceTrafficEvent(state, event) {
       if (!resetNetwork) throw new Error('manual_reset requires a reset network');
       validateNetwork(resetNetwork);
       next.network = cloneNetwork(resetNetwork);
+      next.scenarioId = payload.scenarioId || 'normal';
       next.tick = Number(payload.tick || 0);
       next.dynamicRiskTwin = null;
       next.predictiveOrchestration = null;
@@ -178,6 +201,7 @@ export function reduceTrafficEvent(state, event) {
       if (payload.policy !== undefined) next.policy = clone(payload.policy);
       if (payload.scenarioId) next.scenarioId = payload.scenarioId;
       if (payload.tick != null) next.tick = Number(payload.tick);
+      if (payload.running != null) next.running = Boolean(payload.running);
       break;
     }
     default:
@@ -207,7 +231,7 @@ export function replayTrafficEvents(initialState, events = []) {
 
 export const unifiedStateEvidenceBoundary = Object.freeze({
   authoritativeForCapturedHardeningState: true,
-  operationalRuntimeIntegration: 'synchronized_demo_runtime',
+  operationalRuntimeIntegration: 'authoritative_state_bus_ready',
   simulation: true,
   productionControlConnected: false,
   fieldActuation: false,
