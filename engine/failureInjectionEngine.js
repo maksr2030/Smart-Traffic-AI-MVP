@@ -38,7 +38,8 @@ export function injectFailure(state, scenario) {
       next.fleet = [];
       break;
     case FAILURE_SCENARIOS.invalid_decision_inputs:
-      next.decisionInputs = { ...(next.decisionInputs ?? {}), origin: null, destination: null, emergencyTarget: null, routeRiskWeight: Number.NaN };
+      next.routeParameters = { ...(next.routeParameters ?? {}), origin: null, destination: null, routeRiskWeight: Number.NaN };
+      next.emergencyTarget = null;
       break;
     default:
       throw new Error(`Unknown failure injection scenario: ${scenario}`);
