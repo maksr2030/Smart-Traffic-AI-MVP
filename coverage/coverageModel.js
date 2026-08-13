@@ -1,12 +1,14 @@
 const IMPLEMENTED = new Set([
   '1','2','7','10','200','201','203','209','211','213','217','218','228',
   'CR-14','CR-16','CR-18','CR-22',
-  'QTOS-03','QTOS-04','QTOS-08','QTOS-15','QTOS-17','QTOS-21','QTOS-22'
+  'QTOS-03','QTOS-04','QTOS-08','QTOS-15','QTOS-17','QTOS-21','QTOS-22',
+  'QCS-80','QCS-85','QCS-86','QCS-87','QCS-88','QCS-92'
 ]);
 
 const REPRESENTED = new Set([
   '4','5','6','202','215','232','CR-05','CR-15','CR-17',
-  'QTOS-02','QTOS-05','QTOS-18','QTOS-23','QTOS-25'
+  'QTOS-02','QTOS-05','QTOS-18','QTOS-23','QTOS-25',
+  'QCS-93','QCS-94','QCS-95','QCS-101','QCS-103','QCS-104'
 ]);
 
 const MODULES = new Map([
@@ -16,7 +18,9 @@ const MODULES = new Map([
   ['QTOS-03','forecast'],['QTOS-04','routing'],['QTOS-08','signals'],['QTOS-15','multi-incident'],['QTOS-17','graph-engine'],['QTOS-21','operations-engine'],['QTOS-22','scenario-engine'],
   ['4','signals-simulation'],['5','decision-log'],['6','weather-scenario'],['202','priority-routing'],['215','critical-area-scenario'],['232','weather-scenario'],
   ['CR-05','incident-input'],['CR-15','scenario-analysis'],['CR-17','connected-vehicle-design'],['QTOS-02','digital-twin-ui'],['QTOS-05','scenario-optimizer'],
-  ['QTOS-18','classical-baseline-only'],['QTOS-23','scenario-analysis'],['QTOS-25','deployment-design']
+  ['QTOS-18','classical-baseline-only'],['QTOS-23','scenario-analysis'],['QTOS-25','deployment-design'],
+  ['QCS-80','qcs-risk-response'],['QCS-85','qcs-risk-response'],['QCS-86','qcs-risk-response'],['QCS-87','qcs-risk-response'],['QCS-88','qcs-risk-response'],['QCS-92','qcs-risk-response'],
+  ['QCS-93','v2x-proxy-broadcast'],['QCS-94','hidden-hazard-input'],['QCS-95','adaptive-response-recommendation'],['QCS-101','deterministic-risk-proxy'],['QCS-103','weather-response-proxy'],['QCS-104','network-integration-design']
 ]);
 
 export function capabilityStatus(id) {
