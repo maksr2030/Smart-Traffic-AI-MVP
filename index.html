@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Smart AI Traffic Platform MVP - city operations, testable graph engine, scenario simulation and feature coverage evidence">
-  <title>Smart AI Traffic Platform | Engineering MVP v1.3</title>
+  <meta name="description" content="Smart AI Traffic Platform MVP - city operations, deterministic QCS risk-response lab, scenario simulation and feature coverage evidence">
+  <title>Smart AI Traffic Platform | Engineering MVP v1.4</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header class="topbar">
-  <div class="brand"><span>منصة المرور الذكي</span><small>Smart AI Traffic Platform | Engineering MVP v1.3</small></div>
+  <div class="brand"><span>منصة المرور الذكي</span><small>Smart AI Traffic Platform | Engineering MVP v1.4</small></div>
   <div class="actions">
     <button class="btn" id="langBtn">English</button>
     <button class="btn" id="pauseBtn">إيقاف المحاكاة</button>
@@ -19,15 +19,15 @@
 <main class="shell">
   <section class="hero">
     <article class="card">
-      <div><span class="badge">MVP v1.3</span><span class="badge">101 Source Records</span><span class="badge">City Operations</span><span class="badge">Graph Engine</span><span class="badge">CI Tested</span><span class="badge">Simulation</span></div>
-      <h1 data-ar="طبقة تشغيل مدينة مرورية قابلة للاختبار والقياس" data-en="A testable, measurable city traffic operations layer">طبقة تشغيل مدينة مرورية قابلة للاختبار والقياس</h1>
-      <p data-ar="تجمع النسخة الحالية شبكة الطرق المترابطة، الحوادث المتعددة، إعادة التوجيه، الإشارات التكيفية، تخطيط استجابة الطوارئ، التنبؤ القصير المدى، مقارنة قبل وبعد التدخل، ومصفوفة تغطية لجميع القدرات المستردة." data-en="This version combines a connected road graph, concurrent incidents, rerouting, adaptive signals, emergency dispatch planning, short-horizon forecasting, before/after intervention comparison, and a coverage matrix for all recovered capabilities.">تجمع النسخة الحالية شبكة الطرق المترابطة، الحوادث المتعددة، إعادة التوجيه، الإشارات التكيفية، تخطيط استجابة الطوارئ، التنبؤ القصير المدى، مقارنة قبل وبعد التدخل، ومصفوفة تغطية لجميع القدرات المستردة.</p>
-      <div class="notice" data-ar="جميع بيانات الشبكة والأسطول والسيناريوهات والتنبؤات في هذه الصفحة بيانات محاكاة لإثبات الهندسة. لا تمثل بيانات حكومية حية أو تكاملات إنتاجية أو نتائج ميدانية." data-en="All network, fleet, scenario and forecast data on this page are simulations used to demonstrate engineering logic. They are not live government feeds, production integrations or field results.">جميع بيانات الشبكة والأسطول والسيناريوهات والتنبؤات في هذه الصفحة بيانات محاكاة لإثبات الهندسة. لا تمثل بيانات حكومية حية أو تكاملات إنتاجية أو نتائج ميدانية.</div>
+      <div><span class="badge">MVP v1.4</span><span class="badge" id="registryBadge">Dynamic Registry</span><span class="badge">City Operations</span><span class="badge">QCS Risk Lab</span><span class="badge">CI Tested</span><span class="badge">Simulation</span></div>
+      <h1 data-ar="طبقة تشغيل مرورية قابلة للاختبار مع مختبر مخاطر QCS محاكى" data-en="A testable traffic operations layer with a simulated QCS risk lab">طبقة تشغيل مرورية قابلة للاختبار مع مختبر مخاطر QCS محاكى</h1>
+      <p data-ar="تجمع النسخة الحالية شبكة الطرق المترابطة، الحوادث المتعددة، إعادة التوجيه، الإشارات التكيفية، تخطيط استجابة الطوارئ، التنبؤ القصير المدى، مقارنة التدخل، وسجل الميزات الديناميكي، إضافة إلى محرك حتمي لمحاكاة مخاطر الطريق والطقس والزوايا العمياء والاستجابة الوقائية." data-en="This version combines a connected road graph, concurrent incidents, rerouting, adaptive signals, emergency dispatch planning, short-horizon forecasting, intervention comparison, a dynamic feature registry, and a deterministic proxy engine for road, weather, blind-spot and preventive-response risk analysis.">تجمع النسخة الحالية شبكة الطرق المترابطة، الحوادث المتعددة، إعادة التوجيه، الإشارات التكيفية، تخطيط استجابة الطوارئ، التنبؤ القصير المدى، مقارنة التدخل، وسجل الميزات الديناميكي، إضافة إلى محرك حتمي لمحاكاة مخاطر الطريق والطقس والزوايا العمياء والاستجابة الوقائية.</p>
+      <div class="notice" data-ar="جميع بيانات الشبكة والأسطول والسيناريوهات وQCS في هذه الصفحة بيانات محاكاة لإثبات الهندسة. لا توجد حساسات كمومية حقيقية أو مشغلات مركبة أو V2X ميداني أو بيانات حكومية حية متصلة بهذه النسخة." data-en="All network, fleet, scenario and QCS data on this page are simulations used to demonstrate engineering logic. No real quantum sensors, vehicle actuators, field V2X infrastructure or live government feeds are connected to this build.">جميع بيانات الشبكة والأسطول والسيناريوهات وQCS في هذه الصفحة بيانات محاكاة لإثبات الهندسة. لا توجد حساسات كمومية حقيقية أو مشغلات مركبة أو V2X ميداني أو بيانات حكومية حية متصلة بهذه النسخة.</div>
     </article>
     <aside class="card">
       <h2 data-ar="حدود الإثبات" data-en="Evidence boundary">حدود الإثبات</h2>
-      <p data-ar="مصفوفة التغطية تميز بين القدرة المنفذة داخل العرض، والقدرة الممثلة جزئياً، والقدرة المسجلة فقط. لا توجد أي قدرة مصنفة إنتاجية ما لم يوجد دليل تكامل مستقل." data-en="The coverage matrix distinguishes between demo-implemented, demo-represented and catalogued-only capabilities. Nothing is marked production-verified without separate integration evidence.">مصفوفة التغطية تميز بين القدرة المنفذة داخل العرض، والقدرة الممثلة جزئياً، والقدرة المسجلة فقط. لا توجد أي قدرة مصنفة إنتاجية ما لم يوجد دليل تكامل مستقل.</p>
-      <div class="notice">GitHub CI: registry integrity + engine tests + operations tests + static wiring checks</div>
+      <p data-ar="مصفوفة التغطية تميز بين القدرة المنفذة داخل العرض، والقدرة الممثلة جزئياً، والقدرة المسجلة فقط. لا توجد قدرة مصنفة إنتاجية دون دليل تكامل مستقل." data-en="The coverage matrix distinguishes demo-implemented, demo-represented and catalogued-only capabilities. Nothing is production-verified without independent integration evidence.">مصفوفة التغطية تميز بين القدرة المنفذة داخل العرض، والقدرة الممثلة جزئياً، والقدرة المسجلة فقط. لا توجد قدرة مصنفة إنتاجية دون دليل تكامل مستقل.</p>
+      <div class="notice">GitHub CI: registry integrity + traffic/operations/QCS tests + static wiring checks</div>
     </aside>
   </section>
 
@@ -35,7 +35,7 @@
     <div class="card kpi"><strong id="networkLoad">0%</strong><span data-ar="متوسط حمل الشبكة" data-en="Average network load">متوسط حمل الشبكة</span></div>
     <div class="card kpi"><strong id="predictedDelay">0</strong><span data-ar="متوسط زمن المقطع بالدقائق" data-en="Average edge travel minutes">متوسط زمن المقطع بالدقائق</span></div>
     <div class="card kpi"><strong id="activeIncidents">0</strong><span data-ar="الحوادث النشطة المحاكاة" data-en="Simulated active incidents">الحوادث النشطة المحاكاة</span></div>
-    <div class="card kpi"><strong id="featureCount">101</strong><span data-ar="سجل مصدر مدمج" data-en="Merged source records">سجل مصدر مدمج</span></div>
+    <div class="card kpi"><strong id="featureCount">0</strong><span data-ar="سجل مصدر مدمج" data-en="Merged source records">سجل مصدر مدمج</span></div>
   </section>
 
   <section class="grid2">
@@ -81,6 +81,19 @@
   </section>
 
   <section class="card">
+    <div class="section-title"><div><h2 data-ar="مختبر QCS للمخاطر والاستجابة الوقائية" data-en="QCS risk and preventive-response lab">مختبر QCS للمخاطر والاستجابة الوقائية</h2><p data-ar="محرك Proxy حتمي يستخدم مدخلات محاكاة ولا يدعي وجود عتاد كمومي متصل" data-en="Deterministic proxy engine using simulated observations; no connected quantum hardware is claimed">محرك Proxy حتمي يستخدم مدخلات محاكاة ولا يدعي وجود عتاد كمومي متصل</p></div><button class="btn primary" id="qcsRiskBtn">تشغيل تحليل QCS المحاكى</button></div>
+    <div class="comparison-grid">
+      <div class="comparison-card"><span data-ar="أعلى درجة خطر" data-en="Highest risk score">أعلى درجة خطر</span><div><b id="qcsRiskScore">—</b></div></div>
+      <div class="comparison-card"><span data-ar="المقطع الأعلى خطراً" data-en="Highest-risk edge">المقطع الأعلى خطراً</span><div><b id="qcsRiskEdge">—</b></div></div>
+      <div class="comparison-card"><span data-ar="السرعة الوقائية المقترحة" data-en="Suggested preventive speed">السرعة الوقائية المقترحة</span><div><b id="qcsTargetSpeed">—</b></div></div>
+      <div class="comparison-card"><span data-ar="رسائل التحذير المحاكاة" data-en="Simulated hazard broadcasts">رسائل التحذير المحاكاة</span><div><b id="qcsBroadcasts">—</b></div></div>
+    </div>
+    <div id="qcsRiskResult" class="output">QCS proxy risk engine ready.</div>
+    <div class="notice" data-ar="QCS هنا يعني تمثيل منطق القرار والاستجابة للميزات المستردة داخل المحاكاة فقط. quantumHardwareConnected=false وquantumCommunicationClaim=false دائماً في هذه النسخة." data-en="QCS here represents decision and response logic for recovered capabilities inside simulation only. quantumHardwareConnected=false and quantumCommunicationClaim=false are enforced in this build.">QCS هنا يعني تمثيل منطق القرار والاستجابة للميزات المستردة داخل المحاكاة فقط. quantumHardwareConnected=false وquantumCommunicationClaim=false دائماً في هذه النسخة.</div>
+    <div class="table-wrap coverage-table"><table><thead><tr><th>Edge</th><th>Risk</th><th>Level</th><th data-ar="السرعة الحالية" data-en="Current speed">السرعة الحالية</th><th data-ar="السرعة المقترحة" data-en="Target speed">السرعة المقترحة</th><th data-ar="الإجراءات" data-en="Actions">الإجراءات</th></tr></thead><tbody id="qcsRiskRows"></tbody></table></div>
+  </section>
+
+  <section class="card">
     <div class="section-title"><div><h2 data-ar="مقارنة قبل وبعد التدخل" data-en="Before/after intervention comparison">مقارنة قبل وبعد التدخل</h2><p id="comparisonNote" data-ar="قيم محاكاة محسوبة من نفس شبكة الطرق" data-en="Simulated values calculated from the same road network">قيم محاكاة محسوبة من نفس شبكة الطرق</p></div></div>
     <div class="comparison-grid">
       <div class="comparison-card"><span data-ar="إجهاد الشبكة" data-en="Network stress">إجهاد الشبكة</span><div><b id="beforeStress">—</b><i>→</i><b id="afterStress">—</b></div><em id="stressDelta" class="delta">—</em></div>
@@ -101,13 +114,13 @@
     </article>
     <article class="card">
       <div class="section-title"><div><h2 data-ar="حزمة الأدلة القابلة للتصدير" data-en="Exportable evidence package">حزمة الأدلة القابلة للتصدير</h2><p data-ar="ملفات ناتجة من الحالة الحالية للـMVP" data-en="Files generated from the current MVP state">ملفات ناتجة من الحالة الحالية للـMVP</p></div></div>
-      <div class="notice" data-ar="ملف Operational Snapshot يتضمن المؤشرات والسيناريو والتنبؤ والمقارنة وحالة التغطية، ويحتوي دائماً على simulation=true." data-en="The Operational Snapshot includes metrics, scenario, forecast, comparison and coverage status, and always contains simulation=true.">ملف Operational Snapshot يتضمن المؤشرات والسيناريو والتنبؤ والمقارنة وحالة التغطية، ويحتوي دائماً على simulation=true.</div>
+      <div class="notice" data-ar="ملف Operational Snapshot يتضمن المؤشرات والسيناريو والتنبؤ والمقارنة وحالة التغطية وملخص QCS عند تشغيله، ويحتوي دائماً على simulation=true." data-en="The Operational Snapshot includes metrics, scenario, forecast, comparison, coverage status and the QCS summary when run, and always contains simulation=true.">ملف Operational Snapshot يتضمن المؤشرات والسيناريو والتنبؤ والمقارنة وحالة التغطية وملخص QCS عند تشغيله، ويحتوي دائماً على simulation=true.</div>
       <div class="actions export-actions"><button class="btn primary" id="exportSnapshotBtn">Export Operational JSON</button><button class="btn" id="exportCoverageBtn">Export Coverage CSV</button></div>
     </article>
   </section>
 
   <section class="card coverage-card">
-    <div class="section-title"><div><h2 data-ar="مصفوفة تغطية الميزات الـ101" data-en="101-capability coverage matrix">مصفوفة تغطية الميزات الـ101</h2><p data-ar="حالة تنفيذ العرض لا تساوي إثبات تكامل إنتاجي" data-en="Demo implementation status is not production integration evidence">حالة تنفيذ العرض لا تساوي إثبات تكامل إنتاجي</p></div></div>
+    <div class="section-title"><div><h2 data-ar="مصفوفة تغطية القدرات الديناميكية" data-en="Dynamic capability coverage matrix">مصفوفة تغطية القدرات الديناميكية</h2><p data-ar="حالة تنفيذ العرض لا تساوي إثبات تكامل إنتاجي" data-en="Demo implementation status is not production integration evidence">حالة تنفيذ العرض لا تساوي إثبات تكامل إنتاجي</p></div></div>
     <div class="coverage-stats">
       <div><strong id="coverageTotal">0</strong><span>Total</span></div><div><strong id="coverageImplemented">0</strong><span>Implemented Demo</span></div><div><strong id="coverageRepresented">0</strong><span>Represented Demo</span></div><div><strong id="coverageCatalogued">0</strong><span>Catalogued Only</span></div><div><strong id="coverageProduction">0</strong><span>Production Verified</span></div>
     </div>
@@ -116,9 +129,9 @@
   </section>
 
   <section class="card registry-card">
-    <div class="section-title"><div><h2 data-ar="السجل الموحد للميزات والقدرات" data-en="Unified feature and capability registry">السجل الموحد للميزات والقدرات</h2><p data-ar="بحث وتصنيف حسب مصدر الاسترداد" data-en="Search and filter by recovery provenance">بحث وتصنيف حسب مصدر الاسترداد</p></div></div>
-    <div class="registry-stats"><span class="stat-pill">48 Verified Historical</span><span class="stat-pill">23 Conversation-Recovered</span><span class="stat-pill">5 Project-History</span><span class="stat-pill">25 QTOS</span></div>
-    <div class="filters"><input id="search" placeholder="ابحث في الميزات / Search features"><select id="groupFilter"><option value="">كل مجموعات المصدر / All source groups</option><option value="verified_historical">Verified Historical</option><option value="conversation_recovered">Conversation-Recovered</option><option value="additional_history">Project-History</option><option value="qtos">QTOS</option></select><select id="categoryFilter"><option value="">كل الفئات / All categories</option></select></div>
+    <div class="section-title"><div><h2 data-ar="السجل الموحد للميزات والقدرات" data-en="Unified feature and capability registry">السجل الموحد للميزات والقدرات</h2><p data-ar="يُحمّل تلقائياً من data/features.json" data-en="Loaded dynamically from data/features.json">يُحمّل تلقائياً من data/features.json</p></div></div>
+    <div class="registry-stats" id="registryStats"></div>
+    <div class="filters"><input id="search" placeholder="ابحث في الميزات / Search features"><select id="groupFilter"><option value="">كل مجموعات المصدر / All source groups</option><option value="verified_historical">Verified Historical</option><option value="conversation_recovered">Conversation-Recovered</option><option value="additional_history">Project-History</option><option value="qtos">QTOS</option><option value="qcs_recovered">QCS Direct</option></select><select id="categoryFilter"><option value="">كل الفئات / All categories</option></select></div>
     <div class="table-wrap"><table><thead><tr><th>ID</th><th data-ar="العنوان العربي" data-en="Arabic title">العنوان العربي</th><th data-ar="العنوان الإنجليزي" data-en="English title">العنوان الإنجليزي</th><th data-ar="الفئة" data-en="Category">الفئة</th><th data-ar="الوصف" data-en="Description">الوصف</th><th data-ar="حالة المصدر" data-en="Source status">حالة المصدر</th></tr></thead><tbody id="featureRows"></tbody></table></div>
   </section>
 
