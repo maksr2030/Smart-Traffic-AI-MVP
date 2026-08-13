@@ -1,0 +1,11 @@
+{
+  "schema": "smart-traffic-runtime-health-policy/v1",
+  "simulationOnly": true,
+  "allowDecisionWhenDegraded": true,
+  "blockDecisionOnCriticalStateFailure": true,
+  "requireHumanApproval": true,
+  "autoApplyAllowed": false,
+  "productionControlAllowed": false,
+  "fieldActuationAllowed": false,
+  "safetyCertified": false
+}
