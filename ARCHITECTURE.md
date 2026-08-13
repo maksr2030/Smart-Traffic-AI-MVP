@@ -1,24 +1,30 @@
-# Architecture and Evidence Boundary — Executable Engineering MVP v1.9.1
+# Architecture and Evidence Boundary — Executable Engineering MVP v1.9.2
 
 ## Objective
 
-Version 1.9.1 completes Stage C of the Smart Traffic AI MVP production-hardening path for the assembled executable: operational mutations now pass through one deterministic Unified State Bus owned by `engine/authoritativeRuntimeStore.js`, while SHA-256 decision integrity, Exact Replay, acquisition review and browser E2E assurance remain active.
+Version 1.9.2 completes Stage D of the Smart Traffic AI MVP production-hardening path for the assembled executable.
 
-The architecture remains an engineering proof-of-concept simulation. No recommendation, policy decision, audit entry or replay result executes field control.
+Stage C remains intact: operational mutations pass through one deterministic Unified State Bus owned by `engine/authoritativeRuntimeStore.js`. Stage D adds runtime health classification, a fail-safe decision gate, isolated deterministic failure injection and a browser-visible health panel that consumes the same authoritative state.
+
+The architecture remains an engineering proof-of-concept simulation. No recommendation, policy decision, audit entry, health result, failure-injection result or replay output executes field control.
 
 ## Architecture overview
 
-The v1.9.1 executable architecture adds a strict state-authority relationship to the existing traffic-intelligence stack:
+The v1.9.2 executable architecture follows this authority and assurance chain:
 
 1. deterministic fixtures and browser actions generate explicit operational events;
 2. `engine/authoritativeRuntimeStore.js` owns the current `smart-traffic-live-state/v1` state;
-3. `engine/unifiedStateBus.js` is the deterministic reducer for accepted mutations;
-4. the transformed executable `app.js` derives its legacy UI mirror from that authoritative state;
-5. traffic, QCS, twin, predictive and policy logic operate on the authoritative snapshots/mutations;
-6. `hardeningRuntime.js` directly subscribes to the same state instead of polling/reconciling a second state;
-7. decisions are fingerprinted and chained with SHA-256;
-8. captured state/policy/inputs can be rerun by Exact Replay;
-9. the same assembled executable build is validated in desktop Chromium and mobile WebKit E2E.
+3. `engine/unifiedStateBus.js` deterministically reduces accepted mutations;
+4. the assembled executable derives the legacy UI mirror from authoritative state;
+5. traffic, QCS, twin, predictive and policy logic operate on authoritative snapshots/mutations;
+6. `hardeningRuntime.js` subscribes directly to the same state;
+7. `runtimeHealthRuntime.js` waits for runtime and policy readiness and evaluates that same state;
+8. `engine/runtimeHealthEngine.js` classifies the snapshot READY, DEGRADED or BLOCKED;
+9. the fail-safe gate suppresses decision output under blocking conditions;
+10. `engine/failureInjectionEngine.js` exercises controlled faults against cloned snapshots only;
+11. decisions remain fingerprinted and chained with SHA-256;
+12. captured state/policy/inputs remain replayable through Exact Replay;
+13. the same assembled artifact shape is used by browser E2E and GitHub Pages.
 
 ## Logical layers
 
@@ -34,7 +40,7 @@ The present MVP uses deterministic fixtures and simulated inputs. No live govern
 
 ### 3. Operations and scenario layer
 
-`engine/operationsEngine.js` provides concurrent incidents, operating scenarios, deterministic metrics, mitigation baselines, before/after comparison, short-horizon forecast baseline and operational snapshot export.
+`engine/operationsEngine.js` provides concurrent incidents, operating scenarios, deterministic metrics, mitigation baselines, before/after comparison, short-horizon forecasting baseline and operational snapshot export.
 
 ### 4. QCS proxy-risk layer
 
@@ -44,7 +50,7 @@ No output is evidence of real quantum sensing, real quantum V2V/V2I communicatio
 
 ### 5. Dynamic Risk Digital Twin layer
 
-`engine/dynamicRiskTwinEngine.js` constructs shared edge-level risk state from:
+`engine/dynamicRiskTwinEngine.js` fuses:
 
 - network load: `0.30`;
 - incident severity: `0.28`;
@@ -72,11 +78,11 @@ The explicit candidate set remains:
 - `network_relief`;
 - `safety_priority`.
 
-Closed roads remain closed through the simulated intervention logic.
+Closed roads remain closed through simulated intervention logic.
 
 ### 9. Multi-horizon evaluation layer
 
-`evaluateOrchestrationCandidate()` evaluates every candidate at every forecast horizon, rebuilding the future twin, calculating metrics and producing the shared route/signal/emergency decision bundle.
+`evaluateOrchestrationCandidate()` evaluates every candidate at every forecast horizon and produces the shared route/signal/emergency decision bundle.
 
 ### 10. Robust orchestration layer
 
@@ -84,7 +90,7 @@ Closed roads remain closed through the simulated intervention logic.
 
 `robustScore = 0.80 × weightedMeanScore + 0.20 × worstHorizonScore + interventionPenalty`
 
-The result preserves:
+Outputs preserve:
 
 - `simulation=true`;
 - `autonomousRecommendation=true`;
@@ -97,7 +103,7 @@ The result preserves:
 
 `engine/explainableOrchestrationEngine.js` reconstructs the deterministic robust score and compares the selected candidate with alternatives.
 
-The explanation is arithmetic/model-internal and explicitly preserves `causalClaim=false`.
+The explanation is arithmetic/model-internal and preserves `causalClaim=false`.
 
 ### 12. Policy guardrail layer
 
@@ -113,7 +119,7 @@ If no candidate satisfies policy, the result is blocked.
 
 ### 14. Scenario replay layer
 
-`buildScenarioReplay()` compares the policy-selected plan with `observe_only` at every shared horizon.
+`buildScenarioReplay()` compares the policy-selected plan with `observe_only` at each shared horizon.
 
 This is simulated candidate comparison, not field-event reconstruction.
 
@@ -129,27 +135,27 @@ Every command remains actuator-disconnected and non-certified.
 
 ### 17. Acquisition presentation layer
 
-`acquisitionRuntime.js` adds the acquisition-ready entry experience, executive navigation and complete feature explorer while preserving the distinction among implemented demo, represented demo, catalogued only and production verified.
+`acquisitionRuntime.js` provides the acquisition-ready entry experience, executive navigation and complete feature explorer while preserving capability evidence distinctions.
 
 ### 18. Executive Guided Demo layer
 
-The deployed guided runtime provides an 11-step executive path through baseline state, incident injection, Dynamic Risk Twin, prediction, candidate comparison, explanation, policy gate, scenario replay, Acquisition Decision Room and capability portfolio.
+The guided runtime provides an 11-step executive path through baseline state, incident injection, Dynamic Risk Twin, prediction, candidate comparison, explanation, policy gate, replay, Acquisition Decision Room and capability portfolio.
 
 ### 19. Acquisition Decision Room layer
 
-`decisionRoomRuntime.js` and `decisionRoom.css` expose strategic acquisition rationale, architecture snapshot, evidence/readiness matrix, due-diligence links, MVP-to-production roadmap, deployment/transaction models, IP disclosure boundary and buyer next action.
+`decisionRoomRuntime.js` and `decisionRoom.css` expose acquisition rationale, architecture snapshot, evidence/readiness matrix, due-diligence links, MVP-to-production roadmap, deployment/transaction models, IP disclosure boundary and buyer next action.
 
 ### 20. Authoritative unified-state layer
 
-`engine/unifiedStateBus.js` defines schema:
+`engine/unifiedStateBus.js` defines:
 
 `smart-traffic-live-state/v1`
 
-The state includes revision, monotonic sequence, tick, simulation-running status, scenario, current/base network snapshots, QCS observations, fleet, route parameters, emergency target, demo policy, active incidents, twin snapshot, predictive snapshot, last decision and bounded event history.
+The state includes revision, sequence, tick, simulation-running status, scenario, current/base network snapshots, QCS observations, fleet, route parameters, emergency target, demo policy, incidents, twin snapshot, predictive snapshot, last decision and bounded event history.
 
-`engine/authoritativeRuntimeStore.js` is the singleton owner of that state. It exposes cloned snapshots and a deterministic dispatch interface. Consumers cannot mutate the stored state by modifying returned snapshots or subscriber payloads.
+`engine/authoritativeRuntimeStore.js` is the singleton owner. It exposes cloned snapshots and deterministic dispatch/subscription. Consumers cannot mutate stored state by modifying returned snapshots or subscriber payloads.
 
-Authoritative Stage C operational events include:
+Operational events include:
 
 - `traffic_drift_applied`;
 - `incident_injected`;
@@ -168,42 +174,23 @@ Authoritative Stage C operational events include:
 - `decision_recorded`;
 - `manual_reset`.
 
-`runtime_reconciled` is retained in the reducer only for compatibility/backward use. The normal v1.9.1 executable path no longer relies on a periodic reconciliation event.
+`runtime_reconciled` remains only for compatibility. The normal executable path does not depend on periodic reconciliation.
 
 ### 21. Executable source-migration layer
 
-The historical raw `app.js` remains in the repository, but the executable artifact is assembled through `scripts/build-executable-site-v190.mjs` and transformed by `scripts/prepare-authoritative-runtime-v191.mjs`.
+The historical raw `app.js` remains in the repository, while the executable artifact is assembled through `scripts/build-executable-site-v190.mjs` and transformed by `scripts/prepare-authoritative-runtime-v191.mjs`.
 
-The Stage C transformation:
+The assembled artifact imports and initializes the authoritative runtime, routes core operational mutations through the bus/store, records twin/predictive output through authority events, exposes `getUnifiedState()`, `dispatch()` and `subscribe()`, and makes the legacy top-level state a derived UI mirror.
 
-- imports the authoritative runtime store;
-- initializes the unified state from the loaded fixtures;
-- converts simulation drift to `traffic_drift_applied`;
-- converts incident mutation to `incident_injected`;
-- converts scenario selection to `scenario_loaded`;
-- converts simulated mitigation application to `intervention_applied`;
-- converts route/emergency/risk UI changes to `decision_inputs_updated`;
-- converts pause/resume to `simulation_running_changed`;
-- converts reset to `manual_reset`;
-- records twin and predictive outputs with `twin_updated` and `predictive_updated`;
-- exposes `getUnifiedState()`, `dispatch()` and `subscribe()` through `window.smartTrafficRuntime`;
-- makes the transformed legacy top-level `state` a derived UI mirror of the authoritative state.
-
-This build-time distinction is important: the architectural source-of-truth claim applies to the **assembled v1.9.1 executable**, not to an isolated reading of the untransformed historical `app.js` source file.
+The source-of-truth claim therefore applies to the assembled executable, not to an isolated reading of the untransformed historical `app.js` source file.
 
 ### 22. Direct hardening-state subscription layer
 
-`hardeningRuntime.js` no longer builds and reconciles a separate live-state copy.
-
-It waits for the authoritative runtime, reads `getUnifiedState()`, subscribes through `runtime.subscribe()`, and displays the same revision/state used by the executable runtime. There is no normal Stage C polling/reconciliation loop.
-
-When an audited decision is captured, the hardening layer uses that exact authoritative snapshot, links it to the ledger, and dispatches `decision_recorded` back through the same state authority.
+`hardeningRuntime.js` reads `getUnifiedState()`, subscribes through the authoritative runtime and uses the same snapshot for audited decision capture, decision ledger linkage and Exact Replay packaging.
 
 ### 23. Canonical cryptographic fingerprint layer
 
 `engine/auditHash.js` provides deterministic canonical JSON serialization and SHA-256 through Web Crypto.
-
-Fingerprints are used for state, inputs, policy, outputs and chained ledger entries.
 
 Evidence boundary:
 
@@ -215,31 +202,27 @@ Evidence boundary:
 
 ### 24. Decision integrity ledger layer
 
-`engine/decisionLedgerEngine.js` uses schema:
+`engine/decisionLedgerEngine.js` uses:
 
 `smart-traffic-decision-ledger/v1`
 
 Each entry contains sequence, authoritative state revision, state/input/policy/output fingerprints, previous entry hash, current entry hash, method metadata and evidence flags.
 
-`verifyLedgerChain()` recalculates the chain and detects stored-entry mutation.
-
-This is cryptographic integrity/tamper evidence within the engineering ledger, not a legally signed audit trail.
+`verifyLedgerChain()` detects stored-entry mutation.
 
 ### 25. Exact deterministic replay layer
 
-`engine/exactReplayEngine.js` captures state, inputs, policy and deterministic orchestration output into:
+`engine/exactReplayEngine.js` captures deterministic state, inputs, policy and orchestration output into:
 
 `smart-traffic-exact-replay-package/v1`
 
-Replay reruns `buildExplainablePolicyOrchestration()` and checks state hash, input hash, policy hash, output hash, selected candidate and robust score.
+Replay checks state hash, input hash, policy hash, output hash, selected candidate and robust score.
 
-An exact match means software/input deterministic exactness inside the captured MVP environment. It is not evidence that real traffic would reproduce the same physical outcome.
+Exact match means software/input deterministic equality inside the captured MVP environment, not physical-world replay evidence.
 
 ### 26. Runtime Integrity UI layer
 
-`hardeningRuntime.js` and `hardeningRuntime.css` expose `Authoritative Runtime State, Decision Ledger & Exact Replay` in the Acquisition Decision Room.
-
-The panel shows authoritative state revision, shortened state hash, ledger-entry count, chain status, recent ledger hashes, recent authoritative state events and controls to capture, verify, replay and export an engineering audit bundle.
+`hardeningRuntime.js` and `hardeningRuntime.css` expose authoritative state revision, state hash, ledger count, chain status, recent hashes/events and controls for capture, verification, replay and engineering audit export.
 
 ### 27. Dynamic capability evidence layer
 
@@ -252,39 +235,107 @@ Current validated coverage remains:
 - 73 catalogued-only;
 - 0 production-verified.
 
-Stage C does not change those counts merely because state governance became stronger.
+Stage D does not change these counts merely because runtime resilience became stronger.
 
-### 28. Browser E2E assurance layer
+### 28. Runtime health assessment layer
 
-`playwright.config.js` and `e2e/executable-platform.spec.js` test the assembled executable site.
+`engine/runtimeHealthEngine.js` defines:
 
-Current browser projects:
+`smart-traffic-runtime-health/v1`
+
+It validates authoritative state, revision, sequence, operational network, route/emergency decision inputs, QCS proxy availability, virtual fleet availability and mandatory policy safety boundaries.
+
+Health classification is:
+
+- READY — no health findings.
+- DEGRADED — supporting data/input limitations exist, but no blocking issue exists.
+- BLOCKED — one or more required state/network/policy safety invariants are invalid.
+
+The result includes issue counts, blocking/degraded counts, decision allowance and explicit simulation evidence flags.
+
+### 29. Fail-safe decision gate layer
+
+`applyFailSafeDecisionGate()` consumes an authoritative snapshot plus a proposed engineering decision.
+
+For BLOCKED health:
+
+- decision output is suppressed;
+- `allowed=false`;
+- `decision=null`;
+- `autoApply=false`;
+- `humanApprovalRequired=true`;
+- `fieldActuation=false`.
+
+For READY or DEGRADED health without a blocking finding, the decision can remain visible for human review, but it is still not auto-applied or field-actuated.
+
+This layer is an engineering guardrail, not certified functional safety.
+
+### 30. Controlled failure-injection layer
+
+`engine/failureInjectionEngine.js` defines:
+
+`smart-traffic-failure-injection/v1`
+
+Seven deterministic failure scenarios are exercised:
+
+1. missing network;
+2. corrupt network load;
+3. missing policy;
+4. unsafe policy;
+5. missing QCS observations;
+6. missing virtual emergency fleet;
+7. invalid decision inputs.
+
+Every scenario is applied to a cloned snapshot. The authoritative runtime is never mutated by failure injection.
+
+The output records resulting health status, whether the decision gate blocks, simulation status and `stateMutationAppliedToAuthoritativeRuntime=false`.
+
+### 31. Runtime Health browser layer
+
+`runtimeHealthRuntime.js` waits until:
+
+- `window.smartTrafficRuntime` exists;
+- the runtime reports ready;
+- `getUnifiedState()` and `subscribe()` are available;
+- the asynchronous policy handoff has reached authoritative state.
+
+Only then does it assess health. This removes the startup race that could otherwise classify a valid runtime before policy initialization completed.
+
+The layer subscribes to authoritative updates and renders Runtime Health & Fail-Safe Gate in the Acquisition Decision Room or main executable surface.
+
+It also exposes an isolated failure-injection self-test and publishes `window.smartTrafficHealth` for engineering inspection.
+
+### 32. Browser E2E assurance layer
+
+`playwright.config.js`, `e2e/executable-platform.spec.js` and `e2e/stage-d-runtime-health.spec.js` validate the assembled executable site.
+
+Browser projects:
 
 - desktop Chromium at 1440 × 1000;
 - mobile WebKit emulation at 390 × 844 with touch enabled.
 
-Six scenarios run in both projects, 12 browser tests total:
+Eight scenarios run in both browser projects, for 16 browser tests total:
 
 1. entry-gate and mobile-action usability;
-2. Decision Room, Hardening Panel, Guided Demo, runtime version and state-authority loading;
+2. Decision Room, Hardening Panel, Guided Demo and authoritative-runtime loading;
 3. decision capture, ledger verification and Exact Replay;
-4. authoritative incident mutation with no `runtime_reconciled` dependency;
+4. authoritative incident mutation with no reconciliation dependency;
 5. authoritative route/emergency/risk input mutation;
-6. explicit authoritative traffic-drift mutation with exact revision/tick progression.
+6. explicit traffic-drift mutation with exact revision/tick progression;
+7. healthy Stage D browser runtime reporting READY and allowing human review;
+8. unsafe-policy snapshot being BLOCKED without authoritative-state mutation.
 
-Current engineering result: 12/12 passed.
+Latest pre-documentation Stage D engineering browser result: 16/16 passed.
 
 WebKit mobile emulation is not physical-iPhone acceptance evidence.
 
-### 29. Single executable build layer
+### 33. Single executable build layer
 
-`scripts/build-executable-site-v190.mjs` is the shared builder. The filename is historical; the current output is v1.9.1.
+`scripts/build-executable-site-v190.mjs` is the shared builder. The filename is historical; the current executable version is v1.9.2.
 
-The build runs the v1.8.3 compatibility patch and then the v1.9.1 authoritative migration before assembling the same artifact used by browser E2E and the Pages workflow.
+The builder applies compatibility and authoritative-state transformation and includes Stage D runtime/engine assets in the assembled executable used by both browser E2E and Pages.
 
-This materially reduces the risk of validating one artifact while publishing another.
-
-### 30. Governance and assurance boundary
+### 34. Governance and assurance boundary
 
 The repository separates:
 
@@ -293,24 +344,15 @@ The repository separates:
 - authoritative executable runtime state;
 - deterministic decision logic;
 - policy configuration;
+- runtime health state;
+- isolated failure injection;
 - cryptographic integrity evidence;
 - browser compatibility evidence;
 - production verification.
 
-The code/tests protect against unsupported claims including:
+The code/tests protect against unsupported claims including real quantum data/communication, trained production forecasting where none exists, automatic field execution, bypassing human approval, causal explanation, regulatory policy approval, real-world field-event replay, digital signature/non-repudiation/blockchain anchoring, physical iPhone validation from WebKit emulation, certified safety claims and production verification without independent evidence.
 
-- real quantum data or communication;
-- trained production forecasting where none exists;
-- automatic field execution;
-- bypassing human approval;
-- causal explanation;
-- regulatory policy approval;
-- real-world field-event replay;
-- digital signature/non-repudiation/blockchain anchoring;
-- physical iPhone validation from WebKit emulation;
-- production verification without independent evidence.
-
-## Runtime data flow — v1.9.1 executable
+## Runtime data flow — v1.9.2 executable
 
 ```text
 Demo fixtures / browser actions
@@ -328,71 +370,78 @@ Authoritative state snapshot
         ├──────────────→ Dynamic Risk Twin
         ├──────────────→ Predictive Orchestration
         ├──────────────→ Explainability + Policy
-        └──────────────→ hardeningRuntime direct subscription
-                                ↓
-                         SHA-256 fingerprints
-                                ↓
-                       Decision Integrity Ledger
-                                ↓
-                          Exact Replay package
-```
+        ├──────────────→ hardeningRuntime direct subscription
+        │                      ↓
+        │               SHA-256 Decision Ledger
+        │                      ↓
+        │                 Exact Replay
+        │
+        └──────────────→ runtimeHealthRuntime
+                               ↓
+                      runtimeHealthEngine
+                    READY / DEGRADED / BLOCKED
+                               ↓
+                      Fail-Safe Decision Gate
+                               ↓
+              Human-review output or BLOCKED decision
 
-The prior v1.9 architecture used synchronization around an app-owned runtime. Stage C removes that normal-path ownership split in the assembled executable: the bus/store is authoritative and the legacy UI state is derived.
+Cloned authoritative snapshot
+        ↓
+failureInjectionEngine
+        ↓
+7 isolated failure scenarios
+        ↓
+Health/gate result only
+(no authoritative-state mutation)
+```
 
 ## Validation
 
-Version 1.9.1 Stage C validation covers:
+Version 1.9.2 Stage D validation covers the existing traffic, QCS, twin, prediction, orchestration, explainability, policy, authoritative-state, ledger and replay contracts plus:
 
-1. Registry and evidence integrity.
-2. Traffic/operations engines.
-3. QCS proxy risk.
-4. Dynamic Risk Digital Twin.
-5. Twin-aware route/signal/emergency logic.
-6. Preventive command logic.
-7. Predictive projection and multi-horizon propagation.
-8. Candidate ranking and deterministic regression.
-9. Explainability and policy guardrails.
-10. Scenario replay and sensitivity analysis.
-11. Unified-state reducer determinism and immutable behavior.
-12. Authoritative store snapshot isolation.
-13. Incident mutation through authoritative reducer.
-14. Traffic drift/tick mutation through authoritative reducer.
-15. Decision-input and running-state governance through the same bus.
-16. Explicit intervention replacement through the bus.
-17. Subscriber isolation from store mutation.
-18. Stable canonical JSON and SHA-256 fingerprints.
-19. SHA-256 decision-chain verification.
-20. Ledger tamper detection.
-21. Captured Exact Replay equality.
-22. Incident preservation in replay packages.
-23. Static Acquisition Decision Room contract.
-24. Authoritative Production Hardening contract.
-25. Executable-site migration/build contract.
-26. Browser E2E on desktop Chromium and mobile WebKit emulation.
-27. Browser proof that incident mutation requires no reconciliation poll.
-28. Browser proof that route/emergency/risk inputs update authoritative state.
-29. Browser proof that explicit traffic drift advances authoritative revision/tick exactly.
+1. runtime health schema and deterministic classification;
+2. authoritative state/network validity checks;
+3. mandatory policy safety-boundary checks;
+4. degraded QCS/fleet behavior;
+5. blocking invalid-network/policy/input behavior;
+6. fail-safe suppression of blocked decision output;
+7. preservation of human approval and no-auto-apply flags;
+8. seven cloned failure-injection scenarios;
+9. proof that failure injection does not mutate authoritative state;
+10. Stage D static wiring contract;
+11. READY browser health-panel behavior;
+12. unsafe-policy browser blocking behavior;
+13. startup waiting for authoritative policy handoff;
+14. desktop Chromium and mobile WebKit E2E behavior.
 
-Latest Stage C engineering results before documentation-head verification:
+Latest pre-documentation Stage D engineering results:
 
-- 62/62 Node tests passing;
-- 12/12 Playwright browser E2E tests passing;
+- 67/67 Node tests passing;
+- 16/16 Playwright browser E2E tests passing;
 - 123 registry records valid;
 - coverage 33 / 17 / 73 / 0;
-- executable smoke, Decision Room and Authoritative Production Hardening contracts passing.
+- executable smoke, Decision Room, Authoritative Production Hardening and Stage D Runtime Health contracts passing.
 
-Engineering E2E run:
+Pre-documentation Stage D CI:
 
-https://github.com/maksr2030/Smart-Traffic-AI-MVP/actions/runs/31666941448
+https://github.com/maksr2030/Smart-Traffic-AI-MVP/actions/runs/31668889454
 
-The final documentation-head CI/E2E links are verified after this documentation commit.
+Pre-documentation Stage D E2E:
+
+https://github.com/maksr2030/Smart-Traffic-AI-MVP/actions/runs/31668889467
+
+The documentation-head commit is validated again by CI, E2E and GitHub Pages before Stage D is treated as closed.
 
 ## Production-readiness boundary
 
 Production readiness remains outside this proof-of-concept.
 
-A production deployment still requires authenticated authoritative interfaces, calibrated/approved data, validated forecasting where appropriate, identity and authorization, authority-approved policies, cyber-security/privacy engineering, safety and hazard analysis, signed audit where required, observability and incident response, resilience/load/latency/failure testing, physical-device validation, traffic-controller and emergency-agency integration, shadow mode, staged deployment and controlled field evidence.
+Stage D completes the current engineering milestone for deterministic runtime-health classification, a fail-safe decision gate and controlled isolated failure injection. It does not constitute production safety certification, operational resilience certification or field acceptance.
 
-The next hardening stage is health/error monitoring and controlled failure injection with explicit READY/DEGRADED/BLOCKED behavior. That stage is not claimed as complete in v1.9.1.
+A production deployment still requires authenticated authoritative interfaces, calibrated/approved data, validated forecasting where appropriate, identity and authorization, authority-approved policies, cyber-security/privacy engineering, formal safety/hazard analysis, signed audit where required, production observability and incident response, resilience/load/latency/recovery testing at production scale, physical-device validation, traffic-controller and emergency-agency integration, shadow mode, staged deployment and controlled field evidence.
 
-No live road controller, production vehicle actuator, emergency dispatch system, government feed, real quantum sensor or safety-certified closed-loop control is connected to the current MVP.
+No live road controller, production vehicle actuator, emergency dispatch system, government feed, real quantum sensor or safety-certified control loop is connected.
+
+## Intellectual property
+
+All rights reserved to Eng. Mohamed Abdulkarim Sulaiman Rihan.
