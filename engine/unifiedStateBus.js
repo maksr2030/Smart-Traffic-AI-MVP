@@ -173,6 +173,9 @@ export function reduceTrafficEvent(state, event) {
       if (payload.fleet) next.fleet = clone(payload.fleet);
       if (payload.dynamicRiskTwin !== undefined) next.dynamicRiskTwin = clone(payload.dynamicRiskTwin);
       if (payload.predictiveOrchestration !== undefined) next.predictiveOrchestration = clone(payload.predictiveOrchestration);
+      if (payload.routeParameters) next.routeParameters = clone(payload.routeParameters);
+      if (payload.emergencyTarget !== undefined) next.emergencyTarget = payload.emergencyTarget || null;
+      if (payload.policy !== undefined) next.policy = clone(payload.policy);
       if (payload.scenarioId) next.scenarioId = payload.scenarioId;
       if (payload.tick != null) next.tick = Number(payload.tick);
       break;
@@ -203,7 +206,8 @@ export function replayTrafficEvents(initialState, events = []) {
 }
 
 export const unifiedStateEvidenceBoundary = Object.freeze({
-  authoritativeForDemoRuntime: true,
+  authoritativeForCapturedHardeningState: true,
+  operationalRuntimeIntegration: 'synchronized_demo_runtime',
   simulation: true,
   productionControlConnected: false,
   fieldActuation: false,
