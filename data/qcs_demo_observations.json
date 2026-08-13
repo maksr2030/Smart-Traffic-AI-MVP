@@ -1,0 +1,8 @@
+[
+  {"edgeId":"E03","roadQuality":0.72,"roughness":0.32,"visibility":0.88,"weatherSeverity":0.18,"blindSpotRisk":0.20,"curvatureRisk":0.35,"friction":0.84,"hiddenHazardConfidence":0.10,"vehicleSpeedKph":72},
+  {"edgeId":"E04","roadQuality":0.58,"roughness":0.52,"visibility":0.62,"weatherSeverity":0.48,"blindSpotRisk":0.42,"curvatureRisk":0.55,"friction":0.64,"hiddenHazardConfidence":0.28,"vehicleSpeedKph":58},
+  {"edgeId":"E08","roadQuality":0.80,"roughness":0.24,"visibility":0.38,"weatherSeverity":0.72,"blindSpotRisk":0.32,"curvatureRisk":0.28,"friction":0.58,"hiddenHazardConfidence":0.16,"vehicleSpeedKph":88},
+  {"edgeId":"E09","roadQuality":0.86,"roughness":0.18,"visibility":0.78,"weatherSeverity":0.22,"blindSpotRisk":0.62,"curvatureRisk":0.72,"friction":0.82,"hiddenHazardConfidence":0.42,"vehicleSpeedKph":104},
+  {"edgeId":"E12","roadQuality":0.48,"roughness":0.68,"visibility":0.44,"weatherSeverity":0.60,"blindSpotRisk":0.66,"curvatureRisk":0.58,"friction":0.50,"hiddenHazardConfidence":0.63,"vehicleSpeedKph":52},
+  {"edgeId":"E16","roadQuality":0.67,"roughness":0.40,"visibility":0.70,"weatherSeverity":0.36,"blindSpotRisk":0.78,"curvatureRisk":0.74,"friction":0.69,"hiddenHazardConfidence":0.58,"vehicleSpeedKph":96}
+]
