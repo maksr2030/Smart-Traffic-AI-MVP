@@ -94,13 +94,15 @@ export async function replayDecisionPackage(replayPackage) {
     sha256Fingerprint(replayPackage.inputs.policy),
     sha256Fingerprint(replayedOutput)
   ]);
+  const replayScore = replayedOutput.selected?.robustScore ?? null;
+  const originalScore = replayPackage.originalOutput?.selected?.robustScore ?? null;
   const comparison = {
     stateMatch: stateHash === replayPackage.stateFingerprint,
     inputMatch: inputHash === replayPackage.inputFingerprint,
     policyMatch: policyHash === replayPackage.policyFingerprint,
     outputFingerprintMatch: outputHash === replayPackage.originalOutputFingerprint,
     selectedCandidateMatch: (replayedOutput.selected?.candidate?.id || null) === (replayPackage.originalOutput?.selected?.candidate?.id || null),
-    robustScoreMatch: Number(replayedOutput.selected?.robustScore ?? NaN) === Number(replayPackage.originalOutput?.selected?.robustScore ?? NaN)
+    robustScoreMatch: replayScore === originalScore
   };
   comparison.exactReplayMatch = Object.values(comparison).every(Boolean);
   return {
