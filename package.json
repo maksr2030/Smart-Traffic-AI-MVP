@@ -1,12 +1,12 @@
 {
   "name": "smart-traffic-ai-mvp",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.js",
     "validate": "node scripts/validate-registry.mjs",
-    "check": "node --check app.js && node --check engine/trafficEngine.js && node --check engine/operationsEngine.js && node --check coverage/coverageModel.js && node scripts/smoke-check.mjs"
+    "check": "node --check app.js && node --check engine/trafficEngine.js && node --check engine/operationsEngine.js && node --check engine/qcsRiskEngine.js && node --check coverage/coverageModel.js && node scripts/smoke-check.mjs"
   },
   "engines": {"node": ">=20"}
 }
