@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 async function waitForPlatform(page) {
-  await page.goto('/?e2e=190', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?e2e=191', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => window.smartTrafficAppReady === true, null, { timeout: 18_000 });
   await expect(page.locator('#acquisitionEntry')).toBeVisible();
   await expect(page.locator('#acqEnter')).toBeVisible();
@@ -35,7 +35,7 @@ test('entry gate is usable and mobile actions remain reachable', async ({ page }
   expect(pageErrors).toEqual([]);
 });
 
-test('decision room and guided demo load from the executable build', async ({ page }) => {
+test('decision room and guided demo load from the authoritative executable build', async ({ page }) => {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
   await waitForPlatform(page);
@@ -44,6 +44,8 @@ test('decision room and guided demo load from the executable build', async ({ pa
   await expect(page.locator('#acquisitionDecisionRoom')).toHaveCount(1);
   await page.waitForFunction(() => window.smartTrafficHardeningReady === true, null, { timeout: 18_000 });
   await expect(page.locator('#runtimeIntegrityPanel')).toHaveCount(1);
+  expect(await page.evaluate(() => window.smartTrafficRuntime.stateAuthority)).toBe('unified-state-bus');
+  expect(await page.evaluate(() => window.smartTrafficRuntime.version)).toBe('1.9.1');
   await expect(page.locator('#guidedDemoStart')).toBeVisible();
   await page.locator('#guidedDemoStart').click();
   await expect(page.locator('#guidedDemoController')).toHaveClass(/visible/, { timeout: 10_000 });
@@ -72,6 +74,7 @@ test('hardening runtime captures, verifies and exactly replays a decision', asyn
   await expect(page.locator('#hardeningReplayStatus')).toContainText('output=true');
 
   const evidence = await page.locator('.hardening-boundary').textContent();
+  expect(evidence).toContain('stateAuthority=unified-state-bus');
   expect(evidence).toContain('digitalSignature=false');
   expect(evidence).toContain('blockchainAnchored=false');
   expect(evidence).toContain('nonRepudiation=false');
@@ -79,20 +82,101 @@ test('hardening runtime captures, verifies and exactly replays a decision', asyn
   expect(pageErrors).toEqual([]);
 });
 
-test('incident mutation is reflected in captured hardening state', async ({ page }) => {
+test('incident mutation is authoritative and requires no reconciliation poll', async ({ page }) => {
   await waitForPlatform(page);
   await enterPlatform(page);
   await page.waitForFunction(() => window.smartTrafficHardeningReady === true, null, { timeout: 18_000 });
 
-  await page.evaluate(async () => {
+  const result = await page.evaluate(() => {
     window.smartTrafficRuntime.setRunning(false);
     window.smartTrafficRuntime.resetNetwork();
+    const before = window.smartTrafficRuntime.getUnifiedState();
     window.smartTrafficRuntime.injectIncident('E09', false);
-    await window.smartTrafficHardening.sync();
+    const after = window.smartTrafficRuntime.getUnifiedState();
+    const hardening = window.smartTrafficHardening.getState();
+    return {
+      beforeRevision: before.revision,
+      afterRevision: after.revision,
+      hardeningRevision: hardening.revision,
+      incident: after.activeIncidents.find(item => item.edgeId === 'E09'),
+      eventTypes: after.eventLog.map(item => item.type)
+    };
   });
 
-  const incident = await page.evaluate(() => window.smartTrafficHardening.getState().activeIncidents.find(item => item.edgeId === 'E09'));
-  expect(incident).toBeTruthy();
-  expect(incident.closed).toBe(false);
-  expect(incident.severity).toBeGreaterThan(0);
+  expect(result.afterRevision).toBeGreaterThan(result.beforeRevision);
+  expect(result.hardeningRevision).toBe(result.afterRevision);
+  expect(result.incident).toBeTruthy();
+  expect(result.incident.closed).toBe(false);
+  expect(result.incident.severity).toBeGreaterThan(0);
+  expect(result.eventTypes).toContain('incident_injected');
+  expect(result.eventTypes).not.toContain('runtime_reconciled');
+});
+
+test('route and emergency inputs are governed by authoritative state events', async ({ page }) => {
+  await waitForPlatform(page);
+  await enterPlatform(page);
+  await page.waitForFunction(() => window.smartTrafficHardeningReady === true, null, { timeout: 18_000 });
+  await page.evaluate(() => window.smartTrafficRuntime.setRunning(false));
+
+  await page.locator('#routeOrigin').selectOption('N2');
+  await page.locator('#routeDestination').selectOption('N9');
+  await page.locator('#emergencyTarget').selectOption('N11');
+  await page.locator('#riskWeight').selectOption('3.5');
+
+  await page.waitForFunction(() => {
+    const state = window.smartTrafficRuntime.getUnifiedState();
+    return state.routeParameters.origin === 'N2' && state.routeParameters.destination === 'N9' && state.emergencyTarget === 'N11' && Number(state.routeParameters.routeRiskWeight) === 3.5;
+  });
+
+  const authority = await page.evaluate(() => {
+    const state = window.smartTrafficRuntime.getUnifiedState();
+    return {
+      routeParameters: state.routeParameters,
+      emergencyTarget: state.emergencyTarget,
+      eventTypes: state.eventLog.map(item => item.type),
+      hardeningRevision: window.smartTrafficHardening.getState().revision,
+      revision: state.revision
+    };
+  });
+  expect(authority.routeParameters.origin).toBe('N2');
+  expect(authority.routeParameters.destination).toBe('N9');
+  expect(authority.routeParameters.routeRiskWeight).toBe(3.5);
+  expect(authority.emergencyTarget).toBe('N11');
+  expect(authority.eventTypes).toContain('decision_inputs_updated');
+  expect(authority.hardeningRevision).toBe(authority.revision);
+});
+
+test('traffic drift can be replayed as an explicit authoritative event', async ({ page }) => {
+  await waitForPlatform(page);
+  await enterPlatform(page);
+  await page.waitForFunction(() => window.smartTrafficHardeningReady === true, null, { timeout: 18_000 });
+
+  const result = await page.evaluate(() => {
+    window.smartTrafficRuntime.setRunning(false);
+    const before = window.smartTrafficRuntime.getUnifiedState();
+    const edgeBefore = before.network.edges.find(edge => edge.id === 'E01').load;
+    window.smartTrafficRuntime.dispatch({
+      type: 'traffic_drift_applied',
+      source: 'e2e_explicit_drift',
+      payload: { tick: before.tick + 1, deltas: { E01: 3 } }
+    });
+    const after = window.smartTrafficRuntime.getUnifiedState();
+    return {
+      beforeRevision: before.revision,
+      afterRevision: after.revision,
+      beforeTick: before.tick,
+      afterTick: after.tick,
+      edgeBefore,
+      edgeAfter: after.network.edges.find(edge => edge.id === 'E01').load,
+      lastEvent: after.lastEvent,
+      hardeningRevision: window.smartTrafficHardening.getState().revision
+    };
+  });
+
+  expect(result.afterRevision).toBe(result.beforeRevision + 1);
+  expect(result.afterTick).toBe(result.beforeTick + 1);
+  expect(result.edgeAfter).toBe(result.edgeBefore + 3);
+  expect(result.lastEvent.type).toBe('traffic_drift_applied');
+  expect(result.lastEvent.source).toBe('e2e_explicit_drift');
+  expect(result.hardeningRevision).toBe(result.afterRevision);
 });
