@@ -44,10 +44,10 @@ jobs:
         run: npm test
       - name: Check executable wiring
         run: npm run check
-      - name: Prepare synchronized mobile-ready executable site
+      - name: Prepare acquisition decision room executable site
         run: |
           mkdir -p site
-          cp index.html styles.css acquisition.css guidedDemo.css app.js v18Runtime.js acquisitionRuntime.js site/
+          cp index.html styles.css acquisition.css guidedDemo.css decisionRoom.css app.js v18Runtime.js acquisitionRuntime.js decisionRoomRuntime.js site/
           cp guidedDemoRuntime.v183.js site/guidedDemoRuntime.js
           cp -R engine coverage data site/
           node scripts/prepare-runtime-sync-v183.mjs site
@@ -55,13 +55,19 @@ jobs:
           node --check site/v18Runtime.js
           node --check site/acquisitionRuntime.js
           node --check site/guidedDemoRuntime.js
+          node --check site/decisionRoomRuntime.js
           grep -q 'window.smartTrafficRuntime' site/app.js
           grep -q 'smart-traffic:ready' site/app.js
           grep -q 'useLive?live.network' site/v18Runtime.js
           grep -q 'waitForCoreReady' site/acquisitionRuntime.js
           grep -q 'tour.executed.add(action)' site/guidedDemoRuntime.js
+          grep -q 'acquisitionDecisionRoom' site/guidedDemoRuntime.js
+          grep -q 'acquisitionDecisionRoom' site/decisionRoomRuntime.js
+          grep -q 'production_verified' site/decisionRoomRuntime.js
+          grep -q 'MVP → PRODUCTION' site/decisionRoomRuntime.js
           grep -q 'overflow-y:auto' site/acquisition.css
           grep -q 'position:fixed;left:12px;right:12px' site/acquisition.css
+          grep -q '@media(max-width:780px)' site/decisionRoom.css
           python - <<'PY'
           from pathlib import Path
           path = Path('site/index.html')
@@ -71,16 +77,17 @@ jobs:
           v18_anchor = '<script type="module" src="v18Runtime.js"></script>'
           if css_anchor not in html or app_anchor not in html or v18_anchor not in html:
               raise SystemExit('Executable page injection anchors missing')
-          html = html.replace(css_anchor, '<link rel="stylesheet" href="styles.css?v=184">\n  <link rel="stylesheet" href="acquisition.css?v=184">\n  <link rel="stylesheet" href="guidedDemo.css?v=184">', 1)
-          html = html.replace(app_anchor, '<script type="module" src="app.js?v=184"></script>', 1)
-          html = html.replace(v18_anchor, '<script type="module" src="v18Runtime.js?v=184"></script>\n<script type="module" src="acquisitionRuntime.js?v=184"></script>\n<script type="module" src="guidedDemoRuntime.js?v=184"></script>', 1)
+          html = html.replace(css_anchor, '<link rel="stylesheet" href="styles.css?v=185">\n  <link rel="stylesheet" href="acquisition.css?v=185">\n  <link rel="stylesheet" href="guidedDemo.css?v=185">\n  <link rel="stylesheet" href="decisionRoom.css?v=185">', 1)
+          html = html.replace(app_anchor, '<script type="module" src="app.js?v=185"></script>', 1)
+          html = html.replace(v18_anchor, '<script type="module" src="v18Runtime.js?v=185"></script>\n<script type="module" src="acquisitionRuntime.js?v=185"></script>\n<script type="module" src="decisionRoomRuntime.js?v=185"></script>\n<script type="module" src="guidedDemoRuntime.js?v=185"></script>', 1)
           path.write_text(html, encoding='utf-8')
           PY
-          grep -q 'app.js?v=184' site/index.html
-          grep -q 'v18Runtime.js?v=184' site/index.html
-          grep -q 'acquisitionRuntime.js?v=184' site/index.html
-          grep -q 'guidedDemoRuntime.js?v=184' site/index.html
-          grep -q 'acquisition.css?v=184' site/index.html
+          grep -q 'app.js?v=185' site/index.html
+          grep -q 'v18Runtime.js?v=185' site/index.html
+          grep -q 'acquisitionRuntime.js?v=185' site/index.html
+          grep -q 'decisionRoomRuntime.js?v=185' site/index.html
+          grep -q 'guidedDemoRuntime.js?v=185' site/index.html
+          grep -q 'decisionRoom.css?v=185' site/index.html
           touch site/.nojekyll
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
