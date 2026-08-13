@@ -33,9 +33,9 @@ function validateNetwork(network) {
     issues.push(issue('NETWORK_INVALID_EDGE', HEALTH_STATUS.BLOCKED, 'Network contains an invalid edge reference.', { edgeId: invalidEdge.id ?? null }));
   }
 
-  const badLoad = network.edges.find((edge) => !isFiniteNumber(edge.load) || Number(edge.load) < 0);
+  const badLoad = network.edges.find((edge) => !isFiniteNumber(edge.load) || Number(edge.load) < 0 || Number(edge.load) > 100);
   if (badLoad) {
-    issues.push(issue('NETWORK_INVALID_LOAD', HEALTH_STATUS.BLOCKED, 'Network contains a non-finite or negative load.', { edgeId: badLoad.id ?? null }));
+    issues.push(issue('NETWORK_INVALID_LOAD', HEALTH_STATUS.BLOCKED, 'Network contains a non-finite or out-of-range load.', { edgeId: badLoad.id ?? null }));
   }
   return issues;
 }
@@ -56,11 +56,12 @@ function validatePolicy(policy) {
 
 function validateDecisionInputs(state) {
   const issues = [];
-  const inputs = state?.decisionInputs;
-  if (!inputs || !inputs.origin || !inputs.destination || !inputs.emergencyTarget) {
+  const params = state?.routeParameters || {};
+  const emergencyTarget = state?.emergencyTarget;
+  if (!params.origin || !params.destination || !emergencyTarget) {
     issues.push(issue('DECISION_INPUTS_INCOMPLETE', HEALTH_STATUS.DEGRADED, 'Route or emergency decision inputs are incomplete.'));
   }
-  if (inputs && !isFiniteNumber(inputs.routeRiskWeight)) {
+  if (!isFiniteNumber(params.routeRiskWeight) || Number(params.routeRiskWeight) < 0) {
     issues.push(issue('ROUTE_RISK_WEIGHT_INVALID', HEALTH_STATUS.BLOCKED, 'Route risk weight is invalid.'));
   }
   return issues;
