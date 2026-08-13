@@ -4,6 +4,7 @@ import { buildCoverage, capabilityStatus, coverageSummary, coverageToCsv } from 
 
 test('coverage statuses preserve evidence boundary', () => {
   assert.equal(capabilityStatus('2'),'implemented_demo');
+  assert.equal(capabilityStatus('QTOS-02'),'implemented_demo');
   assert.equal(capabilityStatus('QTOS-18'),'represented_demo');
   assert.equal(capabilityStatus('AR-05'),'catalogued_only');
 });
@@ -17,7 +18,7 @@ test('QCS proxy execution separates implemented, represented and catalogued reco
 
 test('coverage summary counts all rows without production claims', () => {
   const rows = buildCoverage([
-    {id:'QCS-101',group:'qcs_recovered',title_ar:'a',title_en:'b'},
+    {id:'QTOS-02',group:'qtos',title_ar:'a',title_en:'b'},
     {id:'QTOS-18',group:'qtos',title_ar:'c',title_en:'d'},
     {id:'AR-05',group:'additional_history',title_ar:'e',title_en:'f'}
   ]);
@@ -25,9 +26,9 @@ test('coverage summary counts all rows without production claims', () => {
   assert.deepEqual(summary,{total:3,implemented_demo:1,represented_demo:1,catalogued_only:1,production_verified:0});
 });
 
-test('coverage CSV contains evidence fields and risk-aware module label', () => {
+test('coverage CSV contains dynamic twin module label and evidence fields', () => {
   const csv = coverageToCsv(buildCoverage([{id:'QCS-101',group:'qcs_recovered',title_ar:'خطر',title_en:'Risk'}]));
   assert.match(csv,/production_verified/);
   assert.match(csv,/implemented_demo/);
-  assert.match(csv,/risk-aware-routing-and-command-plan/);
+  assert.match(csv,/dynamic-twin-risk-routing-and-command-plan/);
 });
