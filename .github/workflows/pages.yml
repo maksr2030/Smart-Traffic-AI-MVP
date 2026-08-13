@@ -43,8 +43,10 @@ jobs:
           cp index.html styles.css app.js v18Runtime.js site/
           cp -R engine coverage data site/
           touch site/.nojekyll
-      - name: Configure GitHub Pages
+      - name: Configure and enable GitHub Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
