@@ -1,12 +1,12 @@
 {
   "name": "smart-traffic-ai-mvp",
-  "version": "1.8.5",
+  "version": "1.9.0",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.js",
     "validate": "node scripts/validate-registry.mjs",
-    "check": "node --check app.js && node --check v18Runtime.js && node --check acquisitionRuntime.js && node --check guidedDemoRuntime.js && node --check guidedDemoRuntime.v183.js && node --check decisionRoomRuntime.js && node --check engine/trafficEngine.js && node --check engine/operationsEngine.js && node --check engine/qcsRiskEngine.js && node --check engine/riskAwareRoutingEngine.js && node --check engine/preventiveCommandEngine.js && node --check engine/dynamicRiskTwinEngine.js && node --check engine/predictiveOrchestrationEngine.js && node --check engine/explainableOrchestrationEngine.js && node --check coverage/coverageModel.js && node scripts/smoke-check.mjs && node scripts/decision-room-check.mjs"
+    "check": "node --check app.js && node --check v18Runtime.js && node --check acquisitionRuntime.js && node --check guidedDemoRuntime.js && node --check guidedDemoRuntime.v183.js && node --check decisionRoomRuntime.js && node --check engine/auditHash.js && node --check engine/unifiedStateBus.js && node --check engine/decisionLedgerEngine.js && node --check engine/exactReplayEngine.js && node --check engine/trafficEngine.js && node --check engine/operationsEngine.js && node --check engine/qcsRiskEngine.js && node --check engine/riskAwareRoutingEngine.js && node --check engine/preventiveCommandEngine.js && node --check engine/dynamicRiskTwinEngine.js && node --check engine/predictiveOrchestrationEngine.js && node --check engine/explainableOrchestrationEngine.js && node --check coverage/coverageModel.js && node scripts/smoke-check.mjs && node scripts/decision-room-check.mjs"
   },
   "engines": {"node": ">=20"}
 }
