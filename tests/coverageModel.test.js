@@ -8,15 +8,16 @@ test('coverage statuses preserve evidence boundary', () => {
   assert.equal(capabilityStatus('AR-05'),'catalogued_only');
 });
 
-test('QCS proxy execution is separated from represented-only and catalogued records', () => {
+test('QCS proxy execution separates implemented, represented and catalogued records', () => {
   assert.equal(capabilityStatus('QCS-92'),'implemented_demo');
+  assert.equal(capabilityStatus('QCS-101'),'implemented_demo');
   assert.equal(capabilityStatus('QCS-93'),'represented_demo');
   assert.equal(capabilityStatus('QCS-102'),'catalogued_only');
 });
 
 test('coverage summary counts all rows without production claims', () => {
   const rows = buildCoverage([
-    {id:'2',group:'verified_historical',title_ar:'a',title_en:'b'},
+    {id:'QCS-101',group:'qcs_recovered',title_ar:'a',title_en:'b'},
     {id:'QTOS-18',group:'qtos',title_ar:'c',title_en:'d'},
     {id:'AR-05',group:'additional_history',title_ar:'e',title_en:'f'}
   ]);
@@ -24,9 +25,9 @@ test('coverage summary counts all rows without production claims', () => {
   assert.deepEqual(summary,{total:3,implemented_demo:1,represented_demo:1,catalogued_only:1,production_verified:0});
 });
 
-test('coverage CSV contains evidence fields', () => {
-  const csv = coverageToCsv(buildCoverage([{id:'QCS-92',group:'qcs_recovered',title_ar:'طريق',title_en:'Road'}]));
+test('coverage CSV contains evidence fields and risk-aware module label', () => {
+  const csv = coverageToCsv(buildCoverage([{id:'QCS-101',group:'qcs_recovered',title_ar:'خطر',title_en:'Risk'}]));
   assert.match(csv,/production_verified/);
   assert.match(csv,/implemented_demo/);
-  assert.match(csv,/qcs-risk-response/);
+  assert.match(csv,/risk-aware-routing-and-command-plan/);
 });
