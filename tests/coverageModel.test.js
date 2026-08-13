@@ -8,6 +8,12 @@ test('coverage statuses preserve evidence boundary', () => {
   assert.equal(capabilityStatus('AR-05'),'catalogued_only');
 });
 
+test('QCS proxy execution is separated from represented-only and catalogued records', () => {
+  assert.equal(capabilityStatus('QCS-92'),'implemented_demo');
+  assert.equal(capabilityStatus('QCS-93'),'represented_demo');
+  assert.equal(capabilityStatus('QCS-102'),'catalogued_only');
+});
+
 test('coverage summary counts all rows without production claims', () => {
   const rows = buildCoverage([
     {id:'2',group:'verified_historical',title_ar:'a',title_en:'b'},
@@ -19,7 +25,8 @@ test('coverage summary counts all rows without production claims', () => {
 });
 
 test('coverage CSV contains evidence fields', () => {
-  const csv = coverageToCsv(buildCoverage([{id:'2',group:'verified_historical',title_ar:'مسار',title_en:'Route'}]));
+  const csv = coverageToCsv(buildCoverage([{id:'QCS-92',group:'qcs_recovered',title_ar:'طريق',title_en:'Road'}]));
   assert.match(csv,/production_verified/);
   assert.match(csv,/implemented_demo/);
+  assert.match(csv,/qcs-risk-response/);
 });
