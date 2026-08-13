@@ -1,0 +1,14 @@
+{
+  "schema": "smart-traffic-orchestration-policy/v1",
+  "simulationOnly": true,
+  "maxTargetCount": 6,
+  "maxLoadReduction": 12,
+  "maxIncidentRelief": 0.25,
+  "maxInterventionPenalty": 10,
+  "requireHumanApproval": true,
+  "autoApplyAllowed": false,
+  "productionControlAllowed": false,
+  "preserveClosedEdges": true,
+  "minimumRankedCandidates": 3,
+  "description": "MVP v1.8 deterministic policy guardrails for simulated orchestration recommendations. These limits are engineering demo constraints, not public-road operating policy."
+}
