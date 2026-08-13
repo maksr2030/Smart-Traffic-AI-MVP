@@ -41,28 +41,49 @@ function render(health, suite) {
 }
 
 async function boot() {
-  const deadline = Date.now() + 12000;
+  const deadline = Date.now() + 18000;
+  let lastError = null;
   while (Date.now() < deadline) {
     const runtime = window.smartTrafficRuntime;
-    if (runtime?.getUnifiedState && runtime?.subscribe) {
-      const update = (state) => {
-        const health = assessRuntimeHealth(state);
-        const suite = runFailureInjectionSuite(state);
-        render(health, suite);
-        window.smartTrafficHealth = {
-          current: health,
-          failureSuite: suite,
-          assess: () => assessRuntimeHealth(runtime.getUnifiedState()),
-          gateDecision: (decision) => applyFailSafeDecisionGate(runtime.getUnifiedState(), decision)
+    if (runtime?.getUnifiedState && runtime?.subscribe && runtime?.isReady?.() === true) {
+      try {
+        const current = runtime.getUnifiedState();
+        // Stage D evaluates the same policy snapshot used by hardening/orchestration.
+        // Wait until that asynchronous policy handoff has reached the authoritative bus.
+        if (!current?.policy) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          continue;
+        }
+        const update = (state) => {
+          try {
+            const health = assessRuntimeHealth(state);
+            const suite = runFailureInjectionSuite(state);
+            render(health, suite);
+            window.smartTrafficHealth = {
+              current: health,
+              failureSuite: suite,
+              assess: () => assessRuntimeHealth(runtime.getUnifiedState()),
+              gateDecision: (decision) => applyFailSafeDecisionGate(runtime.getUnifiedState(), decision)
+            };
+          } catch (error) {
+            lastError = error;
+            console.error('runtime health update failed', error);
+          }
         };
-      };
-      update(runtime.getUnifiedState());
-      runtime.subscribe(update);
-      return;
+        update(current);
+        runtime.subscribe(update);
+        return;
+      } catch (error) {
+        lastError = error;
+      }
     }
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
-  render({ status: 'BLOCKED', revision: null, issueCount: 1, blockingCount: 1, decisionAllowed: false, issues: [{ code: 'RUNTIME_UNAVAILABLE', message: 'Authoritative runtime did not become available.' }] }, []);
+  const message = lastError?.message || 'Authoritative runtime or policy did not become available.';
+  render({ status: 'BLOCKED', revision: null, issueCount: 1, blockingCount: 1, decisionAllowed: false, issues: [{ code: 'RUNTIME_UNAVAILABLE', message }] }, []);
 }
 
-boot();
+boot().catch((error) => {
+  console.error('runtime health boot failed', error);
+  render({ status: 'BLOCKED', revision: null, issueCount: 1, blockingCount: 1, decisionAllowed: false, issues: [{ code: 'RUNTIME_HEALTH_BOOT_FAILED', message: error.message }] }, []);
+});
