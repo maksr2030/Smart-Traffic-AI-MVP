@@ -3,7 +3,8 @@ import { access, readFile } from 'node:fs/promises';
 const manifest = JSON.parse(await readFile('data/features.json','utf8'));
 const manifestFiles = manifest.files.map(name => `data/${name}`);
 const requiredFiles = [
-  'index.html','styles.css','app.js','engine/trafficEngine.js','engine/operationsEngine.js','engine/qcsRiskEngine.js','coverage/coverageModel.js',
+  'index.html','styles.css','app.js','engine/trafficEngine.js','engine/operationsEngine.js','engine/qcsRiskEngine.js',
+  'engine/riskAwareRoutingEngine.js','engine/preventiveCommandEngine.js','coverage/coverageModel.js',
   'data/network.json','data/operations_scenarios.json','data/emergency_fleet.json','data/qcs_demo_observations.json','data/features.json',
   ...manifestFiles
 ];
@@ -18,17 +19,19 @@ const qcsObservations = JSON.parse(await readFile('data/qcs_demo_observations.js
 
 if (!html.includes('type="module" src="app.js"')) throw new Error('index.html must load app.js as an ES module');
 if (!html.includes('href="styles.css"')) throw new Error('styles.css is not linked');
-if (!app.includes("'./engine/operationsEngine.js'")) throw new Error('operations engine is not imported');
-if (!app.includes("'./engine/qcsRiskEngine.js'")) throw new Error('QCS risk engine is not imported');
-if (!app.includes("'./coverage/coverageModel.js'")) throw new Error('coverage model is not imported');
+for (const modulePath of ['./engine/operationsEngine.js','./engine/qcsRiskEngine.js','./engine/riskAwareRoutingEngine.js','./engine/preventiveCommandEngine.js','./coverage/coverageModel.js']) {
+  if (!app.includes(`'${modulePath}'`)) throw new Error(`app does not import ${modulePath}`);
+}
 if (!app.includes("fetch('data/features.json')")) throw new Error('app must load registry manifest dynamically');
 if (!app.includes('manifest.files.map')) throw new Error('app must load feature datasets from manifest.files');
 if (app.includes("const featurePaths=['data/verified_1_10.json'")) throw new Error('hard-coded feature dataset list must not return');
+if (!app.includes('compareConventionalAndRiskAwareRoutes')) throw new Error('risk-aware route comparison is not wired');
+if (!app.includes('buildPreventiveCommandPlan')) throw new Error('preventive command plan is not wired');
 
 const requiredIds = [
   'network','networkLoad','predictedDelay','activeIncidents','featureCount','timeline','engineeringOutput',
-  'routeOrigin','routeDestination','routeBtn','routeResult','incidentEdge','incidentBtn','resetNetworkBtn',
-  'scenarioSelect','scenarioBtn','scenarioResult','stressIndex','applyInterventionBtn','forecastHorizon','forecastBtn','forecastResult',
+  'routeOrigin','routeDestination','routeBtn','routeResult','riskWeight','riskRouteBtn','riskRouteResult','riskTimeDelta','riskScoreDelta','riskRouteMaxRisk','riskCommandCount','riskCommandResult','riskCommandRows',
+  'incidentEdge','incidentBtn','resetNetworkBtn','scenarioSelect','scenarioBtn','scenarioResult','stressIndex','applyInterventionBtn','forecastHorizon','forecastBtn','forecastResult',
   'emergencyTarget','dispatchBtn','dispatchResult','beforeStress','afterStress','stressDelta','beforeLoad','afterLoad','loadDelta',
   'beforeTime','afterTime','timeDelta','beforeCritical','afterCritical','criticalDelta','comparisonNote',
   'qcsRiskBtn','qcsRiskScore','qcsRiskEdge','qcsTargetSpeed','qcsBroadcasts','qcsRiskResult','qcsRiskRows',
